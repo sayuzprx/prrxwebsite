@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX | Secure Login - HWID Protected</title>
+    <title>PRRX | Premium KeyAuth Login</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
@@ -15,11 +15,11 @@
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()">
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com;
+        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://keyauth.win;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
         img-src 'self' data: https:;
-        connect-src 'self';
+        connect-src 'self' https://keyauth.win;
         frame-ancestors 'none';
         base-uri 'self';
         form-action 'self';
@@ -101,6 +101,8 @@
             100% { opacity: 0; transform: translateY(-120px) scale(0); }
         }
         .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #00e0ff80; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
+        .loading-security i { animation: securityPulse 1s ease infinite; }
+        @keyframes securityPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 5px #00e0ff; } }
         
         /* Anti-DevTools */
         .anti-devtools {
@@ -130,7 +132,7 @@
         @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
         
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
-        .content { position: relative; z-index: 2; max-width: 450px; margin: 0 auto; padding: 6rem 1.5rem 2rem; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        .content { position: relative; z-index: 2; max-width: 500px; margin: 0 auto; padding: 6rem 1.5rem 2rem; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
         
         /* Navbar */
         .navbar {
@@ -152,16 +154,63 @@
         .menu a { color: #fff; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; }
         .menu a:hover { color: #00e0ff; }
         
-        /* Auth Card */
-        .auth-card {
+        /* Premium Card */
+        .premium-card {
             background: rgba(15, 25, 45, 0.85);
             backdrop-filter: blur(12px);
             border-radius: 32px;
             padding: 2rem;
-            text-align: center;
-            border: 1px solid #00e0ff40;
+            border: 1px solid rgba(0,224,255,0.4);
             box-shadow: 0 25px 40px -15px rgba(0,0,0,0.3);
         }
+        .premium-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .premium-header i {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+        .premium-header h2 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .premium-header p {
+            color: #8e9eb5;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0,224,255,0.2);
+            padding-bottom: 0.5rem;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #8e9eb5;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 30px;
+            flex: 1;
+        }
+        .tab-btn.active {
+            background: linear-gradient(90deg, #00e0ff20, #a020f020);
+            color: #00e0ff;
+            border: 1px solid #00e0ff;
+        }
+        
         .hwid-box {
             background: rgba(0,0,0,0.4);
             border-radius: 16px;
@@ -170,8 +219,10 @@
             font-size: 0.7rem;
             font-family: monospace;
             border: 1px solid #00e0ff30;
+            text-align: center;
         }
         .hwid-box i { color: #00e0ff; margin-right: 0.5rem; }
+        
         .input-group {
             display: flex;
             align-items: center;
@@ -195,34 +246,6 @@
             outline: none;
             font-size: 0.9rem;
         }
-        .input-group input:-webkit-autofill {
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: #fff;
-        }
-        .tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(0,224,255,0.2);
-            padding-bottom: 1rem;
-        }
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: #8e9eb5;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 30px;
-            flex: 1;
-        }
-        .tab-btn.active {
-            background: linear-gradient(90deg, #00e0ff20, #a020f020);
-            color: #00e0ff;
-            border: 1px solid #00e0ff;
-        }
         .submit-btn {
             background: linear-gradient(90deg, #00e0ff, #a020f0);
             border: none;
@@ -238,17 +261,61 @@
         }
         .submit-btn:hover { transform: scale(1.02); box-shadow: 0 0 25px #00e0ff; }
         
-        .back-link {
-            text-align: center;
-            margin-top: 1.5rem;
-        }
-        .back-link a {
-            color: #8e9eb5;
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: color 0.3s;
-        }
+        .back-link { text-align: center; margin-top: 1.5rem; }
+        .back-link a { color: #8e9eb5; text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
         .back-link a:hover { color: #00e0ff; }
+        
+        /* Dashboard Card */
+        .dashboard-card {
+            background: rgba(15, 25, 45, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid #ffd70040;
+        }
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+        }
+        .info-item .label { font-size: 0.7rem; color: #8e9eb5; }
+        .info-item .value { font-size: 1rem; font-weight: 600; color: #ffd700; }
+        .premium-badge {
+            background: linear-gradient(90deg, #ffd70020, #ffaa0020);
+            border-radius: 20px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            border: 1px solid #ffd70040;
+        }
+        .logout-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255,80,80,0.2);
+            border: 1px solid #ff5050;
+            border-radius: 40px;
+            color: #ff5050;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover { background: #ff5050; color: #fff; }
         
         .toast-notification {
             position: fixed;
@@ -262,7 +329,6 @@
             z-index: 10000;
             transform: translateX(400px);
             transition: transform 0.3s ease;
-            backdrop-filter: blur(4px);
         }
         .toast-notification.show { transform: translateX(0); }
         
@@ -270,29 +336,10 @@
             .content { padding: 5rem 1rem 2rem; }
             .navbar { padding: 0.8rem 1rem; }
             .menu { gap: 1rem; }
-            .auth-card { padding: 1.5rem; }
         }
         
         .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
         .fade-up.visible { opacity: 1; transform: translateY(0); }
-        
-        /* Password strength indicator */
-        .password-strength {
-            margin-top: 0.5rem;
-            font-size: 0.65rem;
-        }
-        .strength-bar {
-            height: 3px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
-            margin-top: 0.3rem;
-            overflow: hidden;
-        }
-        .strength-fill {
-            width: 0%;
-            height: 100%;
-            transition: width 0.3s, background 0.3s;
-        }
     </style>
 </head>
 <body>
@@ -307,12 +354,12 @@
             <div class="loading-percentage" id="loadingPercentage">0%</div>
         </div>
         <div class="loading-text">
-            Initializing HWID Security
+            Initializing KeyAuth Premium
             <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
         </div>
         <div class="loading-security">
-            <i class="fas fa-shield-alt"></i> HWID Lock Active
-            <i class="fas fa-fingerprint"></i> Device Verification
+            <i class="fas fa-shield-alt"></i> KeyAuth Premium Protected
+            <i class="fas fa-fingerprint"></i> HWID Lock Active
         </div>
     </div>
 
@@ -431,7 +478,7 @@
         });
         
         // ========== ULTRA SECURE ENCRYPTION ==========
-        const ENCRYPTION_KEY = 'PRRX_HWID_ULTRA_SECURE_2026';
+        const ENCRYPTION_KEY = 'PRRX_KEYAUTH_ULTRA_SECURE_2026';
         
         function encryptData(data) {
             let encrypted = '';
@@ -491,15 +538,15 @@
         
         const CURRENT_HWID = generateHWID();
         
-        // ========== USER DATABASE ==========
-        function initDatabase() {
-            let users = SecureStorage.get('users');
-            if (!users) {
-                users = {};
-                SecureStorage.set('users', users);
-            }
-            return users;
-        }
+        // ========== KEYAUTH CONFIGURATION ==========
+        const KEYAUTH_CONFIG = {
+            name: "PRRX EXTERNAL",
+            ownerid: "7P1GTjNd76",
+            version: "1.0",
+            apiUrl: "https://keyauth.win/api/1.2/"
+        };
+        
+        let currentUser = null;
         
         function showToast(message) {
             const toast = document.getElementById('toast');
@@ -508,268 +555,293 @@
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
         
-        // ========== PASSWORD STRENGTH ==========
-        function checkPasswordStrength(password) {
-            let strength = 0;
-            if (password.length >= 8) strength++;
-            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
-            if (password.match(/[0-9]/)) strength++;
-            if (password.match(/[^a-zA-Z0-9]/)) strength++;
-            return strength;
+        // ========== KEYAUTH USER LOGIN (Username + Password) ==========
+        async function keyAuthUserLogin(username, password) {
+            showToast("🔍 Verifying user credentials with KeyAuth...");
+            
+            try {
+                const response = await fetch(`${KEYAUTH_CONFIG.apiUrl}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: "login",
+                        user: username,
+                        pass: password,
+                        name: KEYAUTH_CONFIG.name,
+                        ownerid: KEYAUTH_CONFIG.ownerid,
+                        ver: KEYAUTH_CONFIG.version,
+                        hwid: CURRENT_HWID
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const userInfo = {
+                        type: "user",
+                        username: username,
+                        key: "N/A",
+                        expiry: data.info?.expiry || "Premium Account",
+                        hwid: CURRENT_HWID,
+                        verifiedAt: new Date().toISOString(),
+                        lastLogin: new Date().toISOString(),
+                        loginCount: 1
+                    };
+                    
+                    SecureStorage.set('keyauth_session', userInfo);
+                    currentUser = userInfo;
+                    showToast(`✅ Welcome ${username}! Premium access granted.`);
+                    renderPremiumDashboard(userInfo);
+                    return true;
+                } else {
+                    showToast(`❌ Login failed: ${data.message || "Invalid credentials"}`);
+                    return false;
+                }
+            } catch (error) {
+                console.error("KeyAuth Error:", error);
+                showToast("❌ Connection error. Please try again.");
+                return false;
+            }
         }
         
-        // ========== REGISTER ==========
-        function register(username, email, password) {
-            if (!username || !email || !password) {
-                showToast("❌ Please fill all fields");
+        // ========== KEYAUTH LICENSE LOGIN (License Key Only) ==========
+        async function keyAuthLicenseLogin(licenseKey) {
+            showToast("🔍 Verifying license with KeyAuth...");
+            
+            try {
+                const response = await fetch(`${KEYAUTH_CONFIG.apiUrl}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: "license",
+                        key: licenseKey,
+                        name: KEYAUTH_CONFIG.name,
+                        ownerid: KEYAUTH_CONFIG.ownerid,
+                        ver: KEYAUTH_CONFIG.version,
+                        hwid: CURRENT_HWID
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const userInfo = {
+                        type: "license",
+                        username: data.username || "License User",
+                        key: licenseKey,
+                        expiry: data.expiry || "Lifetime",
+                        hwid: CURRENT_HWID,
+                        verifiedAt: new Date().toISOString(),
+                        lastLogin: new Date().toISOString(),
+                        loginCount: 1
+                    };
+                    
+                    SecureStorage.set('keyauth_session', userInfo);
+                    currentUser = userInfo;
+                    showToast(`✅ License verified! Welcome ${userInfo.username}`);
+                    renderPremiumDashboard(userInfo);
+                    return true;
+                } else {
+                    showToast(`❌ Invalid license: ${data.message || "License not found"}`);
+                    return false;
+                }
+            } catch (error) {
+                console.error("KeyAuth Error:", error);
+                showToast("❌ Connection error. Please try again.");
                 return false;
             }
-            if (username.length < 3) {
-                showToast("❌ Username must be at least 3 characters");
-                return false;
-            }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showToast("❌ Invalid email format");
-                return false;
-            }
-            if (password.length < 8) {
-                showToast("❌ Password must be at least 8 characters");
-                return false;
-            }
-            
-            const users = SecureStorage.get('users');
-            if (users[username]) {
-                showToast("❌ Username already exists");
-                return false;
-            }
-            
-            users[username] = {
-                username: username,
-                email: email,
-                password: password,
-                hwid: CURRENT_HWID,
-                registeredAt: new Date().toISOString(),
-                lastLogin: null,
-                loginCount: 0
-            };
-            SecureStorage.set('users', users);
-            
-            showToast(`✅ Registration successful! HWID locked to this device.`);
-            showLoginForm();
-            return true;
-        }
-        
-        // ========== LOGIN ==========
-        function login(username, password) {
-            const users = SecureStorage.get('users');
-            
-            if (!users[username]) {
-                showToast("❌ Username not found");
-                return false;
-            }
-            
-            if (users[username].password !== password) {
-                showToast("❌ Incorrect password");
-                return false;
-            }
-            
-            if (users[username].hwid !== CURRENT_HWID) {
-                showToast("❌ HWID MISMATCH! This account is locked to another device.");
-                showToast("🔒 Contact support to reset HWID");
-                return false;
-            }
-            
-            users[username].lastLogin = new Date().toISOString();
-            users[username].loginCount = (users[username].loginCount || 0) + 1;
-            SecureStorage.set('users', users);
-            
-            const session = {
-                username: username,
-                email: users[username].email,
-                hwid: CURRENT_HWID,
-                loginTime: new Date().toISOString()
-            };
-            SecureStorage.set('session', session);
-            
-            showToast(`✅ Welcome back, ${username}! HWID verified.`);
-            renderUserDashboard(username);
-            return true;
-        }
-        
-        // ========== LOGOUT ==========
-        function logout() {
-            SecureStorage.remove('session');
-            showToast("🔒 Logged out successfully");
-            showLoginForm();
         }
         
         // ========== CHECK SESSION ==========
         function checkSession() {
-            const session = SecureStorage.get('session');
+            const session = SecureStorage.get('keyauth_session');
             if (session && session.hwid === CURRENT_HWID) {
-                renderUserDashboard(session.username);
+                currentUser = session;
+                renderPremiumDashboard(session);
                 return true;
             }
             return false;
         }
         
-        // ========== UI RENDERING ==========
-        function showLoginForm() {
+        // ========== LOGOUT ==========
+        function logout() {
+            SecureStorage.remove('keyauth_session');
+            currentUser = null;
+            showToast("🔒 Logged out successfully");
+            renderLoginPage();
+        }
+        
+        // ========== RENDER LOGIN PAGE WITH TWO TABS ==========
+        function renderLoginPage() {
             document.getElementById('appContainer').innerHTML = `
-                <div class="auth-card fade-up">
-                    <div class="tabs">
-                        <button class="tab-btn active" onclick="showLoginForm()">🔐 Login</button>
-                        <button class="tab-btn" onclick="showRegisterForm()">📝 Register</button>
+                <div class="premium-card fade-up">
+                    <div class="premium-header">
+                        <i class="fas fa-crown"></i>
+                        <h2>Premium KeyAuth Login</h2>
+                        <p>Choose your login method</p>
                     </div>
                     
                     <div class="hwid-box">
                         <i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 20)}...</span>
                     </div>
                     
-                    <form id="loginForm" onsubmit="event.preventDefault(); loginSubmit()">
+                    <div class="tabs">
+                        <button class="tab-btn active" id="userTabBtn"><i class="fas fa-user"></i> User Login</button>
+                        <button class="tab-btn" id="licenseTabBtn"><i class="fas fa-key"></i> License Login</button>
+                    </div>
+                    
+                    <div id="userLoginForm">
                         <div class="input-group">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="loginUsername" placeholder="Username" required autocomplete="off">
+                            <input type="text" id="username" placeholder="Username" autocomplete="off">
                         </div>
                         <div class="input-group">
                             <i class="fas fa-lock"></i>
-                            <input type="password" id="loginPassword" placeholder="Password" required autocomplete="off">
+                            <input type="password" id="password" placeholder="Password" autocomplete="off">
                         </div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-sign-in-alt"></i> Secure Login</button>
-                    </form>
+                        <button class="submit-btn" id="userLoginBtn"><i class="fas fa-sign-in-alt"></i> Login with User Account</button>
+                    </div>
+                    
+                    <div id="licenseLoginForm" style="display: none;">
+                        <div class="input-group">
+                            <i class="fas fa-key"></i>
+                            <input type="text" id="licenseKey" placeholder="XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off">
+                        </div>
+                        <button class="submit-btn" id="licenseLoginBtn"><i class="fas fa-check-circle"></i> Login with License Key</button>
+                    </div>
                     
                     <div class="back-link">
                         <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard Selection</a>
                     </div>
                     
                     <div style="margin-top: 1rem; text-align: center; font-size: 0.65rem; color: #8e9eb5;">
-                        <i class="fas fa-fingerprint"></i> HWID Locked Account | Device verification required
+                        <i class="fas fa-shield-alt"></i> KeyAuth Premium Protected | HWID Locked
                     </div>
                 </div>
             `;
+            
+            // Tab switching
+            const userTab = document.getElementById('userTabBtn');
+            const licenseTab = document.getElementById('licenseTabBtn');
+            const userForm = document.getElementById('userLoginForm');
+            const licenseForm = document.getElementById('licenseLoginForm');
+            
+            userTab.addEventListener('click', () => {
+                userTab.classList.add('active');
+                licenseTab.classList.remove('active');
+                userForm.style.display = 'block';
+                licenseForm.style.display = 'none';
+            });
+            
+            licenseTab.addEventListener('click', () => {
+                licenseTab.classList.add('active');
+                userTab.classList.remove('active');
+                userForm.style.display = 'none';
+                licenseForm.style.display = 'block';
+            });
+            
+            // User Login
+            document.getElementById('userLoginBtn').addEventListener('click', () => {
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                if (!username || !password) {
+                    showToast("❌ Please enter username and password");
+                    return;
+                }
+                keyAuthUserLogin(username, password);
+            });
+            
+            // License Login
+            document.getElementById('licenseLoginBtn').addEventListener('click', () => {
+                const licenseKey = document.getElementById('licenseKey').value.trim();
+                if (!licenseKey) {
+                    showToast("❌ Please enter your license key");
+                    return;
+                }
+                keyAuthLicenseLogin(licenseKey);
+            });
+            
+            // Enter key press
+            document.getElementById('username')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('userLoginBtn').click(); });
+            document.getElementById('password')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('userLoginBtn').click(); });
+            document.getElementById('licenseKey')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('licenseLoginBtn').click(); });
         }
         
-        function loginSubmit() {
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            login(username, password);
-        }
-        
-        function showRegisterForm() {
+        // ========== PREMIUM DASHBOARD ==========
+        function renderPremiumDashboard(userInfo) {
+            const verifiedDate = new Date(userInfo.verifiedAt).toLocaleDateString();
+            const lastLogin = userInfo.lastLogin ? new Date(userInfo.lastLogin).toLocaleString() : 'First login';
+            const loginType = userInfo.type === 'user' ? 'User Account' : 'License Key';
+            const loginIcon = userInfo.type === 'user' ? 'fa-user' : 'fa-key';
+            
             document.getElementById('appContainer').innerHTML = `
-                <div class="auth-card fade-up">
-                    <div class="tabs">
-                        <button class="tab-btn" onclick="showLoginForm()">🔐 Login</button>
-                        <button class="tab-btn active" onclick="showRegisterForm()">📝 Register</button>
+                <div class="dashboard-card fade-up">
+                    <div class="user-avatar">
+                        <i class="fas ${loginIcon}"></i>
+                    </div>
+                    <h2>${userInfo.username}</h2>
+                    <p><i class="fas fa-crown" style="color: #ffd700;"></i> Premium Member</p>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="label">Login Method</div>
+                            <div class="value">${loginType}</div>
+                        </div>
+                        ${userInfo.type === 'license' ? `
+                        <div class="info-item">
+                            <div class="label">License Key</div>
+                            <div class="value" style="font-size: 0.7rem;">${userInfo.key.substring(0, 16)}...</div>
+                        </div>
+                        ` : ''}
+                        <div class="info-item">
+                            <div class="label">Expiry</div>
+                            <div class="value" style="color: #4caf50;">${userInfo.expiry}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Verified On</div>
+                            <div class="value">${verifiedDate}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Last Login</div>
+                            <div class="value">${lastLogin}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">HWID Status</div>
+                            <div class="value" style="color: #4caf50;">Locked ✓</div>
+                        </div>
+                    </div>
+                    
+                    <div class="premium-badge">
+                        <i class="fas fa-gem"></i> PRRX Premium Active
+                        <div style="font-size: 0.7rem; margin-top: 0.3rem;">✨ All features unlocked | Priority Support | Lifetime Updates</div>
                     </div>
                     
                     <div class="hwid-box">
-                        <i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 20)}...</span>
-                        <br><small style="color:#4caf50;">⚠️ This HWID will be permanently locked to your account</small>
+                        <i class="fas fa-fingerprint"></i> HWID Locked: ${CURRENT_HWID.substring(0, 20)}...
+                        <br><small>This premium account is locked to this device</small>
                     </div>
                     
-                    <form id="registerForm" onsubmit="event.preventDefault(); registerSubmit()">
-                        <div class="input-group">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="regUsername" placeholder="Username (min 3 chars)" required autocomplete="off">
+                    <div style="background: linear-gradient(90deg, #ffd70020, #ffaa0020); border-radius: 16px; padding: 0.8rem; margin: 1rem 0;">
+                        <i class="fas fa-check-circle" style="color: #ffd700;"></i> Premium Features Unlocked:
+                        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                            <span style="background: rgba(255,215,0,0.2); padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem;">AIMBOT Pro</span>
+                            <span style="background: rgba(255,215,0,0.2); padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem;">ESP Ultimate</span>
+                            <span style="background: rgba(255,215,0,0.2); padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem;">Anti-Cheat Elite</span>
+                            <span style="background: rgba(255,215,0,0.2); padding: 0.2rem 0.5rem; border-radius: 20px; font-size: 0.65rem;">24/7 Priority Support</span>
                         </div>
-                        <div class="input-group">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="regEmail" placeholder="Email Address" required autocomplete="off">
-                        </div>
-                        <div class="input-group">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="regPassword" placeholder="Password (min 8 chars)" required autocomplete="off" onkeyup="updateStrength()">
-                        </div>
-                        <div class="password-strength" id="strengthIndicator">
-                            <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
-                        </div>
-                        <div class="input-group">
-                            <i class="fas fa-check-circle"></i>
-                            <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required autocomplete="off">
-                        </div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-user-shield"></i> Register & Lock HWID</button>
-                    </form>
+                    </div>
                     
-                    <div class="back-link">
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                    
+                    <div class="back-link" style="margin-top: 1rem;">
                         <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard Selection</a>
                     </div>
-                    
-                    <div style="margin-top: 1rem; text-align: center; font-size: 0.65rem; color: #ffaa00;">
-                        <i class="fas fa-exclamation-triangle"></i> This account will be locked to this device permanently
-                    </div>
                 </div>
             `;
-        }
-        
-        function updateStrength() {
-            const password = document.getElementById('regPassword')?.value || '';
-            const strength = checkPasswordStrength(password);
-            const fill = document.getElementById('strengthFill');
-            if (!fill) return;
-            const colors = ['#ff4444', '#ffaa44', '#ffff44', '#44ff44'];
-            const widths = ['25%', '50%', '75%', '100%'];
-            if (strength > 0) {
-                fill.style.width = widths[strength - 1];
-                fill.style.background = colors[strength - 1];
-            } else {
-                fill.style.width = '0%';
-            }
-        }
-        
-        async function registerSubmit() {
-            const username = document.getElementById('regUsername').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value;
-            const confirm = document.getElementById('regConfirmPassword').value;
             
-            if (password !== confirm) {
-                showToast("❌ Passwords do not match");
-                return;
-            }
-            register(username, email, password);
-        }
-        
-        function renderUserDashboard(username) {
-            const users = SecureStorage.get('users');
-            const userData = users[username];
-            const registeredDate = new Date(userData.registeredAt).toLocaleDateString();
-            const lastLogin = userData.lastLogin ? new Date(userData.lastLogin).toLocaleString() : 'First login';
-            
-            document.getElementById('appContainer').innerHTML = `
-                <div class="auth-card fade-up">
-                    <div style="text-align: center;">
-                        <div style="width:80px;height:80px;background:linear-gradient(135deg,#00e0ff,#a020f0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:2rem;">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <h2>${username}</h2>
-                        <p><i class="fas fa-envelope"></i> ${userData.email}</p>
-                        
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;padding:1rem;background:rgba(0,0,0,0.3);border-radius:20px;">
-                            <div><div class="label" style="font-size:0.7rem;color:#8e9eb5;">Account Created</div><div class="value" style="font-size:1rem;font-weight:600;color:#00e0ff;">${registeredDate}</div></div>
-                            <div><div class="label" style="font-size:0.7rem;color:#8e9eb5;">Last Login</div><div class="value" style="font-size:1rem;font-weight:600;color:#00e0ff;">${lastLogin}</div></div>
-                            <div><div class="label" style="font-size:0.7rem;color:#8e9eb5;">Login Count</div><div class="value" style="font-size:1rem;font-weight:600;color:#00e0ff;">${userData.loginCount}</div></div>
-                            <div><div class="label" style="font-size:0.7rem;color:#8e9eb5;">HWID Status</div><div class="value" style="font-size:1rem;font-weight:600;color:#4caf50;">Locked ✓</div></div>
-                        </div>
-                        
-                        <div class="hwid-box">
-                            <i class="fas fa-fingerprint"></i> Device HWID: ${CURRENT_HWID.substring(0, 20)}...
-                            <br><small>This account is locked to this device</small>
-                        </div>
-                        
-                        <div style="background:rgba(0,224,255,0.1);border-radius:16px;padding:0.8rem;margin:1rem 0;">
-                            <i class="fas fa-gem"></i> PRRX Premium Access
-                            <div style="font-size:0.7rem;">HWID Lock Active | Secure Session</div>
-                        </div>
-                        
-                        <button class="submit-btn" onclick="logout()" style="background:rgba(255,80,80,0.2);border:1px solid #ff5050;color:#ff5050;"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                        
-                        <div class="back-link" style="margin-top:1rem;">
-                            <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard Selection</a>
-                        </div>
-                    </div>
-                </div>
-            `;
+            document.getElementById('logoutBtn').addEventListener('click', logout);
         }
         
         // ========== ANTI-DEBUGGING ==========
@@ -806,33 +878,24 @@
                     cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
                     co.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
                 });
-                document.querySelectorAll('a, button, .auth-card').forEach(el => {
+                document.querySelectorAll('a, button, .premium-card, .dashboard-card').forEach(el => {
                     el.addEventListener('mouseenter', () => { co.style.width = '48px'; co.style.height = '48px'; co.style.borderColor = '#a020f0'; });
                     el.addEventListener('mouseleave', () => { co.style.width = '32px'; co.style.height = '32px'; co.style.borderColor = 'rgba(0,224,255,0.6)'; });
                 });
             }
         }
         
-        // Make functions global
-        window.showLoginForm = showLoginForm;
-        window.showRegisterForm = showRegisterForm;
-        window.loginSubmit = loginSubmit;
-        window.registerSubmit = registerSubmit;
-        window.logout = logout;
-        window.updateStrength = updateStrength;
-        
-        // Initialize
-        initDatabase();
-        if (!checkSession()) { showLoginForm(); }
-        
         // Scroll animations
         const fadeElements = document.querySelectorAll('.fade-up');
         const observer = new IntersectionObserver((e) => { e.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
         fadeElements.forEach(el => observer.observe(el));
         
-        console.log("%c🔐 PRRX ULTRA SECURE LOGIN ACTIVE", "color: #00e0ff; font-size: 14px; font-weight: bold;");
+        // Initialize
+        if (!checkSession()) { renderLoginPage(); }
+        
+        console.log("%c👑 PRRX KEYAUTH PREMIUM ACTIVE", "color: #ffd700; font-size: 14px; font-weight: bold;");
         console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0; font-size: 11px;");
-        console.log("%c⚠️ HWID Lock Active | DevTools Blocked | E2E Encrypted", "color: #ffaa00; font-size: 11px;");
+        console.log(`%cKeyAuth: ${KEYAUTH_CONFIG.name} | User Login & License Login Available`, "color: #00e0ff; font-size: 11px;");
     </script>
 </body>
 </html>
