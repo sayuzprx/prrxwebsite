@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX | Premium KeyAuth Login</title>
+    <title>PRRX | Premium KeyAuth Login - HWID Locked</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
@@ -185,6 +186,19 @@
             margin-top: 0.3rem;
         }
         
+        /* HWID Box */
+        .hwid-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            font-size: 0.7rem;
+            font-family: monospace;
+            border: 1px solid #00e0ff30;
+            text-align: center;
+        }
+        .hwid-box i { color: #00e0ff; margin-right: 0.5rem; }
+        
         /* Tabs */
         .tabs {
             display: flex;
@@ -210,18 +224,6 @@
             color: #00e0ff;
             border: 1px solid #00e0ff;
         }
-        
-        .hwid-box {
-            background: rgba(0,0,0,0.4);
-            border-radius: 16px;
-            padding: 0.8rem;
-            margin: 1rem 0;
-            font-size: 0.7rem;
-            font-family: monospace;
-            border: 1px solid #00e0ff30;
-            text-align: center;
-        }
-        .hwid-box i { color: #00e0ff; margin-right: 0.5rem; }
         
         .input-group {
             display: flex;
@@ -304,6 +306,14 @@
             margin: 1rem 0;
             border: 1px solid #ffd70040;
         }
+        .hwid-locked {
+            background: rgba(0,224,255,0.1);
+            border-radius: 16px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            font-size: 0.7rem;
+            font-family: monospace;
+        }
         .logout-btn {
             width: 100%;
             padding: 0.8rem;
@@ -354,7 +364,7 @@
             <div class="loading-percentage" id="loadingPercentage">0%</div>
         </div>
         <div class="loading-text">
-            Initializing KeyAuth Premium
+            Initializing KeyAuth Premium Security
             <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
         </div>
         <div class="loading-security">
@@ -683,6 +693,7 @@
                     
                     <div class="hwid-box">
                         <i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 20)}...</span>
+                        <br><small style="color:#ffaa00;">⚠️ Your premium account will be locked to this HWID</small>
                     </div>
                     
                     <div class="tabs">
@@ -693,11 +704,11 @@
                     <div id="userLoginForm">
                         <div class="input-group">
                             <i class="fas fa-user"></i>
-                            <input type="text" id="username" placeholder="Username" autocomplete="off">
+                            <input type="text" id="username" placeholder="KeyAuth Username" autocomplete="off">
                         </div>
                         <div class="input-group">
                             <i class="fas fa-lock"></i>
-                            <input type="password" id="password" placeholder="Password" autocomplete="off">
+                            <input type="password" id="password" placeholder="KeyAuth Password" autocomplete="off">
                         </div>
                         <button class="submit-btn" id="userLoginBtn"><i class="fas fa-sign-in-alt"></i> Login with User Account</button>
                     </div>
@@ -715,7 +726,7 @@
                     </div>
                     
                     <div style="margin-top: 1rem; text-align: center; font-size: 0.65rem; color: #8e9eb5;">
-                        <i class="fas fa-shield-alt"></i> KeyAuth Premium Protected | HWID Locked
+                        <i class="fas fa-shield-alt"></i> KeyAuth Premium Protected | HWID Locked | E2E Encrypted
                     </div>
                 </div>
             `;
@@ -816,7 +827,7 @@
                         <div style="font-size: 0.7rem; margin-top: 0.3rem;">✨ All features unlocked | Priority Support | Lifetime Updates</div>
                     </div>
                     
-                    <div class="hwid-box">
+                    <div class="hwid-locked">
                         <i class="fas fa-fingerprint"></i> HWID Locked: ${CURRENT_HWID.substring(0, 20)}...
                         <br><small>This premium account is locked to this device</small>
                     </div>
@@ -896,6 +907,7 @@
         console.log("%c👑 PRRX KEYAUTH PREMIUM ACTIVE", "color: #ffd700; font-size: 14px; font-weight: bold;");
         console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0; font-size: 11px;");
         console.log(`%cKeyAuth: ${KEYAUTH_CONFIG.name} | User Login & License Login Available`, "color: #00e0ff; font-size: 11px;");
+        console.log("%c⚠️ HWID Lock Active | Premium Account Locked to This Device", "color: #ffaa00; font-size: 11px;");
     </script>
 </body>
 </html>
