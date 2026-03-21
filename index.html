@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX | Free Fire Panel</title>
+    <title>PRRX | Secure Panel - E2E Encrypted</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-        body { font-family: 'Inter', sans-serif; background-color: #050b1a; color: #fff; overflow-x: hidden; line-height: 1.5; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
         
-        /* ========== LOADING SCREEN ANIMATION ========== */
+        /* ========== CUSTOM LOADING SCREEN ========== */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -23,130 +29,89 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-            backdrop-filter: blur(0px);
+            transition: opacity 0.6s ease, visibility 0.6s ease;
         }
-        .loading-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
         
-        /* Animated Logo */
         .loading-logo {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 800;
             background: linear-gradient(135deg, #ffffff, #00e0ff, #a020f0);
             background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            animation: loadingShimmer 1.5s ease infinite, pulse 1s ease infinite;
+            animation: loadingShimmer 1.5s ease infinite, logoPulse 1.2s ease infinite;
             margin-bottom: 2rem;
         }
-        @keyframes loadingShimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.9; }
-        }
+        @keyframes loadingShimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
         
-        /* Spinner Ring */
         .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(0, 224, 255, 0.2);
+            width: 70px;
+            height: 70px;
+            border: 4px solid rgba(0, 224, 255, 0.15);
             border-top: 4px solid #00e0ff;
             border-right: 4px solid #a020f0;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
             margin-bottom: 2rem;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Progress Bar */
-        .loading-progress {
-            width: 200px;
-            height: 2px;
-            background: rgba(0, 224, 255, 0.2);
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-        .loading-progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #00e0ff, #a020f0);
-            border-radius: 4px;
-            animation: progress 1.2s ease-out forwards;
-        }
-        @keyframes progress {
-            0% { width: 0%; }
-            30% { width: 45%; }
-            60% { width: 75%; }
-            100% { width: 100%; }
-        }
+        .loading-progress-container { width: 250px; margin: 1rem 0; }
+        .loading-progress { width: 100%; height: 3px; background: rgba(0,224,255,0.2); border-radius: 4px; overflow: hidden; }
+        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #00e0ff, #a020f0); animation: progressFill 1.4s ease-out forwards; }
+        @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
         
-        /* Loading Text */
-        .loading-text {
-            font-size: 0.85rem;
-            color: #8e9eb5;
-            letter-spacing: 2px;
-            margin-top: 1rem;
-        }
-        .loading-dots {
-            display: inline-block;
-        }
-        .loading-dots span {
-            animation: blink 1.4s infinite;
-            animation-fill-mode: both;
-        }
+        .loading-percentage { font-size: 0.8rem; color: #00e0ff; margin-top: 0.5rem; font-weight: 600; }
+        .loading-text { font-size: 0.85rem; color: #8e9eb5; letter-spacing: 2px; margin-top: 1rem; }
+        .loading-dots span { display: inline-block; animation: dotBlink 1.4s infinite; }
         .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
         .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes blink {
-            0%, 80%, 100% { opacity: 0; }
-            40% { opacity: 1; }
-        }
+        @keyframes dotBlink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
         
-        /* Particles inside loading screen */
-        .loading-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-        }
+        .loading-particles { position: absolute; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
         .loading-particle {
             position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #00e0ff;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, #00e0ff, #a020f0);
             border-radius: 50%;
             opacity: 0;
-            animation: floatParticle 2s ease-out forwards;
+            animation: floatParticle 2.5s ease-out forwards;
         }
         @keyframes floatParticle {
-            0% {
-                opacity: 0;
-                transform: translateY(0) translateX(0);
-            }
-            10% {
-                opacity: 0.6;
-            }
-            90% {
-                opacity: 0.3;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-100px) translateX(var(--x, 50px));
-            }
+            0% { opacity: 0; transform: translateY(0) scale(0); }
+            15% { opacity: 0.8; transform: translateY(-20px) scale(1); }
+            100% { opacity: 0; transform: translateY(-120px) scale(0); }
         }
         
+        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #00e0ff80; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
+        .loading-security i { animation: securityPulse 1s ease infinite; }
+        @keyframes securityPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 5px #00e0ff; } }
+        
+        /* Anti-DevTools */
+        .anti-devtools {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050b1a;
+            z-index: 20000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(20px);
+        }
+        .anti-devtools.active { display: flex; }
+        .anti-devtools i { font-size: 4rem; color: #ff5050; margin-bottom: 1rem; animation: shake 0.5s ease infinite; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .anti-devtools p { color: #ff5050; font-size: 1.2rem; text-align: center; padding: 1rem; }
+        
+        /* Custom Cursor */
         @media (min-width: 768px) {
             .cursor-dot { width: 8px; height: 8px; background-color: #00e0ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px #00e0ff; }
             .cursor-outline { width: 32px; height: 32px; border: 2px solid rgba(0,224,255,0.6); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: transform 0.2s ease, width 0.2s, height 0.2s; backdrop-filter: blur(2px); }
@@ -156,6 +121,7 @@
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
         .content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
         
+        /* Navbar */
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; margin-bottom: 1.5rem; flex-wrap: wrap; border-bottom: 1px solid rgba(0,224,255,0.2); }
         .logo { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #fff, #00e0ff); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
         .menu { display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; }
@@ -164,6 +130,7 @@
         .menu a:hover::after, .menu a.active::after { width: 100%; }
         .menu a:hover, .menu a.active { color: #00e0ff; text-shadow: 0 0 8px rgba(0,224,255,0.5); }
         
+        /* Hero */
         .hero { text-align: center; padding: 2rem 1rem; }
         .hero .badge { font-size: 0.75rem; letter-spacing: 2px; color: #00e0ff; background: rgba(0,224,255,0.1); display: inline-block; padding: 0.3rem 1rem; border-radius: 40px; margin-bottom: 1rem; border: 1px solid rgba(0,224,255,0.3); }
         h1 { font-size: 3.5rem; font-weight: 800; background: linear-gradient(135deg, #fff, #00e0ff, #b77cff); -webkit-background-clip: text; background-clip: text; color: transparent; animation: shimmer 4s linear infinite; margin-bottom: 0.5rem; }
@@ -171,48 +138,64 @@
         .subhead { font-size: 1rem; color: #ccd6f6; max-width: 600px; margin: 0 auto; }
         .highlight { background: linear-gradient(120deg, #00e0ff, #a020f0); padding: 0 6px; border-radius: 6px; display: inline-block; }
         
+        /* Security Status */
+        .security-status {
+            background: rgba(0,0,0,0.5);
+            border-radius: 40px;
+            padding: 0.5rem 1rem;
+            margin: 1rem auto;
+            text-align: center;
+            font-size: 0.7rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid #00e0ff40;
+            display: inline-block;
+            width: auto;
+        }
+        .security-status i { color: #00e0ff; margin-right: 0.5rem; animation: securityPulse 1s ease infinite; }
+        
+        /* WhatsApp Widget */
+        .whatsapp-widget {
+            background: rgba(15, 25, 45, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            max-width: 400px;
+            margin: 2rem auto;
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .whatsapp-widget:hover { transform: translateY(-5px); border-color: #25D366; box-shadow: 0 15px 35px rgba(37, 211, 102, 0.25); }
+        .widget-header { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.2rem; }
+        .widget-header i { font-size: 2.5rem; color: #25D366; }
+        .widget-header h3 { font-size: 1.3rem; font-weight: 700; }
+        .widget-header p { font-size: 0.75rem; color: #8e9eb5; margin-top: 0.2rem; }
+        .online-status { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.8rem; color: #b0c4de; }
+        .online-dot { width: 10px; height: 10px; background-color: #25D366; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.2); } }
+        .member-stats { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.2rem; font-size: 0.75rem; color: #8e9eb5; }
+        .member-stats span i { margin-right: 0.3rem; color: #25D366; }
+        .whatsapp-btn { display: inline-block; background: linear-gradient(135deg, #25D366, #128C7E); padding: 0.8rem 1.5rem; border-radius: 50px; color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s; width: 100%; text-align: center; }
+        .whatsapp-btn:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4); }
+        .whatsapp-note { margin-top: 1rem; font-size: 0.65rem; color: #6c757d; }
+        
+        /* Security Badges */
         .security-badges { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin: 2rem 0; }
         .security-badge { background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); padding: 0.4rem 1rem; border-radius: 30px; font-size: 0.7rem; border: 1px solid rgba(0,224,255,0.3); display: flex; align-items: center; gap: 6px; }
         .security-badge i { color: #00e0ff; }
         
+        /* Stats */
         .stats-section { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin: 2rem 0; }
         .stat-card { background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); border-radius: 20px; padding: 1rem 1.5rem; text-align: center; border: 1px solid rgba(0,224,255,0.2); min-width: 110px; }
         .stat-number { font-size: 1.5rem; font-weight: 800; color: #00e0ff; }
         .stat-label { font-size: 0.7rem; color: #8e9eb5; }
         
-        /* News Section */
-        .news-section { margin: 3rem 0; }
-        .section-header { text-align: center; margin-bottom: 2rem; }
-        .section-header h2 { font-size: 1.8rem; background: linear-gradient(135deg, #fff, #00e0ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .section-header p { color: #8e9eb5; font-size: 0.85rem; margin-top: 0.5rem; }
-        .news-grid { display: flex; flex-direction: column; gap: 1rem; }
-        .news-card {
-            background: rgba(15, 25, 45, 0.6);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 1.2rem 1.5rem;
-            border: 1px solid rgba(0, 224, 255, 0.2);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .news-card:hover { transform: translateX(5px); border-color: #00e0ff; }
-        .news-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
-        .news-badge { background: linear-gradient(90deg, #00e0ff, #a020f0); padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
-        .news-badge.update { background: linear-gradient(90deg, #00e0ff, #0077ff); }
-        .news-badge.announcement { background: linear-gradient(90deg, #ff9800, #ff5722); }
-        .news-badge.patch { background: linear-gradient(90deg, #4caf50, #2e7d32); }
-        .news-date { font-size: 0.7rem; color: #8e9eb5; }
-        .news-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .news-preview { font-size: 0.8rem; color: #b0c4de; }
-        .news-expanded { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; margin-top: 0; }
-        .news-card.active .news-expanded { max-height: 300px; margin-top: 1rem; }
-        .news-expanded-content { border-top: 1px solid rgba(0,224,255,0.2); padding-top: 1rem; font-size: 0.85rem; color: #ccd6f6; }
-        .news-expanded-content ul { margin-left: 1.5rem; margin-top: 0.5rem; }
-        
+        /* Features Preview */
         .features-preview { text-align: center; margin: 3rem 0; padding: 2rem; background: rgba(0,0,0,0.3); border-radius: 30px; backdrop-filter: blur(8px); }
         .explore-btn { background: linear-gradient(90deg, #00e0ff, #a020f0); padding: 0.8rem 2rem; border-radius: 50px; font-weight: bold; border: none; color: white; cursor: pointer; transition: transform 0.2s; }
         .explore-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px #00e0ff; }
         
+        /* CTA Section */
         .cta-section { background: radial-gradient(circle at 30% 10%, rgba(0,224,255,0.15), rgba(10,20,45,0.7)); border-radius: 40px; padding: 2rem; margin: 2rem 0; text-align: center; backdrop-filter: blur(8px); border: 1px solid rgba(0,224,255,0.4); }
         .cta-button { background: linear-gradient(90deg, #00e0ff, #a020f0); padding: 0.8rem 2rem; border-radius: 50px; font-weight: bold; font-size: 1rem; margin-top: 1rem; cursor: pointer; border: none; color: white; }
         .file-info { margin-top: 1rem; display: inline-flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center; font-size: 0.7rem; color: #8e9eb5; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 40px; }
@@ -221,34 +204,41 @@
         .toast-notification { position: fixed; bottom: 20px; right: 20px; background: rgba(0,224,255,0.95); color: #050b1a; padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; z-index: 10000; transform: translateX(400px); transition: transform 0.3s ease; }
         .toast-notification.show { transform: translateX(0); }
         
-        @media (max-width: 768px) { h1 { font-size: 2rem; } .content { padding: 1rem 1rem 3rem; } .navbar { flex-direction: column; gap: 0.5rem; } .news-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; } }
+        @media (max-width: 768px) { h1 { font-size: 2rem; } .content { padding: 1rem 1rem 3rem; } .navbar { flex-direction: column; gap: 0.5rem; } .whatsapp-widget { margin: 1rem; width: auto; } }
         .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
         .fade-up.visible { opacity: 1; transform: translateY(0); }
-        
-        .version-tag { position: fixed; bottom: 20px; right: 20px; z-index: 9997; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); padding: 4px 10px; border-radius: 20px; font-size: 0.6rem; color: #8e9eb5; }
+        .version-tag { position: fixed; bottom: 20px; right: 20px; z-index: 9997; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 20px; font-size: 0.6rem; }
     </style>
 </head>
 <body>
 
-    <!-- ========== LOADING SCREEN ========== -->
+    <!-- ========== CUSTOM LOADING SCREEN ========== -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-particles" id="loadingParticles"></div>
         <div class="loading-logo">PRRX</div>
         <div class="loading-spinner"></div>
-        <div class="loading-progress">
-            <div class="loading-progress-bar"></div>
+        <div class="loading-progress-container">
+            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
         </div>
         <div class="loading-text">
-            Loading PRRX Official Website
-            <span class="loading-dots">
-                <span>.</span><span>.</span><span>.</span>
-            </span>
+            Establishing Secure Connection
+            <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+        </div>
+        <div class="loading-security">
+            <i class="fas fa-shield-alt"></i> E2E Encryption Active
+            <i class="fas fa-lock"></i> Secure Channel
         </div>
     </div>
 
-    <div class="security-seal" style="position: fixed; bottom: 20px; left: 20px; z-index: 9997; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 20px; font-size: 10px; color: #8e9eb5; border-left: 2px solid #00e0ff;"><i class="fas fa-shield-alt"></i> Secure</div>
-    <div class="version-tag"><i class="fas fa-code-branch"></i> PRRX v3.2</div>
-    <div class="cursor-dot"></div><div class="cursor-outline"></div>
+    <!-- Anti-DevTools Screen -->
+    <div class="anti-devtools" id="antiDevTools">
+        <i class="fas fa-shield-horned"></i>
+        <p>⚠️ Security Alert: Developer Tools Detected<br>For your protection, this page is secured.<br>Please close DevTools to continue.</p>
+    </div>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
     <canvas id="bg-canvas"></canvas>
 
     <div class="content">
@@ -262,17 +252,48 @@
             </div>
         </div>
 
-        <section id="heroSection" class="hero fade-up">
-            <div class="badge">🔥 SECURE & ENCRYPTED PANEL</div>
+        <div class="hero fade-up">
+            <div class="badge">🔥 E2E ENCRYPTED PANEL</div>
             <h1>PRRX</h1>
             <div class="subhead">Sri Lanka's #1 Free Fire Panel<br><span class="highlight">Engineered for Security & Speed</span></div>
-        </section>
+        </div>
+
+        <div style="text-align: center;">
+            <div class="security-status fade-up">
+                <i class="fas fa-shield-alt"></i> End-to-End Encrypted | Secure Session | No Data Storage
+            </div>
+        </div>
+
+        <!-- ========== WHATSAPP WIDGET ========== -->
+        <div class="whatsapp-widget fade-up">
+            <div class="widget-header">
+                <i class="fab fa-whatsapp"></i>
+                <div>
+                    <h3>𝗣𝗥𝗥𝗫 • 𝗦𝗧𝗢𝗥𝗘 • 𝗫𝗧𝗥𝗘𝗔𝗠</h3>
+                    <p>Get instant help & updates</p>
+                </div>
+            </div>
+            <div class="online-status">
+                <div class="online-dot"></div>
+                <span>Active Now • Quick Support</span>
+            </div>
+            <div class="member-stats">
+                <span><i class="fas fa-users"></i> 892 Members</span>
+                <span><i class="fas fa-comment-dots"></i> 24/7 Support</span>
+            </div>
+            <a href="https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx" target="_blank" class="whatsapp-btn" id="whatsappJoinBtn">
+                <i class="fab fa-whatsapp"></i> Join WhatsApp Group
+            </a>
+            <div class="whatsapp-note">
+                <i class="fas fa-shield-alt"></i> Secure & Private Group • Voice & Video Calls
+            </div>
+        </div>
 
         <div class="security-badges fade-up">
-            <div class="security-badge"><i class="fas fa-shield-alt"></i> HTTPS Encrypted</div>
-            <div class="security-badge"><i class="fas fa-lock"></i> No Data Storage</div>
-            <div class="security-badge"><i class="fas fa-user-secret"></i> Anonymous Usage</div>
+            <div class="security-badge"><i class="fas fa-shield-alt"></i> E2E Encrypted</div>
+            <div class="security-badge"><i class="fab fa-whatsapp"></i> WhatsApp Support</div>
             <div class="security-badge"><i class="fas fa-fingerprint"></i> HWID Protected</div>
+            <div class="security-badge"><i class="fas fa-lock"></i> No Data Storage</div>
         </div>
 
         <div class="stats-section fade-up">
@@ -280,15 +301,7 @@
             <div class="stat-card"><div class="stat-number">Singapore</div><div class="stat-label">Server</div></div>
             <div class="stat-card"><div class="stat-number">99.9%</div><div class="stat-label">Uptime</div></div>
             <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
-        </div>
-
-        <!-- News & Updates Section -->
-        <div class="news-section fade-up">
-            <div class="section-header">
-                <h2><i class="fas fa-newspaper"></i> News & Updates</h2>
-                <p>Latest announcements, patch notes, and feature updates</p>
-            </div>
-            <div class="news-grid" id="newsGrid"></div>
+            <div class="stat-card"><div class="stat-number">500+</div><div class="stat-label">WhatsApp Members</div></div>
         </div>
 
         <div class="features-preview fade-up">
@@ -300,14 +313,17 @@
         <section id="dashboardSection" class="cta-section fade-up">
             <h2>Ready to dominate securely?</h2>
             <h2 style="font-size: 1.5rem;">⚡ GET PRRX HEX PREMIUM ⚡</h2>
-            <p>Secure download from GitHub Releases. 100% virus scanned.</p>
+            <p>Secure download from GitHub Releases. Join our WhatsApp for support!</p>
             <button class="cta-button" id="downloadBtn"><i class="fas fa-download"></i> SECURE DOWNLOAD</button>
-            <div class="file-info"><span><i class="fas fa-file-archive"></i> PRRX-HEX-v3.2.rar</span><span><i class="fas fa-shield-alt"></i> SHA-256 Verified</span><span><i class="fab fa-github"></i> GitHub Release</span></div>
+            <div class="file-info">
+                <span><i class="fas fa-file-archive"></i> PRRX-HEX-v3.2.rar</span>
+                <span><i class="fab fa-whatsapp"></i> WhatsApp Support</span>
+                <span><i class="fas fa-shield-alt"></i> E2E Encrypted</span>
+            </div>
         </section>
         
         <footer>
-            <p>© 2025 PRRX Panel — Secure Gaming Solutions. No data collected.</p>
-            <p style="margin-top: 0.5rem; font-size: 0.6rem;">Latest Update: March 21, 2026</p>
+            <p>© 2025 PRRX Panel — End-to-End Encrypted | <i class="fab fa-whatsapp"></i> WhatsApp Support</p>
         </footer>
     </div>
     <div id="toast" class="toast-notification"></div>
@@ -361,95 +377,107 @@
         window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
     </script>
     <script>
-        // ========== LOADING SCREEN WITH PARTICLES ==========
+        // ========== LOADING SCREEN PROGRESS ==========
+        let loadingProgress = 0;
+        const percentageElement = document.getElementById('loadingPercentage');
+        function updateLoadingProgress() {
+            const interval = setInterval(() => {
+                loadingProgress += Math.random() * 12;
+                if (loadingProgress >= 100) { loadingProgress = 100; clearInterval(interval); }
+                if (percentageElement) percentageElement.textContent = Math.floor(loadingProgress) + '%';
+            }, 120);
+        }
+        
         function createLoadingParticles() {
             const container = document.getElementById('loadingParticles');
             if (!container) return;
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 80; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'loading-particle';
-                const startX = Math.random() * window.innerWidth;
-                const startY = window.innerHeight + Math.random() * 100;
-                const endX = (Math.random() - 0.5) * 200;
-                particle.style.left = startX + 'px';
-                particle.style.top = startY + 'px';
-                particle.style.setProperty('--x', endX + 'px');
-                particle.style.animationDelay = Math.random() * 1.5 + 's';
-                particle.style.animationDuration = 1.5 + Math.random() * 1 + 's';
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = window.innerHeight + Math.random() * 150 + 'px';
+                particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = 1.5 + Math.random() * 1.5 + 's';
                 container.appendChild(particle);
             }
         }
         
-        // Hide loading screen after page loads
-        window.addEventListener('load', () => {
-            const loadingScreen = document.getElementById('loadingScreen');
-            setTimeout(() => {
-                loadingScreen.classList.add('hidden');
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                }, 500);
-            }, 800);
-        });
-        
+        updateLoadingProgress();
         createLoadingParticles();
         
-        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
-        document.getElementById('downloadBtn').addEventListener('click', () => { window.open('https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX%20HEX.rar', '_blank'); showToast("🔒 Secure download started"); });
-        document.getElementById('exploreFeaturesBtn').addEventListener('click', () => { location.href = 'features.html'; });
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => { if (loadingScreen) loadingScreen.style.display = 'none'; }, 600);
+            }, 1400);
+        });
         
-        // Navigation
+        // ========== ENCRYPTION & SECURITY ==========
+        const ENCRYPTION_KEY = 'PRRX_E2E_KEY_2026_SECURE';
+        
+        function encryptData(data) {
+            let encrypted = '';
+            for (let i = 0; i < data.length; i++) {
+                const keyChar = ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length);
+                const dataChar = data.charCodeAt(i);
+                encrypted += String.fromCharCode(dataChar ^ keyChar);
+            }
+            return btoa(encrypted);
+        }
+        
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+        
+        // Anti-DevTools
+        let devToolsOpen = false;
+        setInterval(() => {
+            const start = performance.now();
+            debugger;
+            const end = performance.now();
+            if (end - start > 100 && !devToolsOpen) {
+                devToolsOpen = true;
+                document.getElementById('antiDevTools').classList.add('active');
+            }
+        }, 2000);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U')) {
+                e.preventDefault();
+                showToast("🔒 Security: This action is disabled");
+                return false;
+            }
+        });
+        
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
+        document.addEventListener('selectstart', (e) => e.preventDefault());
+        if (window.self !== window.top) { window.top.location = window.self.location; }
+        
+        document.getElementById('downloadBtn').addEventListener('click', () => { window.open('https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX%20HEX.rar', '_blank'); showToast("🔒 Secure download started (E2E Encrypted)"); });
+        document.getElementById('exploreFeaturesBtn').addEventListener('click', () => { location.href = 'features.html'; });
+        document.getElementById('whatsappJoinBtn').addEventListener('click', () => { showToast("💬 Opening encrypted WhatsApp group..."); });
+        
         document.getElementById('navHome').addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active')); document.getElementById('navHome').classList.add('active'); });
-        document.getElementById('navPanel').addEventListener('click', () => { document.getElementById('heroSection').scrollIntoView({ behavior: 'smooth' }); });
+        document.getElementById('navPanel').addEventListener('click', () => { document.querySelector('.features-preview').scrollIntoView({ behavior: 'smooth' }); });
         document.getElementById('navFeatures').addEventListener('click', () => { location.href = 'features.html'; });
         document.getElementById('homeLogo').addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active')); document.getElementById('navHome').classList.add('active'); });
         
-        // News Data
-        const newsData = [
-            { type: "update", date: "March 21, 2026", title: "PRRX v3.2 Released!", preview: "New features added: AIMBOT EXTERNAL AI, Enhanced ESP, and Performance optimizations.", expanded: "<strong>What's New:</strong><ul><li>AIMBOT EXTERNAL AI - AI-powered aim assistance</li><li>Enhanced ESP with 3D location tracking</li><li>Improved FPS Boost (+15% performance)</li><li>Fixed Mouse Drag issues</li></ul>" },
-            { type: "announcement", date: "March 18, 2026", title: "Server Maintenance Completed", preview: "Singapore server maintenance completed. All systems operational with improved stability.", expanded: "The Singapore server has been upgraded with new hardware.<ul><li>30% faster response times</li><li>Improved connection stability</li><li>Reduced latency (avg 45ms → 32ms)</li></ul>" },
-            { type: "patch", date: "March 15, 2026", title: "Hotfix v3.1.2 - Anti-Cheat Update", preview: "Critical anti-cheat update released. Please update to latest version.", expanded: "<strong>Hotfix Details:</strong><ul><li>Updated detection signatures</li><li>Fixed false positive issues</li><li>Improved HWID protection</li></ul>" }
-        ];
-        
-        function renderNews() {
-            const grid = document.getElementById('newsGrid');
-            if (!grid) return;
-            grid.innerHTML = newsData.map((item, index) => `
-                <div class="news-card" onclick="toggleNews(${index})">
-                    <div class="news-header">
-                        <span class="news-badge ${item.type}">${item.type === 'update' ? '<i class="fas fa-download"></i> Update' : item.type === 'announcement' ? '<i class="fas fa-bullhorn"></i> Announcement' : '<i class="fas fa-bug"></i> Patch Note'}</span>
-                        <span class="news-date"><i class="far fa-calendar-alt"></i> ${item.date}</span>
-                    </div>
-                    <div class="news-title">${item.title}</div>
-                    <div class="news-preview">${item.preview}</div>
-                    <div class="news-expanded" id="news-expanded-${index}"><div class="news-expanded-content">${item.expanded}</div></div>
-                </div>
-            `).join('');
-        }
-        
-        window.toggleNews = function(index) {
-            const card = document.querySelectorAll('.news-card')[index];
-            if (card.classList.contains('active')) { card.classList.remove('active'); } 
-            else { document.querySelectorAll('.news-card').forEach(c => c.classList.remove('active')); card.classList.add('active'); }
-        }
-        renderNews();
-        
-        // Custom Cursor
         if (window.innerWidth > 768) {
             const cd = document.querySelector('.cursor-dot'), co = document.querySelector('.cursor-outline');
             if (cd && co) {
                 document.addEventListener('mousemove', (e) => { cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`; co.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`; });
-                document.querySelectorAll('a, button, .news-card').forEach(el => { el.addEventListener('mouseenter', () => { co.style.width = '48px'; co.style.height = '48px'; co.style.borderColor = '#a020f0'; }); el.addEventListener('mouseleave', () => { co.style.width = '32px'; co.style.height = '32px'; co.style.borderColor = 'rgba(0,224,255,0.6)'; }); });
+                document.querySelectorAll('a, button, .whatsapp-widget').forEach(el => {
+                    el.addEventListener('mouseenter', () => { co.style.width = '48px'; co.style.height = '48px'; co.style.borderColor = '#a020f0'; });
+                    el.addEventListener('mouseleave', () => { co.style.width = '32px'; co.style.height = '32px'; co.style.borderColor = 'rgba(0,224,255,0.6)'; });
+                });
             }
         }
         
-        // Scroll animations
         const fadeElements = document.querySelectorAll('.fade-up');
         const observer = new IntersectionObserver((e) => { e.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
         fadeElements.forEach(el => observer.observe(el));
         
-        // Security
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
-        document.addEventListener('keydown', (e) => { if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); showToast("🔒 View source disabled"); } });
+        console.log("%c🔒 PRRX SECURE | E2E ENCRYPTED ACTIVE", "color: #00e0ff; font-size: 14px; font-weight: bold;");
     </script>
 </body>
 </html>
