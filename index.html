@@ -449,4 +449,7 @@
         
         // Security
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
-        document.addEventListener('keydown', (e) => { if (e.ctrlKey && (e.key === '
+        document.addEventListener('keydown', (e) => { if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); showToast("🔒 View source disabled"); } });
+    </script>
+</body>
+</html>
