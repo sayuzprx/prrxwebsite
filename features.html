@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%);
@@ -16,38 +16,127 @@
             min-height: 100vh;
         }
         
-        /* Custom Cursor */
+        /* ========== LOADING SCREEN ANIMATION ========== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 50%, #050b1a 100%);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loading-logo {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #00e0ff, #a020f0);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: loadingShimmer 1.5s ease infinite, pulse 1s ease infinite;
+            margin-bottom: 2rem;
+        }
+        @keyframes loadingShimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 224, 255, 0.2);
+            border-top: 4px solid #00e0ff;
+            border-right: 4px solid #a020f0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 2rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-progress {
+            width: 200px;
+            height: 2px;
+            background: rgba(0, 224, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .loading-progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            border-radius: 4px;
+            animation: progress 1.2s ease-out forwards;
+        }
+        @keyframes progress {
+            0% { width: 0%; }
+            30% { width: 45%; }
+            60% { width: 75%; }
+            100% { width: 100%; }
+        }
+        .loading-text {
+            font-size: 0.85rem;
+            color: #8e9eb5;
+            letter-spacing: 2px;
+            margin-top: 1rem;
+        }
+        .loading-dots span {
+            animation: blink 1.4s infinite;
+            animation-fill-mode: both;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0%, 80%, 100% { opacity: 0; }
+            40% { opacity: 1; }
+        }
+        .loading-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .loading-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00e0ff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatParticle 2s ease-out forwards;
+        }
+        @keyframes floatParticle {
+            0% { opacity: 0; transform: translateY(0) translateX(0); }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.3; }
+            100% { opacity: 0; transform: translateY(-100px) translateX(var(--x, 50px)); }
+        }
+        
         @media (min-width: 768px) {
-            .cursor-dot {
-                width: 8px;
-                height: 8px;
-                background-color: #00e0ff;
-                border-radius: 50%;
-                position: fixed;
-                pointer-events: none;
-                z-index: 9999;
-                transition: transform 0.1s ease;
-                box-shadow: 0 0 12px #00e0ff;
-            }
-            .cursor-outline {
-                width: 32px;
-                height: 32px;
-                border: 2px solid rgba(0, 224, 255, 0.6);
-                border-radius: 50%;
-                position: fixed;
-                pointer-events: none;
-                z-index: 9998;
-                transition: transform 0.2s ease, width 0.2s, height 0.2s;
-                backdrop-filter: blur(2px);
-            }
+            .cursor-dot { width: 8px; height: 8px; background-color: #00e0ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px #00e0ff; }
+            .cursor-outline { width: 32px; height: 32px; border: 2px solid rgba(0,224,255,0.6); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: transform 0.2s ease, width 0.2s, height 0.2s; backdrop-filter: blur(2px); }
         }
-        @media (max-width: 768px) {
-            .cursor-dot, .cursor-outline { display: none; }
-        }
+        @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
         
         .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
         
-        /* Navbar */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -90,7 +179,6 @@
         .menu a:hover::after, .menu a.active::after { width: 100%; }
         .menu a:hover, .menu a.active { color: #00e0ff; text-shadow: 0 0 8px rgba(0, 224, 255, 0.5); }
         
-        /* Header */
         .features-header {
             text-align: center;
             margin-bottom: 3rem;
@@ -122,7 +210,6 @@
             font-size: 1rem;
         }
         
-        /* Stats */
         .stats-section {
             display: flex;
             justify-content: center;
@@ -141,7 +228,6 @@
         .stat-number { font-size: 1.8rem; font-weight: 800; color: #00e0ff; }
         .stat-label { font-size: 0.75rem; color: #8e9eb5; }
         
-        /* Features Grid */
         .features-grid {
             display: flex;
             flex-wrap: wrap;
@@ -184,7 +270,6 @@
             box-shadow: 0 0 10px #00e0ff;
         }
         
-        /* Footer */
         footer {
             text-align: center;
             padding: 2rem;
@@ -215,9 +300,7 @@
             .navbar { flex-direction: column; gap: 1rem; }
             .feature-card { width: calc(50% - 0.6rem); min-width: 140px; }
         }
-        @media (max-width: 480px) {
-            .feature-card { width: 100%; }
-        }
+        @media (max-width: 480px) { .feature-card { width: 100%; } }
         
         .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
         .fade-up.visible { opacity: 1; transform: translateY(0); }
@@ -225,22 +308,36 @@
 </head>
 <body>
 
+    <!-- ========== LOADING SCREEN ========== -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-particles" id="loadingParticles"></div>
+        <div class="loading-logo">PRRX</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar"></div>
+        </div>
+        <div class="loading-text">
+            Loading PRRX Features
+            <span class="loading-dots">
+                <span>.</span><span>.</span><span>.</span>
+            </span>
+        </div>
+    </div>
+
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
     <div class="container">
-        <!-- Navbar -->
         <div class="navbar">
             <a href="index.html" class="logo">PRRX</a>
             <div class="menu">
                 <a href="index.html">HOME</a>
                 <a href="index.html#panelSection">PANEL</a>
                 <a href="features.html" class="active">FEATURES</a>
-                <a href="index.html#dashboardSection">DASHBOARD</a>
+                <a href="dashboard.html">DASHBOARD</a>
             </div>
         </div>
 
-        <!-- Header -->
         <div class="features-header fade-up">
             <div class="badge">⚡ ALL IN ONE ⚡</div>
             <h1>PRRX Features</h1>
@@ -250,94 +347,23 @@
             </div>
         </div>
 
-        <!-- Stats -->
         <div class="stats-section fade-up">
             <div class="stat-card"><div class="stat-number">10+</div><div class="stat-label">Features</div></div>
             <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">Undetected</div></div>
             <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
         </div>
 
-        <!-- All Features Grid - 10 Cards -->
         <div class="features-grid fade-up">
-            <!-- Main Menu -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-bars"></i></div>
-                <h3>Main Menu</h3>
-                <p>Key Bind, Settings, PC Info, Live Chat, Payment, Report, About</p>
-                <button class="feature-btn" onclick="location.href='feature-mainmenu.html'">View Details</button>
-            </div>
-            
-            <!-- AIM Assistance -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-crosshairs"></i></div>
-                <h3>AIM Assistance</h3>
-                <p>AIMBOT +++, Head, External, Drag, Mouse Settings, Left/Right Camera</p>
-                <button class="feature-btn" onclick="location.href='feature-aim.html'">View Details</button>
-            </div>
-            
-            <!-- Visual Enhancement -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-eye"></i></div>
-                <h3>Visual Enhancement</h3>
-                <p>CHAMS Menu, ESP, 3D CHAMS, Female Fix, Blue/Red CHAMS, 3D Box</p>
-                <button class="feature-btn" onclick="location.href='feature-visual.html'">View Details</button>
-            </div>
-            
-            <!-- Anti-Cheat -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                <h3>Anti-Cheat</h3>
-                <p>Anti Cheates, FPS Boost, Anti Report, EPS Roost, Optimization</p>
-                <button class="feature-btn" onclick="location.href='feature-anticheat.html'">View Details</button>
-            </div>
-            
-            <!-- Settings Menu -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-sliders-h"></i></div>
-                <h3>Settings Menu</h3>
-                <p>Streamer Mode, Mouse Fix, Hide Task, Theme Color, Boost Options</p>
-                <button class="feature-btn" onclick="location.href='feature-settings.html'">View Details</button>
-            </div>
-            
-            <!-- PC Information -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-desktop"></i></div>
-                <h3>PC Information</h3>
-                <p>System Specs, OS, Processor, RAM, Disk Space, IP Address, Uptime</p>
-                <button class="feature-btn" onclick="location.href='feature-pcinfo.html'">View Details</button>
-            </div>
-            
-            <!-- Live Chat -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-comments"></i></div>
-                <h3>Live Chat</h3>
-                <p>Real-time community chat, Online users, Private messaging</p>
-                <button class="feature-btn" onclick="location.href='feature-chat.html'">View Details</button>
-            </div>
-            
-            <!-- Payment Method -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-credit-card"></i></div>
-                <h3>Payment Method</h3>
-                <p>1 Week, 1 Month, 6 Months, 1 Year plans available</p>
-                <button class="feature-btn" onclick="location.href='feature-payment.html'">View Details</button>
-            </div>
-            
-            <!-- Report Menu -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-flag"></i></div>
-                <h3>Report Menu</h3>
-                <p>Report cheating, teaming, violations with image upload</p>
-                <button class="feature-btn" onclick="location.href='feature-report.html'">View Details</button>
-            </div>
-            
-            <!-- User Account -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-user"></i></div>
-                <h3>User Account</h3>
-                <p>License info, HWID, Last Login, Time Left, Online users</p>
-                <button class="feature-btn" onclick="location.href='feature-user.html'">View Details</button>
-            </div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-bars"></i></div><h3>Main Menu</h3><p>Key Bind, Settings, PC Info, Live Chat, Payment, Report, About</p><button class="feature-btn" onclick="location.href='feature-mainmenu.html'">View Details</button></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-crosshairs"></i></div><h3>AIM Assistance</h3><p>AIMBOT +++, Head, External, Drag, Mouse Settings, Left/Right Camera</p><button class="feature-btn" onclick="location.href='feature-aim.html'">View Details</button></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-eye"></i></div><h3>Visual Enhancement</h3><p>CHAMS Menu, ESP, 3D CHAMS, Female Fix, Blue/Red CHAMS, 3D Box</p><button class="feature-btn" onclick="location.href='feature-visual.html'">View Details</button></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-shield-alt"></i></div><h3>Anti-Cheat</h3><p>Anti Cheates, FPS Boost, Anti Report, EPS Roost, Optimization</p><button class="feature-btn" onclick="location.href='feature-anticheat.html'">View Details</button></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-sliders-h"></i></div><h3>Settings Menu</h3><p>Streamer Mode, Mouse Fix, Hide Task, Theme Color, Boost Options</p><button class="feature-btn" onclick="location.href='feature-settings.html'">View Details</button></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-desktop"></i></div><h3>PC Information</h3><p>System Specs, OS, Processor, RAM, Disk Space, IP Address, Uptime</p><button class="feature-btn" onclick="location.href='feature-pcinfo.html'">View Details</button></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-comments"></i></div><h3>Live Chat</h3><p>Real-time community chat, Online users, Private messaging</p><button class="feature-btn" onclick="location.href='feature-chat.html'">View Details</button></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-credit-card"></i></div><h3>Payment Method</h3><p>1 Week, 1 Month, 6 Months, 1 Year plans available</p><button class="feature-btn" onclick="location.href='feature-payment.html'">View Details</button></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-flag"></i></div><h3>Report Menu</h3><p>Report cheating, teaming, violations with image upload</p><button class="feature-btn" onclick="location.href='feature-report.html'">View Details</button></div>
+            <div class="feature-card"><div class="feature-icon"><i class="fas fa-user"></i></div><h3>User Account</h3><p>License info, HWID, Last Login, Time Left, Online users</p><button class="feature-btn" onclick="location.href='feature-user.html'">View Details</button></div>
         </div>
 
         <footer>
@@ -348,6 +374,37 @@
     <div id="toast" class="toast-notification"></div>
 
     <script>
+        // ========== LOADING SCREEN PARTICLES ==========
+        function createLoadingParticles() {
+            const container = document.getElementById('loadingParticles');
+            if (!container) return;
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'loading-particle';
+                const startX = Math.random() * window.innerWidth;
+                const startY = window.innerHeight + Math.random() * 100;
+                const endX = (Math.random() - 0.5) * 200;
+                particle.style.left = startX + 'px';
+                particle.style.top = startY + 'px';
+                particle.style.setProperty('--x', endX + 'px');
+                particle.style.animationDelay = Math.random() * 1.5 + 's';
+                particle.style.animationDuration = 1.5 + Math.random() * 1 + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        window.addEventListener('load', () => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }, 800);
+        });
+        
+        createLoadingParticles();
+        
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -359,13 +416,11 @@
         if (window.innerWidth > 768) {
             const cursorDot = document.querySelector('.cursor-dot');
             const cursorOutline = document.querySelector('.cursor-outline');
-            
             if (cursorDot && cursorOutline) {
                 document.addEventListener('mousemove', (e) => {
                     cursorDot.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
                     cursorOutline.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
                 });
-                
                 document.querySelectorAll('a, button, .feature-card').forEach(el => {
                     el.addEventListener('mouseenter', () => {
                         cursorOutline.style.width = '48px';
