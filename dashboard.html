@@ -101,6 +101,8 @@
             100% { opacity: 0; transform: translateY(-120px) scale(0); }
         }
         .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #00e0ff80; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
+        .loading-security i { animation: securityPulse 1s ease infinite; }
+        @keyframes securityPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 5px #00e0ff; } }
         
         /* Anti-DevTools */
         .anti-devtools {
@@ -122,7 +124,7 @@
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
         .anti-devtools p { color: #ff5050; font-size: 1.2rem; text-align: center; padding: 1rem; }
         
-        /* Custom Cursor - Ultra Secure */
+        /* Custom Cursor */
         @media (min-width: 768px) {
             .cursor-dot { width: 8px; height: 8px; background-color: #00e0ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px #00e0ff; will-change: transform; }
             .cursor-outline { width: 32px; height: 32px; border: 2px solid rgba(0,224,255,0.6); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: transform 0.2s ease, width 0.2s, height 0.2s; backdrop-filter: blur(2px); will-change: transform; }
@@ -406,7 +408,7 @@
         window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
     </script>
     <script>
-        // ========== ULTRA SECURE LOADING SCREEN ==========
+        // ========== LOADING SCREEN ==========
         let loadingProgress = 0;
         const percentageElement = document.getElementById('loadingPercentage');
         function updateLoadingProgress() {
@@ -475,7 +477,6 @@
             }
         }, 2000);
         
-        // Block keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
                 (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U') ||
@@ -486,20 +487,21 @@
             }
         });
         
-        // Block right-click
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
         document.addEventListener('selectstart', (e) => e.preventDefault());
         if (window.self !== window.top) { window.top.location = window.self.location; }
         
         // ========== NAVIGATION ==========
+        // Regular Login - opens login.html
         document.getElementById('regularLoginBtn').addEventListener('click', () => {
             showToast("🔐 Redirecting to Secure Login Page...");
-            setTimeout(() => { window.location.href = 'login.html'; }, 500);
+            setTimeout(() => { window.location.href = 'login.html'; }, 300);
         });
         
+        // Premium Login - opens premium-login.html
         document.getElementById('premiumLoginBtn').addEventListener('click', () => {
             showToast("👑 Redirecting to Premium KeyAuth Login...");
-            setTimeout(() => { window.location.href = 'premium-login.html'; }, 500);
+            setTimeout(() => { window.location.href = 'premium-login.html'; }, 300);
         });
         
         // Custom Cursor
