@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PRRX | All Features</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%);
+            color: #fff;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Custom Cursor */
+        @media (min-width: 768px) {
+            .cursor-dot {
+                width: 8px;
+                height: 8px;
+                background-color: #00e0ff;
+                border-radius: 50%;
+                position: fixed;
+                pointer-events: none;
+                z-index: 9999;
+                transition: transform 0.1s ease;
+                box-shadow: 0 0 12px #00e0ff;
+            }
+            .cursor-outline {
+                width: 32px;
+                height: 32px;
+                border: 2px solid rgba(0, 224, 255, 0.6);
+                border-radius: 50%;
+                position: fixed;
+                pointer-events: none;
+                z-index: 9998;
+                transition: transform 0.2s ease, width 0.2s, height 0.2s;
+                backdrop-filter: blur(2px);
+            }
+        }
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-outline { display: none; }
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(0, 224, 255, 0.2);
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #00e0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .menu { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .menu a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        .menu a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            transition: width 0.3s ease;
+        }
+        .menu a:hover::after, .menu a.active::after { width: 100%; }
+        .menu a:hover, .menu a.active { color: #00e0ff; text-shadow: 0 0 8px rgba(0, 224, 255, 0.5); }
+        
+        /* Header */
+        .features-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .features-header .badge {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            color: #00e0ff;
+            background: rgba(0, 224, 255, 0.1);
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(0, 224, 255, 0.3);
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #00e0ff, #b77cff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        .header-desc {
+            color: #ccd6f6;
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1rem;
+        }
+        
+        /* Stats */
+        .stats-section {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 2rem 0 3rem;
+        }
+        .stat-card {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 1rem 1.8rem;
+            text-align: center;
+            border: 1px solid rgba(0, 224, 255, 0.2);
+        }
+        .stat-number { font-size: 1.8rem; font-weight: 800; color: #00e0ff; }
+        .stat-label { font-size: 0.75rem; color: #8e9eb5; }
+        
+        /* Features Grid */
+        .features-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        .feature-card {
+            background: rgba(15, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 1.2rem;
+            width: 240px;
+            transition: all 0.3s;
+            border: 1px solid rgba(0, 224, 255, 0.2);
+            text-align: center;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #00e0ff;
+            box-shadow: 0 15px 30px -10px rgba(0, 224, 255, 0.2);
+        }
+        .feature-icon { font-size: 2rem; color: #00e0ff; margin-bottom: 0.8rem; }
+        .feature-card h3 { font-size: 1rem; margin-bottom: 0.5rem; font-weight: 600; }
+        .feature-card p { color: #b0c4de; font-size: 0.7rem; margin-bottom: 1rem; line-height: 1.3; }
+        .feature-btn {
+            background: transparent;
+            border: 1px solid #00e0ff;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            color: #00e0ff;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .feature-btn:hover {
+            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            color: #fff;
+            box-shadow: 0 0 10px #00e0ff;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.8rem;
+            color: #8e9eb5;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 3rem;
+        }
+        
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0,224,255,0.95);
+            color: #050b1a;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        .toast-notification.show { transform: translateX(0); }
+        
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 2rem; }
+            .navbar { flex-direction: column; gap: 1rem; }
+            .feature-card { width: calc(50% - 0.6rem); min-width: 140px; }
+        }
+        @media (max-width: 480px) {
+            .feature-card { width: 100%; }
+        }
+        
+        .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div class="container">
+        <!-- Navbar -->
+        <div class="navbar">
+            <a href="index.html" class="logo">PRRX</a>
+            <div class="menu">
+                <a href="index.html">HOME</a>
+                <a href="index.html#panelSection">PANEL</a>
+                <a href="features.html" class="active">FEATURES</a>
+                <a href="index.html#dashboardSection">DASHBOARD</a>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="features-header fade-up">
+            <div class="badge">⚡ ALL IN ONE ⚡</div>
+            <h1>PRRX Features</h1>
+            <div class="header-desc">
+                Complete gaming enhancement suite with 10+ powerful features. 
+                Designed for performance, security, and domination.
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-section fade-up">
+            <div class="stat-card"><div class="stat-number">10+</div><div class="stat-label">Features</div></div>
+            <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">Undetected</div></div>
+            <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
+        </div>
+
+        <!-- All Features Grid - 10 Cards -->
+        <div class="features-grid fade-up">
+            <!-- Main Menu -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-bars"></i></div>
+                <h3>Main Menu</h3>
+                <p>Key Bind, Settings, PC Info, Live Chat, Payment, Report, About</p>
+                <button class="feature-btn" onclick="location.href='feature-mainmenu.html'">View Details</button>
+            </div>
+            
+            <!-- AIM Assistance -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-crosshairs"></i></div>
+                <h3>AIM Assistance</h3>
+                <p>AIMBOT +++, Head, External, Drag, Mouse Settings, Left/Right Camera</p>
+                <button class="feature-btn" onclick="location.href='feature-aim.html'">View Details</button>
+            </div>
+            
+            <!-- Visual Enhancement -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-eye"></i></div>
+                <h3>Visual Enhancement</h3>
+                <p>CHAMS Menu, ESP, 3D CHAMS, Female Fix, Blue/Red CHAMS, 3D Box</p>
+                <button class="feature-btn" onclick="location.href='feature-visual.html'">View Details</button>
+            </div>
+            
+            <!-- Anti-Cheat -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Anti-Cheat</h3>
+                <p>Anti Cheates, FPS Boost, Anti Report, EPS Roost, Optimization</p>
+                <button class="feature-btn" onclick="location.href='feature-anticheat.html'">View Details</button>
+            </div>
+            
+            <!-- Settings Menu -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-sliders-h"></i></div>
+                <h3>Settings Menu</h3>
+                <p>Streamer Mode, Mouse Fix, Hide Task, Theme Color, Boost Options</p>
+                <button class="feature-btn" onclick="location.href='feature-settings.html'">View Details</button>
+            </div>
+            
+            <!-- PC Information -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-desktop"></i></div>
+                <h3>PC Information</h3>
+                <p>System Specs, OS, Processor, RAM, Disk Space, IP Address, Uptime</p>
+                <button class="feature-btn" onclick="location.href='feature-pcinfo.html'">View Details</button>
+            </div>
+            
+            <!-- Live Chat -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                <h3>Live Chat</h3>
+                <p>Real-time community chat, Online users, Private messaging</p>
+                <button class="feature-btn" onclick="location.href='feature-chat.html'">View Details</button>
+            </div>
+            
+            <!-- Payment Method -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-credit-card"></i></div>
+                <h3>Payment Method</h3>
+                <p>1 Week, 1 Month, 6 Months, 1 Year plans available</p>
+                <button class="feature-btn" onclick="location.href='feature-payment.html'">View Details</button>
+            </div>
+            
+            <!-- Report Menu -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-flag"></i></div>
+                <h3>Report Menu</h3>
+                <p>Report cheating, teaming, violations with image upload</p>
+                <button class="feature-btn" onclick="location.href='feature-report.html'">View Details</button>
+            </div>
+            
+            <!-- User Account -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-user"></i></div>
+                <h3>User Account</h3>
+                <p>License info, HWID, Last Login, Time Left, Online users</p>
+                <button class="feature-btn" onclick="location.href='feature-user.html'">View Details</button>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 PRRX Panel — Advanced Gaming Solutions. 10+ Features Available.</p>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast-notification"></div>
+
+    <script>
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Custom Cursor
+        if (window.innerWidth > 768) {
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+            
+            if (cursorDot && cursorOutline) {
+                document.addEventListener('mousemove', (e) => {
+                    cursorDot.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+                    cursorOutline.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
+                });
+                
+                document.querySelectorAll('a, button, .feature-card').forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        cursorOutline.style.width = '48px';
+                        cursorOutline.style.height = '48px';
+                        cursorOutline.style.borderColor = '#a020f0';
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        cursorOutline.style.width = '32px';
+                        cursorOutline.style.height = '32px';
+                        cursorOutline.style.borderColor = 'rgba(0, 224, 255, 0.6)';
+                    });
+                });
+            }
+        }
+
+        // Scroll animations
+        const fadeElements = document.querySelectorAll('.fade-up');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        fadeElements.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
