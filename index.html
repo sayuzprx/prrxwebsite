@@ -66,7 +66,7 @@
         .content {
             position: relative;
             z-index: 2;
-            max-width: 1400px;
+            max-width: 1300px;
             margin: 0 auto;
             padding: 2rem 2rem 5rem;
         }
@@ -132,7 +132,6 @@
             text-shadow: 0 0 8px rgba(0, 224, 255, 0.5);
         }
 
-        /* Hero Section */
         .hero {
             text-align: center;
             padding: 3rem 1rem 2rem;
@@ -178,7 +177,6 @@
             margin: 0 auto;
         }
 
-        /* Stats Section */
         .stats-section {
             display: flex;
             justify-content: center;
@@ -209,8 +207,7 @@
             margin-top: 0.3rem;
         }
 
-        /* Image Showcase Section */
-        .image-showcase {
+        .entries-section {
             margin: 4rem 0;
         }
 
@@ -225,98 +222,68 @@
             color: transparent;
         }
 
-        .image-grid {
+        .cards-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 2rem;
             justify-content: center;
         }
 
-        .image-card {
+        .card {
             background: rgba(15, 25, 45, 0.6);
             backdrop-filter: blur(12px);
             border-radius: 28px;
-            padding: 1.5rem;
-            width: 500px;
-            max-width: 100%;
-            border: 1px solid rgba(0, 224, 255, 0.3);
-            transition: all 0.3s ease;
+            padding: 2rem 1.8rem;
+            width: 320px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(0, 224, 255, 0.2);
+            text-align: center;
         }
 
-        .image-card:hover {
+        .card:hover {
             transform: translateY(-8px);
             border-color: #00e0ff;
-            box-shadow: 0 0 25px rgba(0, 224, 255, 0.2);
+            box-shadow: 0 20px 35px -12px rgba(0, 224, 255, 0.3);
         }
 
-        .image-card h3 {
-            text-align: center;
-            margin-bottom: 1rem;
+        .card-icon {
+            font-size: 3rem;
             color: #00e0ff;
-            font-size: 1.3rem;
-        }
-
-        .image-card img {
-            width: 100%;
-            border-radius: 16px;
-            border: 1px solid rgba(0, 224, 255, 0.3);
-        }
-
-        .image-caption {
-            text-align: center;
-            margin-top: 0.8rem;
-            font-size: 0.8rem;
-            color: #8e9eb5;
-        }
-
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-
-        .feature-card {
-            background: rgba(15, 25, 45, 0.5);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            padding: 1.8rem;
-            border: 1px solid rgba(0, 224, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: #00e0ff;
-        }
-
-        .feature-card h3 {
-            font-size: 1.4rem;
             margin-bottom: 1rem;
-            color: #00e0ff;
         }
 
-        .feature-list {
-            list-style: none;
-            padding: 0;
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
         }
 
-        .feature-list li {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        .card p {
+            color: #b0c4de;
             font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
         }
 
-        .feature-list li i {
+        .card-btn {
+            background: linear-gradient(90deg, #00e0ff20, #a020f020);
+            border: 1px solid #00e0ff;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
             color: #00e0ff;
-            width: 24px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 0.85rem;
+            cursor: pointer;
         }
 
-        /* CTA Section */
+        .card-btn:hover {
+            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            color: #fff;
+            box-shadow: 0 0 15px #00e0ff;
+        }
+
         .cta-section {
             background: radial-gradient(circle at 30% 10%, rgba(0, 224, 255, 0.15), rgba(10, 20, 45, 0.7));
             border-radius: 48px;
@@ -393,7 +360,7 @@
             h1 { font-size: 2.5rem; }
             .content { padding: 1rem 1.5rem 3rem; }
             .navbar { flex-direction: column; gap: 1rem; }
-            .image-card { width: 100%; }
+            .card { width: 100%; }
         }
 
         .fade-up {
@@ -447,97 +414,59 @@
             <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
         </div>
 
-        <!-- ========== IMAGE SHOWCASE SECTION ========== -->
-        <!-- REPLACE THE IMAGE URLs WITH YOUR ACTUAL GITHUB IMAGE LINKS -->
-        <div class="image-showcase fade-up">
-            <div class="section-title">⚡ PRRX Application ⚡</div>
-            <div class="image-grid">
-                <!-- Login Page Screenshot -->
-                <div class="image-card">
-                    <h3><i class="fas fa-sign-in-alt"></i> Login Panel</h3>
-                    <img src="https://github.com/sayuzprx/prrxwebsite/raw/main/login-preview.png" 
-                         alt="PRRX Login Panel"
-                         onerror="this.src='https://placehold.co/600x400/1a1f2e/00e0ff?text=PRRX+Login+Panel'">
-                    <div class="image-caption">
-                        <i class="fas fa-lock"></i> Secure Login · Licence System · Auto Update
-                    </div>
+        <!-- Entries Section with View More Buttons -->
+        <section id="panelSection" class="entries-section fade-up">
+            <div class="section-title">⚡ Entries ⚡</div>
+            <div class="cards-grid">
+                <!-- Login System Card -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-lock"></i></div>
+                    <h3>Login System</h3>
+                    <p>A secure and encrypted login system that protects user data while delivering fast and reliable access.</p>
+                    <button class="card-btn" onclick="window.location.href='feature-login.html'">View More <i class="fas fa-arrow-right"></i></button>
                 </div>
-                <!-- Inside Application Screenshot -->
-                <div class="image-card">
-                    <h3><i class="fas fa-tachometer-alt"></i> Main Dashboard</h3>
-                    <img src="https://github.com/sayuzprx/prrxwebsite/raw/main/dashboard-preview.png" 
-                         alt="PRRX Dashboard"
-                         onerror="this.src='https://placehold.co/600x400/1a1f2e/00e0ff?text=PRRX+Dashboard'">
-                    <div class="image-caption">
-                        <i class="fas fa-crosshairs"></i> Aimbot · ESP · Anti-Cheat · Visual Enhancement
-                    </div>
+
+                <!-- Functions Panel Card -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <h3>Functions Panel</h3>
+                    <p>Everything you need to manage, play, and stay connected — all in one fast, minimal, user-friendly interface.</p>
+                    <button class="card-btn" onclick="window.location.href='feature-functions.html'">View More <i class="fas fa-arrow-right"></i></button>
+                </div>
+
+                <!-- Main Menu Card (New) -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-bars"></i></div>
+                    <h3>Main Menu</h3>
+                    <p>Key Bind, Settings, PC Info, Live Chat, Mouse Settings, and complete control panel.</p>
+                    <button class="card-btn" onclick="window.location.href='feature-mainmenu.html'">View More <i class="fas fa-arrow-right"></i></button>
+                </div>
+
+                <!-- AIM Assistance Card (New) -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-crosshairs"></i></div>
+                    <h3>AIM Assistance</h3>
+                    <p>AIMBOT +++, Head, External, Internal, Drag, Mouse Settings, and advanced aim control.</p>
+                    <button class="card-btn" onclick="window.location.href='feature-aim.html'">View More <i class="fas fa-arrow-right"></i></button>
+                </div>
+
+                <!-- Visual Enhancement Card (New) -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-eye"></i></div>
+                    <h3>Visual Enhancement</h3>
+                    <p>CHAMS Menu, ESP, 3D CHAMS, Female Fix, Blue/Red CHAMS, 3D Box and more.</p>
+                    <button class="card-btn" onclick="window.location.href='feature-visual.html'">View More <i class="fas fa-arrow-right"></i></button>
+                </div>
+
+                <!-- Anti-Cheat Card (New) -->
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Anti-Cheat Protections</h3>
+                    <p>Anti Cheates, FPS Boost, EPS Roost, Anti Report, and complete protection system.</p>
+                    <button class="card-btn" onclick="window.location.href='feature-anticheat.html'">View More <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
-        </div>
-
-        <!-- Features Grid (Based on your app screenshot) -->
-        <div class="features-grid fade-up">
-            <div class="feature-card">
-                <h3><i class="fas fa-crosshairs"></i> AIM ASSISTANCE</h3>
-                <ul class="feature-list">
-                    <li><i class="fas fa-bullseye"></i> AIMBOT +++</li>
-                    <li><i class="fas fa-head-side-vr"></i> AIMBOT HEAD</li>
-                    <li><i class="fas fa-external-link-alt"></i> AIMBOT EXTERNAL</li>
-                    <li><i class="fas fa-arrow-down"></i> AIMBOT DRAG</li>
-                    <li><i class="fas fa-mouse"></i> FIX DRAG MODE</li>
-                    <li><i class="fas fa-sliders-h"></i> MOUSE SETTINGS</li>
-                </ul>
-            </div>
-
-            <div class="feature-card">
-                <h3><i class="fas fa-eye"></i> VISUAL ENHANCEMENT</h3>
-                <ul class="feature-list">
-                    <li><i class="fas fa-cube"></i> CHAMS MENU + ESP</li>
-                    <li><i class="fas fa-cubes"></i> CHAMS MENU V1 + Female Fix</li>
-                    <li><i class="fas fa-border-all"></i> 3D CHAMS MENU + Female Fix v1</li>
-                    <li><i class="fas fa-palette"></i> BLUE CHAMS + 3D Fix</li>
-                    <li><i class="fas fa-fire"></i> RED CHAMS + PANEL 3DBOX</li>
-                </ul>
-            </div>
-
-            <div class="feature-card">
-                <h3><i class="fas fa-shield-alt"></i> ANTI-CHEAT PROTECTIONS</h3>
-                <ul class="feature-list">
-                    <li><i class="fas fa-shield-virus"></i> ANTI CHEATES + FPS BOOST</li>
-                    <li><i class="fas fa-flag-checkered"></i> ANTI REPORT + OPTIMAIZ</li>
-                    <li><i class="fas fa-ban"></i> ANTI REPORT V1 + FPS ++</li>
-                    <li><i class="fas fa-chart-line"></i> INTERNAL ESP BOX</li>
-                    <li><i class="fas fa-wrench"></i> ESP FIXED MOD</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Additional Features -->
-        <div class="features-grid fade-up">
-            <div class="feature-card">
-                <h3><i class="fas fa-cog"></i> Main Menu</h3>
-                <ul class="feature-list">
-                    <li><i class="fas fa-keyboard"></i> Key Bind</li>
-                    <li><i class="fas fa-sliders-h"></i> Settings Menu</li>
-                    <li><i class="fas fa-desktop"></i> Your PC Inform</li>
-                    <li><i class="fas fa-comments"></i> Real Chat {Live}</li>
-                    <li><i class="fas fa-credit-card"></i> Payment Method</li>
-                    <li><i class="fas fa-info-circle"></i> About</li>
-                </ul>
-            </div>
-
-            <div class="feature-card">
-                <h3><i class="fas fa-sync-alt"></i> PRRX HEX PREMIUM</h3>
-                <ul class="feature-list">
-                    <li><i class="fas fa-cloud-download-alt"></i> AUTO UPDATE HERE</li>
-                    <li><i class="fas fa-database"></i> MULTIPLE AUTO UPDATES</li>
-                    <li><i class="fas fa-question-circle"></i> HOW TO UPDATE?</li>
-                    <li><i class="fas fa-link"></i> UPDATELINKGET</li>
-                    <li><i class="fas fa-check-circle"></i> System Up to Date</li>
-                    <li><i class="fas fa-tachometer-alt"></i> AUTOSPEEDUPDATE</li>
-                </ul>
-            </div>
-        </div>
+        </section>
 
         <!-- CTA Section -->
         <section id="dashboardSection" class="cta-section fade-up">
@@ -549,15 +478,13 @@
             </button>
             <div class="file-info">
                 <span><i class="fas fa-file-archive"></i> PRRX-HEX-v3.2.rar</span>
-                <span><i class="fas fa-database"></i> ~14.5 MB</span>
+                <span><i class="fas fa-database"></i> ~95 MB</span>
                 <span><i class="fab fa-github"></i> GitHub Release</span>
-                <span><i class="fas fa-shield-alt"></i> Virus Scanned</span>
             </div>
-            <div class="version-badge" style="margin-top: 1rem; font-size: 0.8rem;">Licence required · Auto-update included</div>
         </section>
 
         <footer>
-            <p>© 2025 PRRX Panel — Advanced Gaming Solutions. Unauthorized access is prohibited.</p>
+            <p>© 2025 PRRX Panel — Advanced Gaming Solutions. All rights reserved.</p>
         </footer>
     </div>
 
@@ -672,23 +599,11 @@
         }
 
         // Download Function
-        const downloadUrl = 'https://github.com/sayuzprx/prrxwebsite/raw/main/PRRX%20HEX.rar';
-        const fileName = 'PRRX-HEX-v3.2.rar';
-        let downloadCount = localStorage.getItem('prrxDownloads') || 0;
-
+        const downloadUrl = 'https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX%20HEX.rar';
+        
         document.getElementById('downloadBtn').addEventListener('click', function() {
-            downloadCount++;
-            localStorage.setItem('prrxDownloads', downloadCount);
-            
-            const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = fileName;
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast(`📦 Downloading ${fileName} (${downloadCount} total downloads)`);
+            window.open(downloadUrl, '_blank');
+            showToast("📦 Downloading PRRX HEX Premium...");
         });
 
         // Navigation
@@ -699,7 +614,7 @@
         });
 
         document.getElementById('navPanel').addEventListener('click', () => {
-            document.querySelector('.image-showcase').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('panelSection').scrollIntoView({ behavior: 'smooth' });
             document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
             document.getElementById('navPanel').classList.add('active');
         });
@@ -730,7 +645,7 @@
                 cursorOutline.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
             });
             
-            const interactiveElements = document.querySelectorAll('a, button, .feature-card, .image-card');
+            const interactiveElements = document.querySelectorAll('a, button, .card');
             interactiveElements.forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     cursorOutline.style.width = '48px';
