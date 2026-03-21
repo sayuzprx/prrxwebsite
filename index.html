@@ -273,8 +273,8 @@
             <div class="logo" id="homeLogo">PRRX</div>
             <div class="menu">
                 <a id="navHome" class="active">HOME</a>
-                <a id="navPanel">PANEL</a>
                 <a id="navFeatures">FEATURES</a>
+                <a id="navChat">LIVE CHAT</a>
                 <a href="dashboard.html" id="navDashboard">DASHBOARD</a>
             </div>
         </div>
@@ -305,7 +305,7 @@
                 <span>Active Now • Quick Support</span>
             </div>
             <div class="member-stats">
-                <span><i class="fas fa-users"></i> 892 Members</span>
+                <span><i class="fas fa-users"></i> 500+ Members</span>
                 <span><i class="fas fa-comment-dots"></i> 24/7 Support</span>
             </div>
             <a href="https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx" target="_blank" class="whatsapp-btn" id="whatsappJoinBtn">
@@ -322,13 +322,14 @@
             <div class="security-badge"><i class="fas fa-fingerprint"></i> HWID Protected</div>
             <div class="security-badge"><i class="fas fa-lock"></i> No Data Storage</div>
             <div class="security-badge"><i class="fas fa-shield-virus"></i> DevTools Blocked</div>
+            <div class="security-badge"><i class="fas fa-comments"></i> Live Chat Available</div>
         </div>
 
         <div class="stats-section fade-up">
-            <div class="stat-card"><div class="stat-number">12,000+</div><div class="stat-label">Secure Users</div></div>
-            <div class="stat-card"><div class="stat-number">5</div><div class="stat-label">Countries</div></div>
+            <div class="stat-card"><div class="stat-number">10,000+</div><div class="stat-label">Secure and Active Users</div></div>
+            <div class="stat-card"><div class="stat-number">Singapore</div><div class="stat-label">Server</div></div>
             <div class="stat-card"><div class="stat-number">99.9%</div><div class="stat-label">Uptime</div></div>
-            <div class="stat-card"><div class="stat-number">892</div><div class="stat-label">WhatsApp Members</div></div>
+            <div class="stat-card"><div class="stat-number">500+</div><div class="stat-label">WhatsApp Members</div></div>
         </div>
 
         <div class="features-preview fade-up">
@@ -350,7 +351,7 @@
         </section>
         
         <footer>
-            <p>© 2026 PRRX Panel — Ultra Secure Gaming Solutions | <i class="fab fa-whatsapp"></i> WhatsApp Support | E2E Encrypted</p>
+            <p>© 2026 PRRX Panel — Ultra Secure Gaming Solutions | <i class="fab fa-whatsapp"></i> WhatsApp Support | <i class="fas fa-comments"></i> Live Chat | E2E Encrypted</p>
         </footer>
     </div>
     <div id="toast" class="toast-notification"></div>
@@ -461,6 +462,31 @@
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
         
+        // ========== HWID GENERATION ==========
+        function generateHWID() {
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                screen.colorDepth,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 4,
+                navigator.deviceMemory || 4,
+                navigator.platform,
+                navigator.maxTouchPoints || 0,
+                window.screen.pixelDepth
+            ];
+            let hash = 0;
+            const str = components.join('|');
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash).toString(16).toUpperCase();
+        }
+        
+        const CURRENT_HWID = generateHWID();
+        
         // ========== ANTI-DEBUGGING ==========
         let devToolsOpen = false;
         setInterval(() => {
@@ -496,13 +522,28 @@
         document.getElementById('exploreFeaturesBtn').addEventListener('click', () => { location.href = 'features.html'; });
         document.getElementById('whatsappJoinBtn').addEventListener('click', () => { showToast("💬 Opening encrypted WhatsApp group..."); });
         
-        // Navigation
-        document.getElementById('navHome').addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active')); document.getElementById('navHome').classList.add('active'); });
-        document.getElementById('navPanel').addEventListener('click', () => { document.querySelector('.features-preview').scrollIntoView({ behavior: 'smooth' }); });
-        document.getElementById('navFeatures').addEventListener('click', () => { location.href = 'features.html'; });
-        document.getElementById('homeLogo').addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active')); document.getElementById('navHome').classList.add('active'); });
+        // ========== NAVIGATION ==========
+        document.getElementById('navHome').addEventListener('click', () => { 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active')); 
+            document.getElementById('navHome').classList.add('active'); 
+        });
         
-        // Custom Cursor
+        document.getElementById('navFeatures').addEventListener('click', () => { 
+            location.href = 'features.html'; 
+        });
+        
+        document.getElementById('navChat').addEventListener('click', () => { 
+            location.href = 'live-chat.html'; 
+        });
+        
+        document.getElementById('homeLogo').addEventListener('click', () => { 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+            document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active')); 
+            document.getElementById('navHome').classList.add('active'); 
+        });
+        
+        // ========== CUSTOM CURSOR ==========
         if (window.innerWidth > 768) {
             const cd = document.querySelector('.cursor-dot'), co = document.querySelector('.cursor-outline');
             if (cd && co) {
@@ -517,13 +558,14 @@
             }
         }
         
-        // Scroll animations
+        // ========== SCROLL ANIMATIONS ==========
         const fadeElements = document.querySelectorAll('.fade-up');
         const observer = new IntersectionObserver((e) => { e.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
         fadeElements.forEach(el => observer.observe(el));
         
         console.log("%c🔐 PRRX ULTRA SECURE WEBSITE ACTIVE", "color: #00e0ff; font-size: 14px; font-weight: bold;");
-        console.log("%c⚠️ E2E Encrypted | HWID Protected | DevTools Blocked | Secure Channel Active", "color: #ffaa00; font-size: 11px;");
+        console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0; font-size: 11px;");
+        console.log("%c⚠️ E2E Encrypted | HWID Protected | DevTools Blocked | Live Chat Available", "color: #ffaa00; font-size: 11px;");
     </script>
 </body>
 </html>
