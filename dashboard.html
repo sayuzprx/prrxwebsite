@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX | Secure Dashboard - E2E Encrypted</title>
+    <title>PRRX | HWID Lock Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -15,7 +15,7 @@
             min-height: 100vh;
         }
         
-        /* ========== CUSTOM LOADING SCREEN ANIMATION ========== */
+        /* ========== CUSTOM LOADING SCREEN ========== */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -30,12 +30,7 @@
             align-items: center;
             transition: opacity 0.6s ease, visibility 0.6s ease;
         }
-        .loading-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-        
-        /* Animated Logo */
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
         .loading-logo {
             font-size: 3.5rem;
             font-weight: 800;
@@ -47,112 +42,30 @@
             animation: loadingShimmer 1.5s ease infinite, logoPulse 1.2s ease infinite;
             margin-bottom: 2rem;
         }
-        @keyframes loadingShimmer {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        @keyframes logoPulse {
-            0%, 100% { transform: scale(1); opacity: 1; text-shadow: 0 0 0px rgba(0,224,255,0); }
-            50% { transform: scale(1.08); opacity: 0.95; text-shadow: 0 0 20px rgba(0,224,255,0.5); }
-        }
-        
-        /* Spinner Ring with Gradient */
+        @keyframes loadingShimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
         .loading-spinner {
             width: 70px;
             height: 70px;
-            border: 4px solid rgba(0, 224, 255, 0.15);
+            border: 4px solid rgba(0,224,255,0.15);
             border-top: 4px solid #00e0ff;
             border-right: 4px solid #a020f0;
-            border-bottom: 4px solid rgba(160, 32, 240, 0.5);
             border-radius: 50%;
             animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
             margin-bottom: 2rem;
-            box-shadow: 0 0 15px rgba(0,224,255,0.3);
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Progress Bar with Glow */
-        .loading-progress-container {
-            width: 250px;
-            margin: 1rem 0;
-        }
-        .loading-progress {
-            width: 100%;
-            height: 3px;
-            background: rgba(0, 224, 255, 0.2);
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-        }
-        .loading-progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #00e0ff, #a020f0, #00e0ff);
-            background-size: 200% auto;
-            border-radius: 4px;
-            animation: progressFill 1.4s ease-out forwards, progressShine 1s linear infinite;
-        }
-        @keyframes progressFill {
-            0% { width: 0%; }
-            30% { width: 35%; }
-            60% { width: 70%; }
-            100% { width: 100%; }
-        }
-        @keyframes progressShine {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-        
-        /* Loading Percentage Text */
-        .loading-percentage {
-            font-size: 0.8rem;
-            color: #00e0ff;
-            margin-top: 0.5rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-        
-        /* Loading Text with Typing Effect */
-        .loading-text-container {
-            margin-top: 1.5rem;
-            text-align: center;
-        }
-        .loading-text {
-            font-size: 0.85rem;
-            color: #8e9eb5;
-            letter-spacing: 2px;
-            display: inline-block;
-        }
-        .loading-dots {
-            display: inline-block;
-        }
-        .loading-dots span {
-            display: inline-block;
-            animation: dotBlink 1.4s infinite;
-            animation-fill-mode: both;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        .loading-dots span:nth-child(1) { animation-delay: 0s; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-progress-container { width: 250px; margin: 1rem 0; }
+        .loading-progress { width: 100%; height: 3px; background: rgba(0,224,255,0.2); border-radius: 4px; overflow: hidden; }
+        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #00e0ff, #a020f0); animation: progressFill 1.4s ease-out forwards; }
+        @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
+        .loading-percentage { font-size: 0.8rem; color: #00e0ff; margin-top: 0.5rem; font-weight: 600; }
+        .loading-text { font-size: 0.85rem; color: #8e9eb5; letter-spacing: 2px; margin-top: 1rem; }
+        .loading-dots span { display: inline-block; animation: dotBlink 1.4s infinite; }
         .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
         .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dotBlink {
-            0%, 80%, 100% { opacity: 0; transform: translateY(0); }
-            40% { opacity: 1; transform: translateY(-3px); }
-        }
-        
-        /* Floating Particles Background */
-        .loading-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-        }
+        @keyframes dotBlink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
+        .loading-particles { position: absolute; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
         .loading-particle {
             position: absolute;
             width: 3px;
@@ -163,44 +76,13 @@
             animation: floatParticle 2.5s ease-out forwards;
         }
         @keyframes floatParticle {
-            0% {
-                opacity: 0;
-                transform: translateY(0) translateX(0) scale(0);
-            }
-            15% {
-                opacity: 0.8;
-                transform: translateY(-20px) translateX(var(--x, 30px)) scale(1);
-            }
-            85% {
-                opacity: 0.4;
-                transform: translateY(-70px) translateX(var(--x, 50px)) scale(0.8);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-120px) translateX(var(--x, 70px)) scale(0);
-            }
+            0% { opacity: 0; transform: translateY(0) scale(0); }
+            15% { opacity: 0.8; transform: translateY(-20px) scale(1); }
+            100% { opacity: 0; transform: translateY(-120px) scale(0); }
         }
-        
-        /* Security Status Message */
-        .loading-security {
-            margin-top: 2rem;
-            font-size: 0.7rem;
-            color: #00e0ff80;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(0,0,0,0.3);
-            padding: 0.4rem 1rem;
-            border-radius: 30px;
-            backdrop-filter: blur(4px);
-        }
-        .loading-security i {
-            animation: securityPulse 1s ease infinite;
-        }
-        @keyframes securityPulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; text-shadow: 0 0 5px #00e0ff; }
-        }
+        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #00e0ff80; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
+        .loading-security i { animation: securityPulse 1s ease infinite; }
+        @keyframes securityPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 5px #00e0ff; } }
         
         /* Anti-DevTools */
         .anti-devtools {
@@ -229,6 +111,9 @@
         }
         @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
         
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
+        .content { position: relative; z-index: 2; max-width: 500px; margin: 0 auto; padding: 6rem 1.5rem 2rem; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+        
         /* Navbar */
         .navbar {
             position: fixed;
@@ -239,7 +124,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background: rgba(5, 11, 26, 0.95);
+            background: rgba(5,11,26,0.95);
             backdrop-filter: blur(10px);
             z-index: 100;
             border-bottom: 1px solid rgba(0,224,255,0.2);
@@ -249,69 +134,75 @@
         .menu a { color: #fff; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; }
         .menu a:hover { color: #00e0ff; }
         
-        /* Main Container */
-        .container { max-width: 500px; margin: 0 auto; padding: 6rem 1.5rem 2rem; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
-        
-        /* Security Status Bar */
-        .security-status {
-            background: rgba(0,0,0,0.6);
-            border-radius: 40px;
-            padding: 0.5rem 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            font-size: 0.7rem;
-            backdrop-filter: blur(4px);
-            border: 1px solid #00e0ff40;
-        }
-        .security-status i { color: #00e0ff; margin-right: 0.5rem; animation: securityPulse 1s ease infinite; }
-        
         /* Auth Card */
         .auth-card {
-            background: rgba(15, 25, 45, 0.7);
+            background: rgba(15, 25, 45, 0.85);
             backdrop-filter: blur(12px);
             border-radius: 28px;
             padding: 2rem;
-            border: 1px solid rgba(0, 224, 255, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            border: 1px solid #00e0ff40;
         }
-        
-        .tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(0,224,255,0.2); padding-bottom: 1rem; }
+        .hwid-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            font-size: 0.7rem;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .hwid-box i { color: #00e0ff; margin-right: 0.5rem; }
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid #00e0ff40;
+            border-radius: 50px;
+            padding: 0.8rem 1rem;
+            margin: 1rem 0;
+        }
+        .input-group i { color: #00e0ff; margin-right: 0.8rem; width: 20px; }
+        .input-group input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(0,224,255,0.2);
+            padding-bottom: 1rem;
+        }
         .tab-btn {
             background: transparent;
             border: none;
             color: #8e9eb5;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             padding: 0.5rem 1rem;
             cursor: pointer;
             transition: all 0.3s;
             border-radius: 30px;
+            flex: 1;
         }
-        .tab-btn.active { background: linear-gradient(90deg, #00e0ff20, #a020f020); color: #00e0ff; border: 1px solid #00e0ff; }
-        
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; color: #b0c4de; }
-        .form-group input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(0,224,255,0.3);
-            border-radius: 12px;
-            color: #fff;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+        .tab-btn.active {
+            background: linear-gradient(90deg, #00e0ff20, #a020f020);
+            color: #00e0ff;
+            border: 1px solid #00e0ff;
         }
-        .form-group input:focus { outline: none; border-color: #00e0ff; box-shadow: 0 0 10px rgba(0,224,255,0.3); }
-        
         .submit-btn {
-            width: 100%;
-            padding: 0.9rem;
             background: linear-gradient(90deg, #00e0ff, #a020f0);
             border: none;
-            border-radius: 40px;
+            padding: 0.8rem;
+            border-radius: 50px;
             color: white;
             font-weight: bold;
-            font-size: 1rem;
+            width: 100%;
             cursor: pointer;
             transition: transform 0.2s;
             margin-top: 0.5rem;
@@ -320,11 +211,12 @@
         
         /* Dashboard Card */
         .dashboard-card {
-            background: rgba(15, 25, 45, 0.7);
+            background: rgba(15, 25, 45, 0.85);
             backdrop-filter: blur(12px);
             border-radius: 28px;
             padding: 2rem;
-            border: 1px solid rgba(0, 224, 255, 0.3);
+            border: 1px solid #00e0ff40;
+            text-align: center;
         }
         .user-avatar {
             width: 80px;
@@ -337,12 +229,7 @@
             margin: 0 auto 1.5rem;
             font-size: 2rem;
             font-weight: bold;
-            animation: avatarGlow 2s ease infinite;
         }
-        @keyframes avatarGlow { 0%, 100% { box-shadow: 0 0 0px #00e0ff; } 50% { box-shadow: 0 0 20px #00e0ff; } }
-        .user-info { text-align: center; margin-bottom: 1.5rem; }
-        .user-info h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .user-info p { color: #8e9eb5; font-size: 0.85rem; margin: 0.3rem 0; }
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -352,9 +239,16 @@
             background: rgba(0,0,0,0.3);
             border-radius: 20px;
         }
-        .info-item { text-align: center; }
         .info-item .label { font-size: 0.7rem; color: #8e9eb5; }
         .info-item .value { font-size: 1rem; font-weight: 600; color: #00e0ff; }
+        .hwid-locked {
+            background: rgba(0,224,255,0.1);
+            border-radius: 16px;
+            padding: 0.8rem;
+            margin: 1rem 0;
+            font-size: 0.7rem;
+            font-family: monospace;
+        }
         .logout-btn {
             width: 100%;
             padding: 0.8rem;
@@ -367,16 +261,14 @@
             transition: all 0.3s;
         }
         .logout-btn:hover { background: #ff5050; color: #fff; }
-        .back-home { text-align: center; margin-top: 1rem; }
-        .back-home a { color: #00e0ff; text-decoration: none; font-size: 0.85rem; }
         
         .toast-notification {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             background: rgba(0,224,255,0.95);
             color: #050b1a;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 40px;
             font-weight: 600;
             z-index: 10000;
@@ -385,42 +277,39 @@
         }
         .toast-notification.show { transform: translateX(0); }
         
-        @media (max-width: 768px) { .container { padding: 5rem 1rem 2rem; } .navbar { padding: 0.8rem 1rem; } .menu { gap: 1rem; } }
+        @media (max-width: 768px) { .navbar { padding: 0.8rem 1rem; } .menu { gap: 1rem; } .content { padding: 5rem 1rem 2rem; } }
     </style>
 </head>
 <body>
 
-    <!-- ========== CUSTOM LOADING SCREEN ========== -->
+    <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-particles" id="loadingParticles"></div>
         <div class="loading-logo">PRRX</div>
         <div class="loading-spinner"></div>
         <div class="loading-progress-container">
-            <div class="loading-progress">
-                <div class="loading-progress-bar"></div>
-            </div>
+            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
             <div class="loading-percentage" id="loadingPercentage">0%</div>
         </div>
-        <div class="loading-text-container">
-            <div class="loading-text">
-                Establishing Secure Connection
-                <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
-            </div>
+        <div class="loading-text">
+            Initializing HWID Security
+            <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
         </div>
         <div class="loading-security">
-            <i class="fas fa-shield-alt"></i> E2E Encryption Active
-            <i class="fas fa-lock"></i> Secure Channel
+            <i class="fas fa-shield-alt"></i> HWID Lock System Active
+            <i class="fas fa-fingerprint"></i> Device Verification
         </div>
     </div>
 
-    <!-- Anti-DevTools Screen -->
+    <!-- Anti-DevTools -->
     <div class="anti-devtools" id="antiDevTools">
         <i class="fas fa-shield-horned"></i>
-        <p>⚠️ Security Alert: Developer Tools Detected<br>For your protection, this page is secured.<br>Please close DevTools to continue.</p>
+        <p>⚠️ Security Alert: Developer Tools Detected<br>Please close DevTools to continue.</p>
     </div>
 
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
+    <canvas id="bg-canvas"></canvas>
 
     <div class="navbar">
         <a href="index.html" class="logo">PRRX</a>
@@ -432,25 +321,70 @@
         </div>
     </div>
 
-    <div class="container" id="appContainer"></div>
+    <div class="content" id="appContainer"></div>
     <div id="toast" class="toast-notification"></div>
 
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        const canvas = document.getElementById('bg-canvas');
+        const scene = new THREE.Scene(); scene.background = new THREE.Color(0x050b1a);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(0, 0, 5);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const geometry = new THREE.TorusKnotGeometry(1.1, 0.28, 160, 24, 3, 4);
+        const material = new THREE.MeshStandardMaterial({ color: 0x00e0ff, emissive: 0x1a4c8a, emissiveIntensity: 0.5 });
+        const torusKnot = new THREE.Mesh(geometry, material); scene.add(torusKnot);
+        const particlesGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(1200 * 3);
+        for (let i = 0; i < 1200; i++) {
+            const radius = 2.5 + Math.random() * 2.5;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            positions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
+            positions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta);
+            positions[i*3+2] = radius * Math.cos(phi);
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particleSystem = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({ color: 0x66ccff, size: 0.04 }));
+        scene.add(particleSystem);
+        const ringGeo = new THREE.TorusGeometry(1.6, 0.04, 48, 400);
+        const ring = new THREE.Mesh(ringGeo, new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x0088ff, emissiveIntensity: 0.4 }));
+        scene.add(ring);
+        const ambientLight = new THREE.AmbientLight(0x111122); scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0x2266ff, 0.8); pointLight.position.set(2, 3, 4); scene.add(pointLight);
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = [];
+        for (let i = 0; i < 600; i++) { starPos.push((Math.random() - 0.5) * 150); starPos.push((Math.random() - 0.5) * 80); starPos.push((Math.random() - 0.5) * 40 - 15); }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.06 }));
+        scene.add(stars);
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            torusKnot.rotation.x += 0.008; torusKnot.rotation.y += 0.012;
+            ring.rotation.x = Math.sin(time * 0.5) * 0.3; ring.rotation.y += 0.01;
+            particleSystem.rotation.y += 0.0005;
+            stars.rotation.y += 0.0002;
+            camera.lookAt(0, 0, 0);
+            renderer.render(scene, camera);
+            time += 0.008;
+        }
+        animate();
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    </script>
     <script>
-        // ========== CUSTOM LOADING SCREEN WITH PROGRESS ==========
+        // ========== LOADING SCREEN ==========
         let loadingProgress = 0;
         const percentageElement = document.getElementById('loadingPercentage');
-        
         function updateLoadingProgress() {
             const interval = setInterval(() => {
-                loadingProgress += Math.random() * 15;
-                if (loadingProgress >= 100) {
-                    loadingProgress = 100;
-                    clearInterval(interval);
-                }
-                if (percentageElement) {
-                    percentageElement.textContent = Math.floor(loadingProgress) + '%';
-                }
-            }, 150);
+                loadingProgress += Math.random() * 12;
+                if (loadingProgress >= 100) { loadingProgress = 100; clearInterval(interval); }
+                if (percentageElement) percentageElement.textContent = Math.floor(loadingProgress) + '%';
+            }, 120);
         }
         
         function createLoadingParticles() {
@@ -459,36 +393,28 @@
             for (let i = 0; i < 80; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'loading-particle';
-                const startX = Math.random() * window.innerWidth;
-                const startY = window.innerHeight + Math.random() * 150;
-                const moveX = (Math.random() - 0.5) * 150;
-                particle.style.left = startX + 'px';
-                particle.style.top = startY + 'px';
-                particle.style.setProperty('--x', moveX + 'px');
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = window.innerHeight + Math.random() * 150 + 'px';
+                particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
                 particle.style.animationDelay = Math.random() * 2 + 's';
                 particle.style.animationDuration = 1.5 + Math.random() * 1.5 + 's';
                 container.appendChild(particle);
             }
         }
         
-        // Start loading animation
         updateLoadingProgress();
         createLoadingParticles();
         
-        // Hide loading screen after everything loads
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loadingScreen = document.getElementById('loadingScreen');
                 loadingScreen.classList.add('hidden');
-                setTimeout(() => {
-                    if (loadingScreen) loadingScreen.style.display = 'none';
-                }, 600);
-            }, 1200);
+                setTimeout(() => { if (loadingScreen) loadingScreen.style.display = 'none'; }, 600);
+            }, 1400);
         });
         
-        // ========== SECURITY & ENCRYPTION ==========
-        
-        const ENCRYPTION_KEY = 'PRRX_SECURE_KEY_2026_E2E_ENCRYPTED';
+        // ========== ENCRYPTION ==========
+        const ENCRYPTION_KEY = 'PRRX_HWID_KEY_2026_SECURE';
         
         function encryptData(data) {
             let encrypted = '';
@@ -520,21 +446,266 @@
                 if (!encrypted) return null;
                 try { return JSON.parse(decryptData(encrypted)); } catch(e) { return null; }
             },
-            remove: (key) => localStorage.removeItem(`secure_${key}`),
-            clear: () => { Object.keys(localStorage).forEach(k => { if (k.startsWith('secure_')) localStorage.removeItem(k); }); }
+            remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        function generateSessionToken() { return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36); }
-        
-        function generateFingerprint() {
-            const components = [navigator.userAgent, navigator.language, screen.width + 'x' + screen.height, screen.colorDepth, new Date().getTimezoneOffset(), !!navigator.hardwareConcurrency, navigator.platform];
+        // ========== HWID GENERATION ==========
+        function generateHWID() {
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                screen.colorDepth,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 4,
+                navigator.deviceMemory || 4,
+                navigator.platform,
+                navigator.maxTouchPoints || 0,
+                window.screen.pixelDepth
+            ];
             let hash = 0;
             const str = components.join('|');
-            for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
-            return Math.abs(hash).toString(16);
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash).toString(16).toUpperCase();
         }
         
-        // Anti-DevTools
+        const CURRENT_HWID = generateHWID();
+        
+        // ========== USER DATABASE ==========
+        function initDatabase() {
+            let users = SecureStorage.get('users');
+            if (!users) {
+                users = {};
+                SecureStorage.set('users', users);
+            }
+            return users;
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+        
+        // ========== REGISTER ==========
+        function register(username, password) {
+            if (!username || !password) {
+                showToast("❌ Please enter username and password");
+                return false;
+            }
+            if (username.length < 3) {
+                showToast("❌ Username must be at least 3 characters");
+                return false;
+            }
+            if (password.length < 4) {
+                showToast("❌ Password must be at least 4 characters");
+                return false;
+            }
+            
+            const users = SecureStorage.get('users');
+            if (users[username]) {
+                showToast("❌ Username already exists");
+                return false;
+            }
+            
+            // Register with current HWID
+            users[username] = {
+                password: password,
+                hwid: CURRENT_HWID,
+                registeredAt: new Date().toISOString(),
+                lastLogin: null
+            };
+            SecureStorage.set('users', users);
+            
+            showToast(`✅ Registration successful! HWID locked to this device.`);
+            showLoginForm();
+            return true;
+        }
+        
+        // ========== LOGIN ==========
+        function login(username, password) {
+            const users = SecureStorage.get('users');
+            
+            if (!users[username]) {
+                showToast("❌ Username not found");
+                return false;
+            }
+            
+            if (users[username].password !== password) {
+                showToast("❌ Incorrect password");
+                return false;
+            }
+            
+            // Check HWID match
+            if (users[username].hwid !== CURRENT_HWID) {
+                showToast("❌ HWID MISMATCH! This account is locked to another device.");
+                showToast("🔒 Contact support to reset HWID");
+                return false;
+            }
+            
+            // Update last login
+            users[username].lastLogin = new Date().toISOString();
+            SecureStorage.set('users', users);
+            
+            // Save session
+            const session = {
+                username: username,
+                hwid: CURRENT_HWID,
+                loginTime: new Date().toISOString()
+            };
+            SecureStorage.set('session', session);
+            
+            showToast(`✅ Welcome back, ${username}! HWID verified.`);
+            renderDashboard(username);
+            return true;
+        }
+        
+        // ========== LOGOUT ==========
+        function logout() {
+            SecureStorage.remove('session');
+            showToast("🔒 Logged out successfully");
+            showLoginForm();
+        }
+        
+        // ========== CHECK SESSION ==========
+        function checkSession() {
+            const session = SecureStorage.get('session');
+            if (session && session.hwid === CURRENT_HWID) {
+                renderDashboard(session.username);
+                return true;
+            }
+            return false;
+        }
+        
+        // ========== UI RENDERING ==========
+        function showLoginForm() {
+            document.getElementById('appContainer').innerHTML = `
+                <div class="auth-card">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="showLoginForm()">🔐 Login</button>
+                        <button class="tab-btn" onclick="showRegisterForm()">📝 Register</button>
+                    </div>
+                    
+                    <div class="hwid-box">
+                        <i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 16)}...</span>
+                    </div>
+                    
+                    <form id="loginForm" onsubmit="event.preventDefault(); loginSubmit()">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="loginUsername" placeholder="Username" required autocomplete="off">
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" placeholder="Password" required autocomplete="off">
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                    </form>
+                    
+                    <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #8e9eb5;">
+                        <i class="fas fa-fingerprint"></i> HWID Locked Account | Device verification required
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loginSubmit() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            login(username, password);
+        }
+        
+        function showRegisterForm() {
+            document.getElementById('appContainer').innerHTML = `
+                <div class="auth-card">
+                    <div class="tabs">
+                        <button class="tab-btn" onclick="showLoginForm()">🔐 Login</button>
+                        <button class="tab-btn active" onclick="showRegisterForm()">📝 Register</button>
+                    </div>
+                    
+                    <div class="hwid-box">
+                        <i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 16)}...</span>
+                        <br><small style="color:#4caf50;">This HWID will be locked to your account</small>
+                    </div>
+                    
+                    <form id="registerForm" onsubmit="event.preventDefault(); registerSubmit()">
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="regUsername" placeholder="Username (min 3 chars)" required autocomplete="off">
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="regPassword" placeholder="Password (min 4 chars)" required autocomplete="off">
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-check-circle"></i>
+                            <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required autocomplete="off">
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-user-plus"></i> Register & Lock HWID</button>
+                    </form>
+                    
+                    <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #ffaa00;">
+                        <i class="fas fa-exclamation-triangle"></i> This account will be locked to this device
+                    </div>
+                </div>
+            `;
+        }
+        
+        function registerSubmit() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            
+            if (password !== confirm) {
+                showToast("❌ Passwords do not match");
+                return;
+            }
+            register(username, password);
+        }
+        
+        function renderDashboard(username) {
+            const users = SecureStorage.get('users');
+            const userData = users[username];
+            const registeredDate = new Date(userData.registeredAt).toLocaleDateString();
+            const lastLogin = userData.lastLogin ? new Date(userData.lastLogin).toLocaleString() : 'First login';
+            
+            document.getElementById('appContainer').innerHTML = `
+                <div class="dashboard-card">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h2>${username}</h2>
+                    <p><i class="fas fa-check-circle" style="color:#4caf50;"></i> HWID Verified</p>
+                    
+                    <div class="info-grid">
+                        <div class="info-item"><div class="label">Account Created</div><div class="value">${registeredDate}</div></div>
+                        <div class="info-item"><div class="label">Last Login</div><div class="value">${lastLogin}</div></div>
+                        <div class="info-item"><div class="label">HWID Status</div><div class="value" style="color:#4caf50;">Locked ✓</div></div>
+                        <div class="info-item"><div class="label">Security</div><div class="value">E2E Encrypted</div></div>
+                    </div>
+                    
+                    <div class="hwid-locked">
+                        <i class="fas fa-fingerprint"></i> Device HWID: ${CURRENT_HWID.substring(0, 20)}...
+                        <br><small>This account is locked to this device</small>
+                    </div>
+                    
+                    <div style="background: rgba(0,224,255,0.1); border-radius: 16px; padding: 0.8rem; margin: 1rem 0;">
+                        <i class="fas fa-gem"></i> PRRX Premium Access
+                        <div style="font-size: 0.7rem; color:#8e9eb5;">HWID Lock Active | Secure Session</div>
+                    </div>
+                    
+                    <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            `;
+            
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+        }
+        
+        // ========== ANTI-DEBUGGING ==========
         let devToolsOpen = false;
         setInterval(() => {
             const start = performance.now();
@@ -547,7 +718,7 @@
         }, 2000);
         
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U')) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
                 e.preventDefault();
                 showToast("🔒 Security: This action is disabled");
                 return false;
@@ -556,173 +727,16 @@
         
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
         document.addEventListener('selectstart', (e) => e.preventDefault());
-        
         if (window.self !== window.top) { window.top.location = window.self.location; }
-        
-        let currentUser = null;
-        let sessionToken = sessionStorage.getItem('prrx_session_token') || generateSessionToken();
-        sessionStorage.setItem('prrx_session_token', sessionToken);
-        const deviceFingerprint = generateFingerprint();
-        
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-        
-        function initSecureDatabase() {
-            let users = SecureStorage.get('users');
-            if (!users) {
-                const defaultUsers = { "demo": { password: encryptData("demo123"), email: encryptData("demo@prrx.com"), createdAt: new Date().toISOString(), lastLogin: null, hwid: encryptData("S-1-5-21-DEMO-USER-" + deviceFingerprint) } };
-                SecureStorage.set('users', defaultUsers);
-            }
-        }
-        initSecureDatabase();
-        
-        function getDecryptedUsers() {
-            const encryptedUsers = SecureStorage.get('users');
-            if (!encryptedUsers) return {};
-            const decrypted = {};
-            for (const [username, userData] of Object.entries(encryptedUsers)) {
-                decrypted[username] = { ...userData, password: decryptData(userData.password), email: decryptData(userData.email), hwid: decryptData(userData.hwid) };
-            }
-            return decrypted;
-        }
-        
-        function saveEncryptedUsers(users) {
-            const encrypted = {};
-            for (const [username, userData] of Object.entries(users)) {
-                encrypted[username] = { ...userData, password: encryptData(userData.password), email: encryptData(userData.email), hwid: encryptData(userData.hwid) };
-            }
-            SecureStorage.set('users', encrypted);
-        }
-        
-        function secureLogin(username, password) {
-            const users = getDecryptedUsers();
-            if (!users[username]) { showToast("❌ Access Denied: Invalid credentials"); return false; }
-            if (users[username].password !== password) { showToast("❌ Access Denied: Invalid credentials"); return false; }
-            const storedHwid = users[username].hwid;
-            if (!storedHwid.includes(deviceFingerprint) && storedHwid !== "S-1-5-21-DEMO-USER-" + deviceFingerprint) {
-                showToast("⚠️ Security Alert: Device not recognized");
-                return false;
-            }
-            users[username].lastLogin = new Date().toISOString();
-            saveEncryptedUsers(users);
-            currentUser = { username: username, email: users[username].email, createdAt: users[username].createdAt, lastLogin: users[username].lastLogin, hwid: users[username].hwid, sessionToken: sessionToken };
-            SecureStorage.set('current_user', currentUser);
-            showToast(`🔐 Secure access granted. Welcome, ${username}!`);
-            renderDashboard();
-            return true;
-        }
-        
-        function secureRegister(username, email, password, confirmPassword) {
-            if (!username || !email || !password) { showToast("❌ All fields required"); return false; }
-            if (password !== confirmPassword) { showToast("❌ Passwords do not match"); return false; }
-            if (password.length < 8) { showToast("❌ Password must be at least 8 characters"); return false; }
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast("❌ Invalid email format"); return false; }
-            if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) { showToast("❌ Username must be 3-20 chars (letters, numbers, underscore)"); return false; }
-            const users = getDecryptedUsers();
-            if (users[username]) { showToast("❌ Username already exists"); return false; }
-            users[username] = { password: password, email: email, createdAt: new Date().toISOString(), lastLogin: null, hwid: "SECURE-HWID-" + deviceFingerprint + "-" + generateSessionToken().substring(0, 8) };
-            saveEncryptedUsers(users);
-            showToast("✅ Account created securely! Please login.");
-            showLoginForm();
-            return true;
-        }
-        
-        function secureLogout() {
-            SecureStorage.remove('current_user');
-            currentUser = null;
-            sessionToken = generateSessionToken();
-            sessionStorage.setItem('prrx_session_token', sessionToken);
-            showToast("🔒 Secure logout complete");
-            showLoginForm();
-        }
-        
-        function checkSecureSession() {
-            const savedUser = SecureStorage.get('current_user');
-            if (savedUser && savedUser.sessionToken === sessionToken) {
-                currentUser = savedUser;
-                renderDashboard();
-                return true;
-            }
-            return false;
-        }
-        
-        function showLoginForm() {
-            document.getElementById('appContainer').innerHTML = `
-                <div class="security-status"><i class="fas fa-shield-alt"></i> 🔐 End-to-End Encrypted | Secure Session Active</div>
-                <div class="auth-card">
-                    <div class="tabs"><button class="tab-btn active" onclick="showLoginForm()">🔐 Login</button><button class="tab-btn" onclick="showRegisterForm()">📝 Register</button></div>
-                    <form id="loginForm" onsubmit="event.preventDefault(); loginSubmit()">
-                        <div class="form-group"><label><i class="fas fa-user"></i> Username</label><input type="text" id="loginUsername" placeholder="Enter your username" required autocomplete="off"></div>
-                        <div class="form-group"><label><i class="fas fa-lock"></i> Password</label><input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="off"></div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-sign-in-alt"></i> Secure Login</button>
-                    </form>
-                    <div class="back-home"><a href="index.html"><i class="fas fa-home"></i> Back to Home</a></div>
-                    <div style="margin-top: 1rem; text-align: center; font-size: 0.65rem; color: #8e9eb5;"><p><i class="fas fa-shield-alt"></i> Demo: <span style="color:#00e0ff;">demo</span> / <span style="color:#00e0ff;">demo123</span> | E2E Encrypted</p></div>
-                </div>
-            `;
-        }
-        
-        function loginSubmit() { secureLogin(document.getElementById('loginUsername').value.trim(), document.getElementById('loginPassword').value); }
-        
-        function showRegisterForm() {
-            document.getElementById('appContainer').innerHTML = `
-                <div class="security-status"><i class="fas fa-shield-alt"></i> 🔐 End-to-End Encrypted | Secure Registration</div>
-                <div class="auth-card">
-                    <div class="tabs"><button class="tab-btn" onclick="showLoginForm()">🔐 Login</button><button class="tab-btn active" onclick="showRegisterForm()">📝 Register</button></div>
-                    <form id="registerForm" onsubmit="event.preventDefault(); registerSubmit()">
-                        <div class="form-group"><label><i class="fas fa-user"></i> Username (3-20 chars)</label><input type="text" id="regUsername" placeholder="Choose a username" required autocomplete="off"></div>
-                        <div class="form-group"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="regEmail" placeholder="Enter your email" required autocomplete="off"></div>
-                        <div class="form-group"><label><i class="fas fa-lock"></i> Password (min 8 chars)</label><input type="password" id="regPassword" placeholder="Create a strong password" required autocomplete="off"></div>
-                        <div class="form-group"><label><i class="fas fa-check-circle"></i> Confirm Password</label><input type="password" id="regConfirmPassword" placeholder="Confirm your password" required autocomplete="off"></div>
-                        <button type="submit" class="submit-btn"><i class="fas fa-user-shield"></i> Secure Register</button>
-                    </form>
-                    <div class="back-home"><a href="index.html"><i class="fas fa-home"></i> Back to Home</a></div>
-                </div>
-            `;
-        }
-        
-        function registerSubmit() {
-            secureRegister(document.getElementById('regUsername').value.trim(), document.getElementById('regEmail').value.trim(), document.getElementById('regPassword').value, document.getElementById('regConfirmPassword').value);
-        }
-        
-        function renderDashboard() {
-            if (!currentUser) { showLoginForm(); return; }
-            const createdAt = new Date(currentUser.createdAt).toLocaleDateString();
-            const lastLogin = currentUser.lastLogin ? new Date(currentUser.lastLogin).toLocaleString() : 'First login';
-            document.getElementById('appContainer').innerHTML = `
-                <div class="security-status"><i class="fas fa-shield-alt"></i> 🔐 E2E Encrypted Session | Device Verified</div>
-                <div class="dashboard-card">
-                    <div class="user-avatar">${currentUser.username.charAt(0).toUpperCase()}</div>
-                    <div class="user-info"><h2>${currentUser.username}</h2><p><i class="fas fa-envelope"></i> ${currentUser.email}</p></div>
-                    <div class="info-grid">
-                        <div class="info-item"><div class="label">Account Created</div><div class="value">${createdAt}</div></div>
-                        <div class="info-item"><div class="label">Last Login</div><div class="value">${lastLogin}</div></div>
-                        <div class="info-item"><div class="label">Fingerprint</div><div class="value" style="font-size: 0.65rem;">${deviceFingerprint.substring(0, 12)}...</div></div>
-                        <div class="info-item"><div class="label">Status</div><div class="value" style="color: #4caf50;">E2E Encrypted ✓</div></div>
-                    </div>
-                    <button class="logout-btn" onclick="secureLogout()"><i class="fas fa-sign-out-alt"></i> Secure Logout</button>
-                    <div class="back-home"><a href="index.html"><i class="fas fa-home"></i> Back to Home</a></div>
-                </div>
-            `;
-        }
-        
-        if (!checkSecureSession()) { showLoginForm(); }
-        
-        window.showLoginForm = showLoginForm;
-        window.showRegisterForm = showRegisterForm;
-        window.loginSubmit = loginSubmit;
-        window.registerSubmit = registerSubmit;
-        window.secureLogout = secureLogout;
         
         // Custom Cursor
         if (window.innerWidth > 768) {
             const cd = document.querySelector('.cursor-dot'), co = document.querySelector('.cursor-outline');
             if (cd && co) {
-                document.addEventListener('mousemove', (e) => { cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`; co.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`; });
+                document.addEventListener('mousemove', (e) => {
+                    cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+                    co.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
+                });
                 document.querySelectorAll('a, button, .auth-card, .dashboard-card').forEach(el => {
                     el.addEventListener('mouseenter', () => { co.style.width = '48px'; co.style.height = '48px'; co.style.borderColor = '#a020f0'; });
                     el.addEventListener('mouseleave', () => { co.style.width = '32px'; co.style.height = '32px'; co.style.borderColor = 'rgba(0,224,255,0.6)'; });
@@ -730,7 +744,18 @@
             }
         }
         
-        console.log("%c🔒 PRRX SECURE DASHBOARD ACTIVE | E2E ENCRYPTED", "color: #00e0ff; font-size: 14px");
+        // Make functions global
+        window.showLoginForm = showLoginForm;
+        window.showRegisterForm = showRegisterForm;
+        window.loginSubmit = loginSubmit;
+        window.registerSubmit = registerSubmit;
+        
+        // Initialize
+        initDatabase();
+        if (!checkSession()) { showLoginForm(); }
+        
+        console.log("%c🔒 PRRX HWID LOCK SYSTEM ACTIVE", "color: #00e0ff; font-size: 14px;");
+        console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0; font-size: 12px;");
     </script>
 </body>
 </html>
