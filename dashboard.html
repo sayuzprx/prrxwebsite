@@ -114,7 +114,7 @@
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
         .content { position: relative; z-index: 2; max-width: 500px; margin: 0 auto; padding: 6rem 1.5rem 2rem; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
         
-        /* Navbar */
+        /* Navbar - Updated to match index.html */
         .navbar {
             position: fixed;
             top: 0;
@@ -262,6 +262,21 @@
         }
         .logout-btn:hover { background: #ff5050; color: #fff; }
         
+        /* Live Chat Button */
+        .chat-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(37, 211, 102, 0.2);
+            border: 1px solid #25D366;
+            border-radius: 40px;
+            color: #25D366;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        .chat-btn:hover { background: #25D366; color: #fff; box-shadow: 0 0 15px #25D366; }
+        
         .toast-notification {
             position: fixed;
             bottom: 20px;
@@ -315,8 +330,8 @@
         <a href="index.html" class="logo">PRRX</a>
         <div class="menu">
             <a href="index.html">HOME</a>
-            <a href="index.html#panelSection">PANEL</a>
             <a href="features.html">FEATURES</a>
+            <a href="live-chat.html">CHAT</a>
             <a href="dashboard.html" style="color: #00e0ff;">DASHBOARD</a>
         </div>
     </div>
@@ -512,7 +527,6 @@
                 return false;
             }
             
-            // Register with current HWID
             users[username] = {
                 password: password,
                 hwid: CURRENT_HWID,
@@ -540,18 +554,15 @@
                 return false;
             }
             
-            // Check HWID match
             if (users[username].hwid !== CURRENT_HWID) {
                 showToast("❌ HWID MISMATCH! This account is locked to another device.");
                 showToast("🔒 Contact support to reset HWID");
                 return false;
             }
             
-            // Update last login
             users[username].lastLogin = new Date().toISOString();
             SecureStorage.set('users', users);
             
-            // Save session
             const session = {
                 username: username,
                 hwid: CURRENT_HWID,
@@ -606,11 +617,17 @@
                         <button type="submit" class="submit-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
                     </form>
                     
+                    <button class="chat-btn" id="gotoChatBtn"><i class="fas fa-comments"></i> Join Live Chat</button>
+                    
                     <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #8e9eb5;">
                         <i class="fas fa-fingerprint"></i> HWID Locked Account | Device verification required
                     </div>
                 </div>
             `;
+            
+            document.getElementById('gotoChatBtn').addEventListener('click', () => {
+                window.location.href = 'live-chat.html';
+            });
         }
         
         function loginSubmit() {
@@ -648,11 +665,17 @@
                         <button type="submit" class="submit-btn"><i class="fas fa-user-plus"></i> Register & Lock HWID</button>
                     </form>
                     
+                    <button class="chat-btn" id="gotoChatBtnReg"><i class="fas fa-comments"></i> Join Live Chat</button>
+                    
                     <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #ffaa00;">
                         <i class="fas fa-exclamation-triangle"></i> This account will be locked to this device
                     </div>
                 </div>
             `;
+            
+            document.getElementById('gotoChatBtnReg').addEventListener('click', () => {
+                window.location.href = 'live-chat.html';
+            });
         }
         
         function registerSubmit() {
@@ -699,10 +722,14 @@
                     </div>
                     
                     <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    <button class="chat-btn" id="dashboardChatBtn"><i class="fas fa-comments"></i> Join Live Chat</button>
                 </div>
             `;
             
             document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('dashboardChatBtn').addEventListener('click', () => {
+                window.location.href = 'live-chat.html';
+            });
         }
         
         // ========== ANTI-DEBUGGING ==========
@@ -756,6 +783,7 @@
         
         console.log("%c🔒 PRRX HWID LOCK SYSTEM ACTIVE", "color: #00e0ff; font-size: 14px;");
         console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0; font-size: 12px;");
+        console.log("%c💬 Live Chat available - Click button to join!", "color: #25D366; font-size: 11px;");
     </script>
 </body>
 </html>
