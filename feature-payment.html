@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRRX | Payment Method</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%); color: #fff; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .back-btn { display: inline-block; background: rgba(0, 224, 255, 0.2); border: 1px solid #00e0ff; padding: 0.8rem 1.5rem; border-radius: 40px; color: #00e0ff; text-decoration: none; margin-bottom: 2rem; transition: all 0.3s; }
+        .back-btn:hover { background: #00e0ff; color: #050b1a; }
+        h1 { font-size: 2.5rem; background: linear-gradient(135deg, #fff, #00e0ff); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 1rem; }
+        .feature-detail { background: rgba(15, 25, 45, 0.6); backdrop-filter: blur(12px); border-radius: 28px; padding: 2rem; border: 1px solid rgba(0, 224, 255, 0.3); margin-top: 1rem; }
+        .screenshot { width: 100%; border-radius: 20px; margin: 1.5rem 0; border: 1px solid rgba(0,224,255,0.3); }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+        .price-card { background: linear-gradient(135deg, rgba(0,224,255,0.1), rgba(160,32,240,0.1)); border: 1px solid rgba(0,224,255,0.3); border-radius: 20px; padding: 1.2rem; text-align: center; transition: all 0.3s; }
+        .price-card:hover { transform: translateY(-5px); border-color: #00e0ff; }
+        .price-card .price { font-size: 1.5rem; font-weight: 800; color: #00e0ff; }
+        .price-card .duration { font-size: 0.8rem; color: #8e9eb5; }
+        .btn-primary { display: inline-block; background: linear-gradient(90deg, #00e0ff, #a020f0); padding: 0.8rem 2rem; border-radius: 40px; color: white; text-decoration: none; margin-top: 1rem; font-weight: bold; }
+        @media (max-width: 768px) { .container { padding: 1rem; } h1 { font-size: 1.8rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <h1><i class="fas fa-credit-card"></i> Payment Method</h1>
+        <div class="feature-detail">
+            <img src="https://github.com/sayuzprx/prrxwebsite/raw/main/payment-method.png" alt="PRRX Payment" class="screenshot" onerror="this.src='https://placehold.co/800x400/1a1f2e/00e0ff?text=Payment+Method+Screenshot'">
+            <h2>Choose Your Plan</h2>
+            <p>Select the perfect PRRX subscription plan for your needs. All plans include full access to features.</p>
+            <h3 style="margin-top: 1.5rem;">💰 Available Plans:</h3>
+            <div class="pricing-grid">
+                <div class="price-card"><div class="price">300 LKR</div><div class="duration">1 WEEK</div></div>
+                <div class="price-card"><div class="price">600 LKR</div><div class="duration">3 WEEKS</div></div>
+                <div class="price-card"><div class="price">850 LKR</div><div class="duration">1 MONTH</div></div>
+                <div class="price-card"><div class="price">1500 LKR</div><div class="duration">6 MONTHS</div></div>
+                <div class="price-card"><div class="price">2299 LKR</div><div class="duration">1 YEAR</div></div>
+                <div class="price-card"><div class="price">2499 LKR</div><div class="duration">1 YEAR +</div></div>
+            </div>
+            <div class="how-to-use">
+                <h3><i class="fas fa-question-circle"></i> How to Purchase:</h3>
+                <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>Select your preferred plan</li>
+                    <li>Click "buy ticket here" to proceed</li>
+                    <li>Complete payment via available methods</li>
+                    <li>Receive license key instantly</li>
+                    <li>Enter license in PRRX login panel</li>
+                </ol>
+            </div>
+            <a href="index.html#dashboardSection" class="btn-primary"><i class="fas fa-ticket-alt"></i> Buy Ticket Here</a>
+        </div>
+    </div>
+</body>
+</html>

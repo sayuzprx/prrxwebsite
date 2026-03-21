@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRRX | User Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%); color: #fff; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .back-btn { display: inline-block; background: rgba(0, 224, 255, 0.2); border: 1px solid #00e0ff; padding: 0.8rem 1.5rem; border-radius: 40px; color: #00e0ff; text-decoration: none; margin-bottom: 2rem; transition: all 0.3s; }
+        .back-btn:hover { background: #00e0ff; color: #050b1a; }
+        h1 { font-size: 2.5rem; background: linear-gradient(135deg, #fff, #00e0ff); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 1rem; }
+        .feature-detail { background: rgba(15, 25, 45, 0.6); backdrop-filter: blur(12px); border-radius: 28px; padding: 2rem; border: 1px solid rgba(0, 224, 255, 0.3); margin-top: 1rem; }
+        .screenshot { width: 100%; border-radius: 20px; margin: 1.5rem 0; border: 1px solid rgba(0,224,255,0.3); }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+        .info-card { background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 16px; border-left: 3px solid #00e0ff; }
+        .info-card h4 { color: #00e0ff; margin-bottom: 0.5rem; }
+        .feature-list { list-style: none; margin: 1.5rem 0; }
+        .feature-list li { padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; }
+        .feature-list li i { color: #00e0ff; width: 24px; }
+        .btn-primary { display: inline-block; background: linear-gradient(90deg, #00e0ff, #a020f0); padding: 0.8rem 2rem; border-radius: 40px; color: white; text-decoration: none; margin-top: 1rem; font-weight: bold; }
+        @media (max-width: 768px) { .container { padding: 1rem; } h1 { font-size: 1.8rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <h1><i class="fas fa-user"></i> User Account</h1>
+        <div class="feature-detail">
+            <img src="https://github.com/sayuzprx/prrxwebsite/raw/main/user-info.png" alt="PRRX User Account" class="screenshot" onerror="this.src='https://placehold.co/800x400/1a1f2e/00e0ff?text=User+Account+Screenshot'">
+            <h2>Account Information Dashboard</h2>
+            <p>View your license status, account details, and system information in one place.</p>
+            <h3 style="margin-top: 1.5rem;">👤 Account Details:</h3>
+            <div class="info-grid">
+                <div class="info-card"><h4><i class="fas fa-user"></i> Username</h4><p>html</p></div>
+                <div class="info-card"><h4><i class="fas fa-network-wired"></i> IP Address</h4><p>192.64.86.62</p></div>
+                <div class="info-card"><h4><i class="fas fa-fingerprint"></i> HWID</h4><p>S-1-5-21-493991891-1860147211-3959485256-1001</p></div>
+                <div class="info-card"><h4><i class="fas fa-calendar-plus"></i> Account Created</h4><p>2026-03-20 22:02:20</p></div>
+                <div class="info-card"><h4><i class="fas fa-clock"></i> Last Login</h4><p>2026-03-21 11:55:27</p></div>
+                <div class="info-card"><h4><i class="fas fa-key"></i> License Status</h4><p>Buy paid key - you don't have key</p></div>
+                <div class="info-card"><h4><i class="fas fa-hourglass-half"></i> Time Left</h4><p>486d 11h</p></div>
+                <div class="info-card"><h4><i class="fas fa-users"></i> Online Users</h4><p>6</p></div>
+            </div>
+            <div class="how-to-use">
+                <h3><i class="fas fa-question-circle"></i> Account Actions:</h3>
+                <ul class="feature-list">
+                    <li><i class="fas fa-sync-alt"></i> <strong>USER UPDATE HERE</strong> - Update account information</li>
+                    <li><i class="fas fa-sign-out-alt"></i> <strong>LOGOUT</strong> - Exit PRRX application</li>
+                    <li><i class="fas fa-info-circle"></i> <strong>WHAT'S MEAN PRRX</strong> - About PRRX panel</li>
+                    <li><i class="fas fa-adjust"></i> <strong>PARTICLES OFF ></strong> - Toggle particle effects</li>
+                </ul>
+            </div>
+            <a href="index.html#dashboardSection" class="btn-primary"><i class="fas fa-sync-alt"></i> Update License</a>
+        </div>
+    </div>
+</body>
+</html>

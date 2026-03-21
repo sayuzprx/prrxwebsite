@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRRX | Report Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%); color: #fff; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .back-btn { display: inline-block; background: rgba(0, 224, 255, 0.2); border: 1px solid #00e0ff; padding: 0.8rem 1.5rem; border-radius: 40px; color: #00e0ff; text-decoration: none; margin-bottom: 2rem; transition: all 0.3s; }
+        .back-btn:hover { background: #00e0ff; color: #050b1a; }
+        h1 { font-size: 2.5rem; background: linear-gradient(135deg, #fff, #00e0ff); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 1rem; }
+        .feature-detail { background: rgba(15, 25, 45, 0.6); backdrop-filter: blur(12px); border-radius: 28px; padding: 2rem; border: 1px solid rgba(0, 224, 255, 0.3); margin-top: 1rem; }
+        .screenshot { width: 100%; border-radius: 20px; margin: 1.5rem 0; border: 1px solid rgba(0,224,255,0.3); }
+        .feature-list { list-style: none; margin: 1.5rem 0; }
+        .feature-list li { padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; }
+        .feature-list li i { color: #00e0ff; width: 24px; }
+        .how-to-use { background: rgba(0, 0, 0, 0.3); padding: 1.5rem; border-radius: 20px; margin: 1.5rem 0; }
+        .btn-primary { display: inline-block; background: linear-gradient(90deg, #00e0ff, #a020f0); padding: 0.8rem 2rem; border-radius: 40px; color: white; text-decoration: none; margin-top: 1rem; font-weight: bold; }
+        @media (max-width: 768px) { .container { padding: 1rem; } h1 { font-size: 1.8rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        <h1><i class="fas fa-flag"></i> Report Menu</h1>
+        <div class="feature-detail">
+            <img src="https://github.com/sayuzprx/prrxwebsite/raw/main/report-menu.png" alt="PRRX Report" class="screenshot" onerror="this.src='https://placehold.co/800x400/1a1f2e/00e0ff?text=Report+Menu+Screenshot'">
+            <h2>Report Violations</h2>
+            <p>Report cheating, teaming, or any violation for investigation. Help keep the community fair.</p>
+            <h3 style="margin-top: 1.5rem;">📋 Report Form Fields:</h3>
+            <ul class="feature-list">
+                <li><i class="fas fa-user"></i> <strong>Player Name</strong> - Enter the player's username</li>
+                <li><i class="fas fa-id-card"></i> <strong>Free Fire ID</strong> - Player's Free Fire ID</li>
+                <li><i class="fas fa-barcode"></i> <strong>UID</strong> - Player's unique identifier</li>
+                <li><i class="fas fa-tag"></i> <strong>Report Type</strong> - Select violation type</li>
+                <li><i class="fas fa-image"></i> <strong>Browse Image</strong> - Upload evidence screenshot</li>
+                <li><i class="fas fa-calendar"></i> <strong>Incident Date</strong> - When violation occurred</li>
+                <li><i class="fas fa-hashtag"></i> <strong>Match ID</strong> - Optional match identifier</li>
+                <li><i class="fab fa-discord"></i> <strong>Discord Link</strong> - For follow-up communication</li>
+            </ul>
+            <div class="how-to-use">
+                <h3><i class="fas fa-link"></i> Helpful Links:</h3>
+                <ul class="feature-list">
+                    <li><i class="fas fa-gamepad"></i> Safe Emulator Link - Get safe emulator setup</li>
+                    <li><i class="fab fa-whatsapp"></i> WhatsApp Link - Support via WhatsApp</li>
+                    <li><i class="fas fa-chart-line"></i> View Logs - Check report history</li>
+                    <li><i class="fas fa-gift"></i> FREETRIAL - Free trial information</li>
+                </ul>
+            </div>
+            <a href="index.html#dashboardSection" class="btn-primary"><i class="fas fa-paper-plane"></i> Submit Report</a>
+        </div>
+    </div>
+</body>
+</html>
