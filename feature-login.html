@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRRX | Login System Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .back-btn {
+            display: inline-block;
+            background: rgba(0, 224, 255, 0.2);
+            border: 1px solid #00e0ff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 40px;
+            color: #00e0ff;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            background: #00e0ff;
+            color: #050b1a;
+        }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #fff, #00e0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        .feature-detail {
+            background: rgba(15, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 224, 255, 0.3);
+            margin-top: 1rem;
+        }
+        .feature-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+        .feature-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .feature-list li i {
+            color: #00e0ff;
+            width: 24px;
+        }
+        .how-to-use {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin: 1.5rem 0;
+        }
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            color: white;
+            text-decoration: none;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        
+        <h1><i class="fas fa-lock"></i> Login System</h1>
+        
+        <div class="feature-detail">
+            <h2>Secure & Encrypted Login</h2>
+            <p>A secure and encrypted login system that protects user data while delivering fast and reliable access.</p>
+            
+            <h3 style="margin-top: 1.5rem;">✨ Features:</h3>
+            <ul class="feature-list">
+                <li><i class="fas fa-shield-alt"></i> AES-256 Encryption</li>
+                <li><i class="fas fa-key"></i> Licence Key System</li>
+                <li><i class="fas fa-sync-alt"></i> Auto Update Check</li>
+                <li><i class="fas fa-fingerprint"></i> HWID Lock Protection</li>
+                <li><i class="fas fa-clock"></i> 24/7 Server Authentication</li>
+                <li><i class="fas fa-mobile-alt"></i> Multi-Device Support</li>
+            </ul>
+            
+            <div class="how-to-use">
+                <h3><i class="fas fa-question-circle"></i> How to Login:</h3>
+                <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li>Download PRRX HEX Premium from the main page</li>
+                    <li>Install and open the application</li>
+                    <li>Enter your Username and Licence Key</li>
+                    <li>Click "LOGIN" to access all features</li>
+                    <li>System will verify and auto-update if needed</li>
+                </ol>
+            </div>
+            
+            <a href="index.html#dashboardSection" class="btn-primary"><i class="fas fa-download"></i> Download Now</a>
+        </div>
+    </div>
+</body>
+</html>
