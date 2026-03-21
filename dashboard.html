@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PRRX | User Dashboard - Login & Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        /* Custom Cursor */
+        @media (min-width: 768px) {
+            .cursor-dot { width: 8px; height: 8px; background-color: #00e0ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px #00e0ff; }
+            .cursor-outline { width: 32px; height: 32px; border: 2px solid rgba(0,224,255,0.6); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: transform 0.2s ease, width 0.2s, height 0.2s; backdrop-filter: blur(2px); }
+        }
+        @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
+        
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(5, 11, 26, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0,224,255,0.2);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #fff, #00e0ff); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; cursor: pointer; }
+        .menu { display: flex; gap: 2rem; }
+        .menu a { color: #fff; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; }
+        .menu a:hover { color: #00e0ff; }
+        
+        /* Main Container */
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 6rem 1.5rem 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        /* Auth Card */
+        .auth-card {
+            background: rgba(15, 25, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 224, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0,224,255,0.2);
+            padding-bottom: 1rem;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #8e9eb5;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 30px;
+        }
+        .tab-btn.active {
+            background: linear-gradient(90deg, #00e0ff20, #a020f020);
+            color: #00e0ff;
+            border: 1px solid #00e0ff;
+        }
+        
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            color: #b0c4de;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,224,255,0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #00e0ff;
+            box-shadow: 0 0 10px rgba(0,224,255,0.3);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            border: none;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 0.5rem;
+        }
+        .submit-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px #00e0ff; }
+        
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+        .success-msg {
+            color: #4caf50;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+        
+        /* Dashboard Content */
+        .dashboard-card {
+            background: rgba(15, 25, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 224, 255, 0.3);
+        }
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00e0ff, #a020f0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .user-info {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .user-info h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .user-info p { color: #8e9eb5; font-size: 0.85rem; margin: 0.3rem 0; }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+        }
+        .info-item { text-align: center; }
+        .info-item .label { font-size: 0.7rem; color: #8e9eb5; }
+        .info-item .value { font-size: 1rem; font-weight: 600; color: #00e0ff; }
+        .logout-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255,80,80,0.2);
+            border: 1px solid #ff5050;
+            border-radius: 40px;
+            color: #ff5050;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover { background: #ff5050; color: #fff; }
+        
+        .back-home {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .back-home a {
+            color: #00e0ff;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0,224,255,0.95);
+            color: #050b1a;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        .toast-notification.show { transform: translateX(0); }
+        
+        @media (max-width: 768px) {
+            .container { padding: 5rem 1rem 2rem; }
+            .navbar { padding: 0.8rem 1rem; }
+            .menu { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="index.html" class="logo">PRRX</a>
+        <div class="menu">
+            <a href="index.html">HOME</a>
+            <a href="index.html#panelSection">PANEL</a>
+            <a href="features.html">FEATURES</a>
+            <a href="dashboard.html" style="color: #00e0ff;">DASHBOARD</a>
+        </div>
+    </div>
+
+    <div class="container" id="appContainer">
+        <!-- Content will be dynamically loaded here -->
+    </div>
+
+    <div id="toast" class="toast-notification"></div>
+
+    <script>
+        // ========== USER DATABASE (stored in localStorage) ==========
+        // Initialize users if not exists
+        if (!localStorage.getItem('prrx_users')) {
+            const defaultUsers = {
+                "demo": {
+                    password: "demo123",
+                    email: "demo@prrx.com",
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null,
+                    hwid: "S-1-5-21-DEMO-USER"
+                }
+            };
+            localStorage.setItem('prrx_users', JSON.stringify(defaultUsers));
+        }
+        
+        // Current logged in user
+        let currentUser = null;
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+        
+        // ========== LOGIN FUNCTION ==========
+        function login(username, password) {
+            const users = JSON.parse(localStorage.getItem('prrx_users'));
+            
+            if (!users[username]) {
+                showToast("❌ Username not found!");
+                return false;
+            }
+            
+            if (users[username].password !== password) {
+                showToast("❌ Incorrect password!");
+                return false;
+            }
+            
+            // Update last login
+            users[username].lastLogin = new Date().toISOString();
+            localStorage.setItem('prrx_users', JSON.stringify(users));
+            
+            // Save session
+            currentUser = {
+                username: username,
+                email: users[username].email,
+                createdAt: users[username].createdAt,
+                lastLogin: users[username].lastLogin,
+                hwid: users[username].hwid
+            };
+            localStorage.setItem('prrx_current_user', JSON.stringify(currentUser));
+            
+            showToast(`✅ Welcome back, ${username}!`);
+            renderDashboard();
+            return true;
+        }
+        
+        // ========== REGISTER FUNCTION ==========
+        function register(username, email, password, confirmPassword) {
+            if (!username || !email || !password) {
+                showToast("❌ Please fill all fields!");
+                return false;
+            }
+            
+            if (password !== confirmPassword) {
+                showToast("❌ Passwords do not match!");
+                return false;
+            }
+            
+            if (password.length < 4) {
+                showToast("❌ Password must be at least 4 characters!");
+                return false;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('prrx_users'));
+            
+            if (users[username]) {
+                showToast("❌ Username already exists!");
+                return false;
+            }
+            
+            // Create new user
+            users[username] = {
+                password: password,
+                email: email,
+                createdAt: new Date().toISOString(),
+                lastLogin: null,
+                hwid: "S-1-5-21-" + Math.random().toString(36).substring(2, 10).toUpperCase()
+            };
+            localStorage.setItem('prrx_users', JSON.stringify(users));
+            
+            showToast("✅ Account created successfully! Please login.");
+            showLoginForm();
+            return true;
+        }
+        
+        // ========== LOGOUT FUNCTION ==========
+        function logout() {
+            localStorage.removeItem('prrx_current_user');
+            currentUser = null;
+            showToast("🔒 Logged out successfully!");
+            showLoginForm();
+        }
+        
+        // ========== CHECK SESSION ==========
+        function checkSession() {
+            const savedUser = localStorage.getItem('prrx_current_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                renderDashboard();
+                return true;
+            }
+            return false;
+        }
+        
+        // ========== RENDER LOGIN FORM ==========
+        function showLoginForm() {
+            const container = document.getElementById('appContainer');
+            container.innerHTML = `
+                <div class="auth-card">
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="showLoginForm()">🔐 Login</button>
+                        <button class="tab-btn" onclick="showRegisterForm()">📝 Register</button>
+                    </div>
+                    
+                    <form id="loginForm" onsubmit="event.preventDefault(); loginSubmit()">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Username</label>
+                            <input type="text" id="loginUsername" placeholder="Enter your username" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                    </form>
+                    
+                    <div class="back-home" style="margin-top: 1rem;">
+                        <a href="index.html"><i class="fas fa-home"></i> Back to Home</a>
+                    </div>
+                    
+                    <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #8e9eb5;">
+                        <p>Demo Account: <span style="color:#00e0ff;">demo</span> / <span style="color:#00e0ff;">demo123</span></p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loginSubmit() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            login(username, password);
+        }
+        
+        // ========== RENDER REGISTER FORM ==========
+        function showRegisterForm() {
+            const container = document.getElementById('appContainer');
+            container.innerHTML = `
+                <div class="auth-card">
+                    <div class="tabs">
+                        <button class="tab-btn" onclick="showLoginForm()">🔐 Login</button>
+                        <button class="tab-btn active" onclick="showRegisterForm()">📝 Register</button>
+                    </div>
+                    
+                    <form id="registerForm" onsubmit="event.preventDefault(); registerSubmit()">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Username</label>
+                            <input type="text" id="regUsername" placeholder="Choose a username" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" id="regEmail" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="regPassword" placeholder="Create a password (min 4 chars)" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-check-circle"></i> Confirm Password</label>
+                            <input type="password" id="regConfirmPassword" placeholder="Confirm your password" required>
+                        </div>
+                        <button type="submit" class="submit-btn"><i class="fas fa-user-plus"></i> Create Account</button>
+                    </form>
+                    
+                    <div class="back-home" style="margin-top: 1rem;">
+                        <a href="index.html"><i class="fas fa-home"></i> Back to Home</a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function registerSubmit() {
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            register(username, email, password, confirmPassword);
+        }
+        
+        // ========== RENDER USER DASHBOARD ==========
+        function renderDashboard() {
+            if (!currentUser) {
+                showLoginForm();
+                return;
+            }
+            
+            const container = document.getElementById('appContainer');
+            const createdAt = new Date(currentUser.createdAt).toLocaleDateString();
+            const lastLogin = currentUser.lastLogin ? new Date(currentUser.lastLogin).toLocaleString() : 'First login';
+            
+            container.innerHTML = `
+                <div class="dashboard-card">
+                    <div class="user-avatar">
+                        ${currentUser.username.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="user-info">
+                        <h2>${currentUser.username}</h2>
+                        <p><i class="fas fa-envelope"></i> ${currentUser.email}</p>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="label">Account Created</div>
+                            <div class="value">${createdAt}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Last Login</div>
+                            <div class="value">${lastLogin}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">HWID</div>
+                            <div class="value" style="font-size: 0.7rem;">${currentUser.hwid.substring(0, 20)}...</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Status</div>
+                            <div class="value" style="color: #4caf50;">Active ✓</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 1rem 0; padding: 1rem; background: rgba(0,224,255,0.1); border-radius: 16px; text-align: center;">
+                        <i class="fas fa-gem"></i> PRRX Premium Active
+                        <div style="font-size: 0.7rem; color: #8e9eb5;">License expires: 486 days</div>
+                    </div>
+                    
+                    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    
+                    <div class="back-home" style="margin-top: 1rem;">
+                        <a href="index.html"><i class="fas fa-home"></i> Back to Home</a>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ========== INITIALIZE ==========
+        function init() {
+            if (!checkSession()) {
+                showLoginForm();
+            }
+        }
+        
+        init();
+        
+        // Custom Cursor
+        if (window.innerWidth > 768) {
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+            if (cursorDot && cursorOutline) {
+                document.addEventListener('mousemove', (e) => {
+                    cursorDot.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+                    cursorOutline.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
+                });
+                document.querySelectorAll('a, button, .auth-card').forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        cursorOutline.style.width = '48px';
+                        cursorOutline.style.height = '48px';
+                        cursorOutline.style.borderColor = '#a020f0';
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        cursorOutline.style.width = '32px';
+                        cursorOutline.style.height = '32px';
+                        cursorOutline.style.borderColor = 'rgba(0,224,255,0.6)';
+                    });
+                });
+            }
+        }
+        
+        // Make functions global for onclick
+        window.showLoginForm = showLoginForm;
+        window.showRegisterForm = showRegisterForm;
+        window.loginSubmit = loginSubmit;
+        window.registerSubmit = registerSubmit;
+        window.logout = logout;
+    </script>
+</body>
+</html>
