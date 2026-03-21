@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PRRX | Live Chat - HWID Protected</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- ========== ULTRA SECURITY HEADERS ========== -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        connect-src 'self';
+        frame-ancestors 'none';
+        base-uri 'self';
+        form-action 'self';
+    ">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ========== LOADING SCREEN ========== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 50%, #050b1a 100%);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease;
+        }
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .loading-logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #00e0ff, #a020f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 1.2s ease infinite;
+            margin-bottom: 2rem;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 4px solid rgba(0,224,255,0.15);
+            border-top: 4px solid #00e0ff;
+            border-right: 4px solid #a020f0;
+            border-radius: 50%;
+            animation: spin 0.9s infinite;
+            margin-bottom: 2rem;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-progress { width: 250px; height: 3px; background: rgba(0,224,255,0.2); border-radius: 4px; overflow: hidden; margin: 1rem 0; }
+        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #00e0ff, #a020f0); animation: progressFill 1.4s ease-out forwards; }
+        @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
+        .loading-percentage { font-size: 0.8rem; color: #00e0ff; margin-top: 0.5rem; }
+        .loading-text { font-size: 0.85rem; color: #8e9eb5; margin-top: 1rem; }
+        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #00e0ff80; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
+        
+        /* Anti-DevTools */
+        .anti-devtools {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050b1a;
+            z-index: 20000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .anti-devtools.active { display: flex; }
+        .anti-devtools i { font-size: 4rem; color: #ff5050; margin-bottom: 1rem; }
+        
+        /* Custom Cursor */
+        @media (min-width: 768px) {
+            .cursor-dot { width: 8px; height: 8px; background-color: #00e0ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px #00e0ff; }
+            .cursor-outline { width: 32px; height: 32px; border: 2px solid rgba(0,224,255,0.6); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: transform 0.2s ease, width 0.2s, height 0.2s; backdrop-filter: blur(2px); }
+        }
+        @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
+        
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
+        .container { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 6rem 2rem 2rem; min-height: 100vh; }
+        
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(5,11,26,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0,224,255,0.2);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #fff, #00e0ff); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; cursor: pointer; }
+        .menu { display: flex; gap: 2rem; }
+        .menu a { color: #fff; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; }
+        .menu a:hover { color: #00e0ff; }
+        
+        /* Chat Container */
+        .chat-container {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            background: rgba(15, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0,224,255,0.3);
+            min-height: 70vh;
+        }
+        
+        /* User List Sidebar */
+        .user-sidebar {
+            width: 280px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 1rem;
+            border: 1px solid rgba(0,224,255,0.2);
+        }
+        .user-sidebar h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0,224,255,0.3);
+        }
+        .user-sidebar h3 i { margin-right: 0.5rem; color: #00e0ff; }
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .search-box input {
+            flex: 1;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,224,255,0.3);
+            border-radius: 30px;
+            padding: 0.5rem 1rem;
+            color: white;
+            outline: none;
+            font-size: 0.8rem;
+        }
+        .search-box button {
+            background: rgba(0,224,255,0.2);
+            border: 1px solid #00e0ff;
+            border-radius: 30px;
+            padding: 0.5rem 1rem;
+            color: #00e0ff;
+            cursor: pointer;
+        }
+        .user-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.3rem;
+        }
+        .user-item:hover { background: rgba(0,224,255,0.1); }
+        .user-item.online { border-left: 3px solid #4caf50; }
+        .user-avatar-chat {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #00e0ff, #a020f0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .user-info { flex: 1; }
+        .user-name { font-size: 0.85rem; font-weight: 500; }
+        .user-status { font-size: 0.6rem; color: #4caf50; }
+        .online-count {
+            font-size: 0.7rem;
+            color: #8e9eb5;
+            margin-top: 1rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* Main Chat Area */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,224,255,0.2);
+            background: rgba(0,0,0,0.2);
+        }
+        .chat-header h3 { font-size: 1rem; }
+        .chat-header h3 i { color: #00e0ff; margin-right: 0.5rem; }
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            max-height: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .message {
+            display: flex;
+            gap: 0.8rem;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #00e0ff, #a020f0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .message-content {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            padding: 0.6rem 1rem;
+            border-radius: 18px;
+            max-width: 70%;
+        }
+        .message-own {
+            justify-content: flex-end;
+        }
+        .message-own .message-content {
+            background: linear-gradient(135deg, #00e0ff20, #a020f020);
+            border: 1px solid #00e0ff40;
+        }
+        .message-sender {
+            font-size: 0.7rem;
+            color: #00e0ff;
+            margin-bottom: 0.2rem;
+        }
+        .message-text {
+            font-size: 0.85rem;
+            word-wrap: break-word;
+        }
+        .message-time {
+            font-size: 0.6rem;
+            color: #8e9eb5;
+            margin-top: 0.2rem;
+            text-align: right;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid rgba(0,224,255,0.2);
+            background: rgba(0,0,0,0.2);
+        }
+        .chat-input-area input {
+            flex: 1;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0,224,255,0.3);
+            border-radius: 30px;
+            padding: 0.8rem 1rem;
+            color: white;
+            outline: none;
+            font-size: 0.85rem;
+        }
+        .chat-input-area button {
+            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            border: none;
+            border-radius: 30px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .chat-input-area button:hover { transform: scale(1.02); }
+        
+        .join-screen {
+            text-align: center;
+            padding: 3rem;
+        }
+        .join-screen h2 { margin-bottom: 1rem; }
+        .join-screen button {
+            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,224,255,0.95);
+            color: #050b1a;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        .toast-notification.show { transform: translateX(0); }
+        
+        @media (max-width: 768px) {
+            .container { padding: 5rem 1rem 1rem; }
+            .navbar { padding: 0.8rem 1rem; }
+            .menu { gap: 1rem; }
+            .user-sidebar { width: 100%; }
+        }
+        
+        .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #00e0ff; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">PRRX</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+        <div class="loading-percentage" id="loadingPercentage">0%</div>
+        <div class="loading-text">Initializing Secure Chat...</div>
+        <div class="loading-security"><i class="fas fa-shield-alt"></i> HWID Verified Chat</div>
+    </div>
+
+    <!-- Anti-DevTools -->
+    <div class="anti-devtools" id="antiDevTools">
+        <i class="fas fa-shield-horned"></i>
+        <p>⚠️ Security Alert: Developer Tools Detected<br>Please close DevTools to continue.</p>
+    </div>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="navbar">
+        <a href="index.html" class="logo">PRRX</a>
+        <div class="menu">
+            <a href="index.html">HOME</a>
+            <a href="index.html#panelSection">PANEL</a>
+            <a href="features.html">FEATURES</a>
+            <a href="dashboard.html">DASHBOARD</a>
+        </div>
+    </div>
+
+    <div class="container" id="appContainer"></div>
+    <div id="toast" class="toast-notification"></div>
+
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        const canvas = document.getElementById('bg-canvas');
+        const scene = new THREE.Scene(); scene.background = new THREE.Color(0x050b1a);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(0, 0, 5);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const geometry = new THREE.TorusKnotGeometry(1.1, 0.28, 160, 24, 3, 4);
+        const material = new THREE.MeshStandardMaterial({ color: 0x00e0ff, emissive: 0x1a4c8a, emissiveIntensity: 0.5 });
+        const torusKnot = new THREE.Mesh(geometry, material); scene.add(torusKnot);
+        const particlesGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(1000 * 3);
+        for (let i = 0; i < 1000; i++) {
+            const radius = 2.5 + Math.random() * 2.5;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            positions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
+            positions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta);
+            positions[i*3+2] = radius * Math.cos(phi);
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particleSystem = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({ color: 0x66ccff, size: 0.04 }));
+        scene.add(particleSystem);
+        const ringGeo = new THREE.TorusGeometry(1.6, 0.04, 48, 400);
+        const ring = new THREE.Mesh(ringGeo, new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x0088ff, emissiveIntensity: 0.4 }));
+        scene.add(ring);
+        const ambientLight = new THREE.AmbientLight(0x111122); scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0x2266ff, 0.8); pointLight.position.set(2, 3, 4); scene.add(pointLight);
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = [];
+        for (let i = 0; i < 400; i++) { starPos.push((Math.random() - 0.5) * 150); starPos.push((Math.random() - 0.5) * 80); starPos.push((Math.random() - 0.5) * 40 - 15); }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+        const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.06 }));
+        scene.add(stars);
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            torusKnot.rotation.x += 0.008; torusKnot.rotation.y += 0.012;
+            ring.rotation.x = Math.sin(time * 0.5) * 0.3; ring.rotation.y += 0.01;
+            particleSystem.rotation.y += 0.0005;
+            stars.rotation.y += 0.0002;
+            camera.lookAt(0, 0, 0);
+            renderer.render(scene, camera);
+            time += 0.008;
+        }
+        animate();
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+    </script>
+    <script>
+        // ========== LOADING SCREEN ==========
+        let progress = 0;
+        setInterval(() => {
+            progress += Math.random() * 12;
+            if (progress >= 100) progress = 100;
+            document.getElementById('loadingPercentage').textContent = Math.floor(progress) + '%';
+        }, 120);
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+                setTimeout(() => { if(document.getElementById('loadingScreen')) document.getElementById('loadingScreen').style.display = 'none'; }, 500);
+            }, 1200);
+        });
+        
+        // ========== ENCRYPTION ==========
+        const ENCRYPTION_KEY = 'PRRX_CHAT_SECURE_KEY_2026';
+        
+        function encryptData(data) {
+            let encrypted = '';
+            for (let i = 0; i < data.length; i++) {
+                const keyChar = ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length);
+                const dataChar = data.charCodeAt(i);
+                encrypted += String.fromCharCode(dataChar ^ keyChar);
+            }
+            return btoa(encrypted);
+        }
+        
+        function decryptData(encryptedData) {
+            try {
+                const decoded = atob(encryptedData);
+                let decrypted = '';
+                for (let i = 0; i < decoded.length; i++) {
+                    const keyChar = ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length);
+                    const dataChar = decoded.charCodeAt(i);
+                    decrypted += String.fromCharCode(dataChar ^ keyChar);
+                }
+                return decrypted;
+            } catch(e) { return null; }
+        }
+        
+        const SecureStorage = {
+            set: (key, value) => { localStorage.setItem(`secure_${key}`, encryptData(JSON.stringify(value))); },
+            get: (key) => {
+                const encrypted = localStorage.getItem(`secure_${key}`);
+                if (!encrypted) return null;
+                try { return JSON.parse(decryptData(encrypted)); } catch(e) { return null; }
+            },
+            remove: (key) => localStorage.removeItem(`secure_${key}`)
+        };
+        
+        // ========== HWID GENERATION ==========
+        function generateHWID() {
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                screen.colorDepth,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 4,
+                navigator.deviceMemory || 4,
+                navigator.platform
+            ];
+            let hash = 0;
+            const str = components.join('|');
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash).toString(16).toUpperCase();
+        }
+        
+        const CURRENT_HWID = generateHWID();
+        
+        // ========== CHECK REGISTERED USER ==========
+        function getRegisteredUser() {
+            const users = SecureStorage.get('users');
+            if (!users) return null;
+            
+            // Find user with matching HWID
+            for (const [username, userData] of Object.entries(users)) {
+                if (userData.hwid === CURRENT_HWID) {
+                    return { username, email: userData.email, userData };
+                }
+            }
+            return null;
+        }
+        
+        // ========== CHAT SYSTEM ==========
+        let currentUser = null;
+        let messages = [];
+        let onlineUsers = [];
+        let filteredUsers = [];
+        let searchTerm = '';
+        
+        // Load messages from storage
+        function loadMessages() {
+            const saved = SecureStorage.get('chat_messages');
+            if (saved) {
+                messages = saved;
+            } else {
+                // Welcome message
+                messages = [{
+                    id: Date.now(),
+                    sender: "System",
+                    message: "Welcome to PRRX Live Chat! Be respectful to others.",
+                    time: new Date().toLocaleTimeString(),
+                    isSystem: true
+                }];
+                SecureStorage.set('chat_messages', messages);
+            }
+            return messages;
+        }
+        
+        function saveMessages() {
+            SecureStorage.set('chat_messages', messages);
+        }
+        
+        function addMessage(sender, message, isOwn = false) {
+            const newMsg = {
+                id: Date.now(),
+                sender: sender,
+                message: message,
+                time: new Date().toLocaleTimeString(),
+                isOwn: isOwn,
+                isSystem: sender === "System"
+            };
+            messages.push(newMsg);
+            saveMessages();
+            return newMsg;
+        }
+        
+        // Update online users
+        function updateOnlineUsers() {
+            const allUsers = SecureStorage.get('users');
+            if (allUsers) {
+                // In a real app, this would sync with a server
+                // For demo, we'll show registered users as online
+                onlineUsers = Object.keys(allUsers).map(username => ({
+                    username: username,
+                    online: true,
+                    avatar: username.charAt(0).toUpperCase()
+                }));
+                
+                // Filter by search term
+                if (searchTerm) {
+                    filteredUsers = onlineUsers.filter(u => 
+                        u.username.toLowerCase().includes(searchTerm.toLowerCase())
+                    );
+                } else {
+                    filteredUsers = [...onlineUsers];
+                }
+            }
+            renderUserList();
+        }
+        
+        // Render user sidebar
+        function renderUserList() {
+            const userListContainer = document.getElementById('userListContainer');
+            if (!userListContainer) return;
+            
+            if (filteredUsers.length === 0) {
+                userListContainer.innerHTML = '<div style="text-align:center; padding:1rem; color:#8e9eb5;">No users found</div>';
+                return;
+            }
+            
+            userListContainer.innerHTML = filteredUsers.map(user => `
+                <div class="user-item online" onclick="startPrivateChat('${user.username}')">
+                    <div class="user-avatar-chat">${user.avatar}</div>
+                    <div class="user-info">
+                        <div class="user-name">${user.username} ${user.username === currentUser?.username ? '(You)' : ''}</div>
+                        <div class="user-status"><i class="fas fa-circle" style="font-size: 0.5rem; color:#4caf50;"></i> Online</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Render messages
+        function renderMessages() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            if (!messagesContainer) return;
+            
+            messagesContainer.innerHTML = messages.map(msg => `
+                <div class="message ${msg.isOwn ? 'message-own' : ''}">
+                    <div class="message-avatar">${msg.sender === 'System' ? '<i class="fas fa-robot"></i>' : msg.sender.charAt(0).toUpperCase()}</div>
+                    <div class="message-content">
+                        <div class="message-sender">${msg.sender} ${msg.isSystem ? '(System)' : ''}</div>
+                        <div class="message-text">${escapeHtml(msg.message)}</div>
+                        <div class="message-time">${msg.time}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addMessage(currentUser.username, message, true);
+            input.value = '';
+            renderMessages();
+            
+            // Simulate reply (for demo)
+            setTimeout(() => {
+                if (Math.random() > 0.7) {
+                    const replies = ["Nice!", "Thanks!", "Hello!", "Good game!", "👍"];
+                    addMessage("System", `${replies[Math.floor(Math.random() * replies.length)]} (Auto-reply)`, false);
+                    renderMessages();
+                }
+            }, 2000);
+        }
+        
+        function clearChat() {
+            if (confirm("Are you sure you want to clear all messages?")) {
+                messages = [{
+                    id: Date.now(),
+                    sender: "System",
+                    message: "Chat history cleared.",
+                    time: new Date().toLocaleTimeString(),
+                    isSystem: true
+                }];
+                saveMessages();
+                renderMessages();
+                showToast("💬 Chat history cleared");
+            }
+        }
+        
+        function searchUsers() {
+            searchTerm = document.getElementById('searchInput').value.trim();
+            updateOnlineUsers();
+        }
+        
+        function startPrivateChat(username) {
+            showToast(`💬 Starting private chat with ${username}...`);
+            addMessage("System", `You are now chatting with ${username}`, false);
+            renderMessages();
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+        
+        // Join chat after verification
+        function joinChat(user) {
+            currentUser = user;
+            loadMessages();
+            updateOnlineUsers();
+            
+            document.getElementById('appContainer').innerHTML = `
+                <div class="chat-container fade-up">
+                    <div class="user-sidebar">
+                        <h3><i class="fas fa-users"></i> Online Users</h3>
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Search users..." onkeyup="searchUsers()">
+                            <button onclick="searchUsers()"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="user-list" id="userListContainer"></div>
+                        <div class="online-count"><i class="fas fa-circle" style="color:#4caf50; font-size:0.6rem;"></i> ${onlineUsers.length} users online</div>
+                    </div>
+                    
+                    <div class="chat-main">
+                        <div class="chat-header">
+                            <h3><i class="fas fa-comments"></i> Public Chat</h3>
+                        </div>
+                        <div class="chat-messages" id="messagesContainer"></div>
+                        <div class="chat-input-area">
+                            <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendMessage()">
+                            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+                            <button onclick="clearChat()" style="background: rgba(255,80,80,0.2); border:1px solid #ff5050;"><i class="fas fa-trash"></i> Clear</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            renderMessages();
+            renderUserList();
+            
+            // Auto-refresh online users every 10 seconds
+            setInterval(() => updateOnlineUsers(), 10000);
+        }
+        
+        // Login screen for non-registered users
+        function showLoginRequired() {
+            document.getElementById('appContainer').innerHTML = `
+                <div class="join-screen fade-up">
+                    <i class="fas fa-comments" style="font-size: 4rem; color: #00e0ff; margin-bottom: 1rem;"></i>
+                    <h2>PRRX Live Chat</h2>
+                    <p style="color: #8e9eb5; margin-bottom: 1rem;">You need to be a registered user to join the chat.</p>
+                    <p style="color: #ffaa00; margin-bottom: 1rem; font-size: 0.8rem;"><i class="fas fa-fingerprint"></i> HWID: ${CURRENT_HWID.substring(0, 16)}...</p>
+                    <button onclick="window.location.href='login.html'"><i class="fas fa-sign-in-alt"></i> Login / Register</button>
+                    <button onclick="window.location.href='dashboard.html'" style="background: transparent; border: 1px solid #00e0ff; margin-left: 1rem;">Back to Dashboard</button>
+                </div>
+            `;
+        }
+        
+        // ========== ANTI-DEBUGGING ==========
+        let devToolsOpen = false;
+        setInterval(() => {
+            const start = performance.now();
+            debugger;
+            if (performance.now() - start > 100 && !devToolsOpen) {
+                devToolsOpen = true;
+                document.getElementById('antiDevTools').classList.add('active');
+            }
+        }, 2000);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                showToast("🔒 Security: Action blocked");
+                return false;
+            }
+        });
+        
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+        document.addEventListener('selectstart', (e) => e.preventDefault());
+        if (window.self !== window.top) window.top.location = window.self.location;
+        
+        // Custom Cursor
+        if (window.innerWidth > 768) {
+            const cd = document.querySelector('.cursor-dot'), co = document.querySelector('.cursor-outline');
+            if (cd && co) {
+                document.addEventListener('mousemove', (e) => {
+                    cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+                    co.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
+                });
+            }
+        }
+        
+        // Make functions global
+        window.sendMessage = sendMessage;
+        window.clearChat = clearChat;
+        window.searchUsers = searchUsers;
+        window.startPrivateChat = startPrivateChat;
+        
+        // Initialize
+        const registeredUser = getRegisteredUser();
+        if (registeredUser) {
+            joinChat(registeredUser);
+        } else {
+            showLoginRequired();
+        }
+        
+        // Scroll animations
+        const fadeElements = document.querySelectorAll('.fade-up');
+        const observer = new IntersectionObserver((e) => { e.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1 });
+        fadeElements.forEach(el => observer.observe(el));
+        
+        console.log("%c💬 PRRX LIVE CHAT ACTIVE", "color: #00e0ff; font-size: 14px;");
+        console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0;");
+        console.log("%c⚠️ Chat is HWID protected - Only registered users can chat", "color: #ffaa00;");
+    </script>
+</body>
+</html>
