@@ -43,6 +43,43 @@
         .stat-number { font-size: 1.5rem; font-weight: 800; color: #00e0ff; }
         .stat-label { font-size: 0.7rem; color: #8e9eb5; }
         
+        /* News & Updates Section */
+        .news-section { margin: 3rem 0; }
+        .section-header { text-align: center; margin-bottom: 2rem; }
+        .section-header h2 { font-size: 1.8rem; background: linear-gradient(135deg, #fff, #00e0ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .section-header p { color: #8e9eb5; font-size: 0.85rem; margin-top: 0.5rem; }
+        
+        .news-grid { display: flex; flex-direction: column; gap: 1rem; }
+        .news-card {
+            background: rgba(15, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 1.2rem 1.5rem;
+            border: 1px solid rgba(0, 224, 255, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .news-card:hover { transform: translateX(5px); border-color: #00e0ff; box-shadow: 0 5px 20px rgba(0,224,255,0.1); }
+        .news-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 0.8rem; }
+        .news-badge { 
+            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .news-badge.update { background: linear-gradient(90deg, #00e0ff, #0077ff); }
+        .news-badge.announcement { background: linear-gradient(90deg, #ff9800, #ff5722); }
+        .news-badge.patch { background: linear-gradient(90deg, #4caf50, #2e7d32); }
+        .news-date { font-size: 0.7rem; color: #8e9eb5; }
+        .news-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: #fff; }
+        .news-preview { font-size: 0.8rem; color: #b0c4de; line-height: 1.4; }
+        .news-expanded { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; margin-top: 0; }
+        .news-card.active .news-expanded { max-height: 300px; margin-top: 1rem; }
+        .news-expanded-content { border-top: 1px solid rgba(0,224,255,0.2); padding-top: 1rem; font-size: 0.85rem; color: #ccd6f6; line-height: 1.5; }
+        .news-expanded-content ul { margin-left: 1.5rem; margin-top: 0.5rem; }
+        .news-expanded-content li { margin: 0.3rem 0; }
+        
         .features-preview { text-align: center; margin: 3rem 0; padding: 2rem; background: rgba(0,0,0,0.3); border-radius: 30px; backdrop-filter: blur(8px); }
         .features-preview h2 { font-size: 1.5rem; margin-bottom: 1rem; }
         .features-preview p { color: #b0c4de; margin-bottom: 1.5rem; }
@@ -57,19 +94,23 @@
         .toast-notification { position: fixed; bottom: 20px; right: 20px; background: rgba(0,224,255,0.95); color: #050b1a; padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.8rem; z-index: 10000; transform: translateX(400px); transition: transform 0.3s ease; }
         .toast-notification.show { transform: translateX(0); }
         
-        @media (max-width: 768px) { h1 { font-size: 2rem; } .content { padding: 1rem 1rem 3rem; } .navbar { flex-direction: column; gap: 0.5rem; } }
+        @media (max-width: 768px) { h1 { font-size: 2rem; } .content { padding: 1rem 1rem 3rem; } .navbar { flex-direction: column; gap: 0.5rem; } .news-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; } }
         .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
         .fade-up.visible { opacity: 1; transform: translateY(0); }
         .loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #050b1a; z-index: 10001; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s; }
         .loader.hidden { opacity: 0; pointer-events: none; }
         .spinner { width: 40px; height: 40px; border: 3px solid rgba(0,224,255,0.3); border-top-color: #00e0ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Version Tag */
+        .version-tag { position: fixed; bottom: 20px; right: 20px; z-index: 9997; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); padding: 4px 10px; border-radius: 20px; font-size: 0.6rem; color: #8e9eb5; }
     </style>
 </head>
 <body>
 
     <div class="loader" id="loader"><div class="spinner"></div></div>
     <div class="security-seal" style="position: fixed; bottom: 20px; left: 20px; z-index: 9997; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 20px; font-size: 10px; color: #8e9eb5; border-left: 2px solid #00e0ff;"><i class="fas fa-shield-alt"></i> Secure</div>
+    <div class="version-tag"><i class="fas fa-code-branch"></i> PRRX v3.2</div>
     <div class="cursor-dot"></div><div class="cursor-outline"></div>
     <canvas id="bg-canvas"></canvas>
 
@@ -98,10 +139,21 @@
         </div>
 
         <div class="stats-section fade-up">
-            <div class="stat-card"><div class="stat-number">5000+</div><div class="stat-label">Secure and Active Users</div></div>
+            <div class="stat-card"><div class="stat-number">10,000+</div><div class="stat-label">Secure and Active Users</div></div>
             <div class="stat-card"><div class="stat-number">Singapore</div><div class="stat-label">Server</div></div>
             <div class="stat-card"><div class="stat-number">99.9%</div><div class="stat-label">Uptime</div></div>
             <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
+        </div>
+
+        <!-- ========== NEWS & UPDATES SECTION ========== -->
+        <div class="news-section fade-up">
+            <div class="section-header">
+                <h2><i class="fas fa-newspaper"></i> News & Updates</h2>
+                <p>Latest announcements, patch notes, and feature updates</p>
+            </div>
+            <div class="news-grid" id="newsGrid">
+                <!-- News items will be populated by JavaScript -->
+            </div>
         </div>
 
         <!-- Features Preview Section -->
@@ -119,7 +171,10 @@
             <div class="file-info"><span><i class="fas fa-file-archive"></i> PRRX-HEX-v3.2.rar</span><span><i class="fas fa-shield-alt"></i> SHA-256 Verified</span><span><i class="fab fa-github"></i> GitHub Release</span></div>
         </section>
         
-        <footer><p>© 2025 PRRX Panel — Secure Gaming Solutions. No data collected.</p></footer>
+        <footer>
+            <p>© 2025 PRRX Panel — Secure Gaming Solutions. No data collected.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.6rem;">Latest Update: March 21, 2026</p>
+        </footer>
     </div>
     <div id="toast" class="toast-notification"></div>
 
@@ -173,24 +228,105 @@
     </script>
     <script>
         function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+        
         document.getElementById('downloadBtn').addEventListener('click', () => { window.open('https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX%20HEX.rar', '_blank'); showToast("🔒 Secure download started"); });
         document.getElementById('exploreFeaturesBtn').addEventListener('click', () => { location.href = 'features.html'; });
+        
+        // Navigation
         document.getElementById('navHome').addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active')); document.getElementById('navHome').classList.add('active'); });
         document.getElementById('navPanel').addEventListener('click', () => { document.getElementById('heroSection').scrollIntoView({ behavior: 'smooth' }); });
         document.getElementById('navFeatures').addEventListener('click', () => { location.href = 'features.html'; });
         document.getElementById('navDashboard').addEventListener('click', () => { document.getElementById('dashboardSection').scrollIntoView({ behavior: 'smooth' }); document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active')); document.getElementById('navDashboard').classList.add('active'); });
         document.getElementById('homeLogo').addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active')); document.getElementById('navHome').classList.add('active'); });
+        
+        // ========== NEWS & UPDATES DATA ==========
+        // You can easily add/remove/edit news items here
+        const newsData = [
+            {
+                type: "update",
+                date: "March 21, 2026",
+                title: "PRRX v3.2 Released!",
+                preview: "New features added: AIMBOT EXTERNAL AI, Enhanced ESP, and Performance optimizations.",
+                expanded: "<strong>What's New:</strong><ul><li>AIMBOT EXTERNAL AI - AI-powered aim assistance</li><li>Enhanced ESP with 3D location tracking</li><li>Improved FPS Boost (+15% performance)</li><li>Fixed Mouse Drag issues</li><li>New Female Fix v2 for lobby models</li></ul><strong>Download now from the button below!</strong>"
+            },
+            {
+                type: "announcement",
+                date: "March 18, 2026",
+                title: "Server Maintenance Completed",
+                preview: "Singapore server maintenance completed. All systems operational with improved stability.",
+                expanded: "The Singapore server has been upgraded with new hardware. Users should experience:<ul><li>30% faster response times</li><li>Improved connection stability</li><li>Reduced latency (avg 45ms → 32ms)</li></ul>Thank you for your patience!"
+            },
+            {
+                type: "patch",
+                date: "March 15, 2026",
+                title: "Hotfix v3.1.2 - Anti-Cheat Update",
+                preview: "Critical anti-cheat update released. Please update to latest version for continued protection.",
+                expanded: "<strong>Hotfix Details:</strong><ul><li>Updated detection signatures</li><li>Fixed false positive on some systems</li><li>Improved HWID protection</li><li>Enhanced anti-report system</li></ul><strong>⚠️ This is a mandatory update for all users.</strong>"
+            },
+            {
+                type: "update",
+                date: "March 10, 2026",
+                title: "New Feature: Visual Enhancement v2",
+                preview: "CHAMS Menu updated with new color options and improved 3D Box rendering.",
+                expanded: "<strong>Visual Enhancement Updates:</strong><ul><li>New BLUE CHAMS with 3D Fix</li><li>RED CHAMS with PANEL 3DBOX</li><li>Improved Female Fix for all models</li><li>ESP FIXED MOD - No more flickering</li></ul>Try the new colors in-game!"
+            }
+        ];
+        
+        // Generate HTML for news items
+        function renderNews() {
+            const grid = document.getElementById('newsGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = newsData.map((item, index) => `
+                <div class="news-card" onclick="toggleNews(${index})">
+                    <div class="news-header">
+                        <span class="news-badge ${item.type}">
+                            ${item.type === 'update' ? '<i class="fas fa-download"></i> Update' : item.type === 'announcement' ? '<i class="fas fa-bullhorn"></i> Announcement' : '<i class="fas fa-bug"></i> Patch Note'}
+                        </span>
+                        <span class="news-date"><i class="far fa-calendar-alt"></i> ${item.date}</span>
+                    </div>
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-preview">${item.preview}</div>
+                    <div class="news-expanded" id="news-expanded-${index}">
+                        <div class="news-expanded-content">${item.expanded}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Toggle news expansion
+        window.toggleNews = function(index) {
+            const card = document.querySelectorAll('.news-card')[index];
+            const expanded = document.getElementById(`news-expanded-${index}`);
+            if (card.classList.contains('active')) {
+                card.classList.remove('active');
+            } else {
+                // Close all others
+                document.querySelectorAll('.news-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+            }
+        }
+        
+        renderNews();
+        
+        // Custom Cursor
         if (window.innerWidth > 768) {
             const cd = document.querySelector('.cursor-dot'), co = document.querySelector('.cursor-outline');
             if (cd && co) {
                 document.addEventListener('mousemove', (e) => { cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`; co.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`; });
-                document.querySelectorAll('a, button').forEach(el => { el.addEventListener('mouseenter', () => { co.style.width = '48px'; co.style.height = '48px'; co.style.borderColor = '#a020f0'; }); el.addEventListener('mouseleave', () => { co.style.width = '32px'; co.style.height = '32px'; co.style.borderColor = 'rgba(0,224,255,0.6)'; }); });
+                document.querySelectorAll('a, button, .news-card').forEach(el => { el.addEventListener('mouseenter', () => { co.style.width = '48px'; co.style.height = '48px'; co.style.borderColor = '#a020f0'; }); el.addEventListener('mouseleave', () => { co.style.width = '32px'; co.style.height = '32px'; co.style.borderColor = 'rgba(0,224,255,0.6)'; }); });
             }
         }
+        
+        // Scroll animations
         const fadeElements = document.querySelectorAll('.fade-up');
         const observer = new IntersectionObserver((e) => { e.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
         fadeElements.forEach(el => observer.observe(el));
+        
+        // Hide loader
         window.addEventListener('load', () => { const loader = document.getElementById('loader'); setTimeout(() => { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 500); }, 500); });
+        
+        // Security
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
         document.addEventListener('keydown', (e) => { if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); showToast("🔒 View source disabled"); } });
     </script>
