@@ -35,7 +35,7 @@
             overflow-x: hidden;
         }
         
-        /* ========== ULTRA SECURE LOADING SCREEN ========== */
+        /* ========== LOADING SCREEN ========== */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -340,7 +340,7 @@
 </head>
 <body>
 
-    <!-- Ultra Secure Loading Screen -->
+    <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-particles" id="loadingParticles"></div>
         <div class="loading-logo">PRRX</div>
@@ -359,10 +359,10 @@
         </div>
     </div>
 
-    <!-- Anti-DevTools Screen -->
+    <!-- Anti-DevTools -->
     <div class="anti-devtools" id="antiDevTools">
         <i class="fas fa-shield-horned"></i>
-        <p>⚠️ SECURITY ALERT: Developer Tools Detected<br>For your protection, this page is secured.<br>Please close DevTools to continue.</p>
+        <p>⚠️ SECURITY ALERT: Developer Tools Detected<br>Please close DevTools to continue.</p>
     </div>
 
     <div class="cursor-dot"></div>
@@ -390,16 +390,15 @@
         const canvas = document.getElementById('bg-canvas');
         const scene = new THREE.Scene(); scene.background = new THREE.Color(0x050b1a);
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(0, 0, 5);
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, powerPreference: "high-performance" });
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
         const geometry = new THREE.TorusKnotGeometry(1.1, 0.28, 160, 24, 3, 4);
         const material = new THREE.MeshStandardMaterial({ color: 0x00e0ff, emissive: 0x1a4c8a, emissiveIntensity: 0.5 });
         const torusKnot = new THREE.Mesh(geometry, material); scene.add(torusKnot);
-        const particleCount = 1200;
         const particlesGeometry = new THREE.BufferGeometry();
-        const positions = new Float32Array(particleCount * 3);
-        for (let i = 0; i < particleCount; i++) {
+        const positions = new Float32Array(1200 * 3);
+        for (let i = 0; i < 1200; i++) {
             const radius = 2.5 + Math.random() * 2.5;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.acos(2 * Math.random() - 1);
@@ -436,7 +435,7 @@
         window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
     </script>
     <script>
-        // ========== LOADING SCREEN ==========
+        // Loading Screen
         let loadingProgress = 0;
         const percentageElement = document.getElementById('loadingPercentage');
         function updateLoadingProgress() {
@@ -473,7 +472,7 @@
             }, 1400);
         });
         
-        // ========== ULTRA SECURE ENCRYPTION ==========
+        // Encryption
         const ENCRYPTION_KEY = 'PRRX_HWID_ULTRA_SECURE_2026';
         
         function encryptData(data) {
@@ -509,7 +508,7 @@
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        // ========== HWID GENERATION ==========
+        // HWID Generation
         function generateHWID() {
             const components = [
                 navigator.userAgent,
@@ -534,7 +533,7 @@
         
         const CURRENT_HWID = generateHWID();
         
-        // ========== USER DATABASE ==========
+        // Database
         function initDatabase() {
             let users = SecureStorage.get('users');
             if (!users) {
@@ -551,7 +550,6 @@
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
         
-        // ========== PASSWORD STRENGTH ==========
         function checkPasswordStrength(password) {
             let strength = 0;
             if (password.length >= 8) strength++;
@@ -561,7 +559,7 @@
             return strength;
         }
         
-        // ========== REGISTER ==========
+        // Register
         function register(username, email, password) {
             if (!username || !email || !password) {
                 showToast("❌ Please fill all fields");
@@ -597,12 +595,12 @@
             };
             SecureStorage.set('users', users);
             
-            showToast(`✅ Registration successful! HWID locked to this device.`);
+            showToast(`✅ Registration successful! HWID locked.`);
             showLoginForm();
             return true;
         }
         
-        // ========== LOGIN ==========
+        // Login
         function login(username, password) {
             const users = SecureStorage.get('users');
             
@@ -617,8 +615,7 @@
             }
             
             if (users[username].hwid !== CURRENT_HWID) {
-                showToast("❌ HWID MISMATCH! This account is locked to another device.");
-                showToast("🔒 Contact support to reset HWID");
+                showToast("❌ HWID MISMATCH! Account locked to another device.");
                 return false;
             }
             
@@ -626,27 +623,20 @@
             users[username].loginCount = (users[username].loginCount || 0) + 1;
             SecureStorage.set('users', users);
             
-            const session = {
-                username: username,
-                email: users[username].email,
-                hwid: CURRENT_HWID,
-                loginTime: new Date().toISOString()
-            };
+            const session = { username: username, email: users[username].email, hwid: CURRENT_HWID, loginTime: new Date().toISOString() };
             SecureStorage.set('session', session);
             
-            showToast(`✅ Welcome back, ${username}! HWID verified.`);
+            showToast(`✅ Welcome back, ${username}!`);
             renderUserDashboard(username);
             return true;
         }
         
-        // ========== LOGOUT ==========
         function logout() {
             SecureStorage.remove('session');
-            showToast("🔒 Logged out successfully");
+            showToast("🔒 Logged out");
             showLoginForm();
         }
         
-        // ========== CHECK SESSION ==========
         function checkSession() {
             const session = SecureStorage.get('session');
             if (session && session.hwid === CURRENT_HWID) {
@@ -656,7 +646,7 @@
             return false;
         }
         
-        // ========== UI RENDERING WITH LOGIN & REGISTER TABS ==========
+        // UI
         function showLoginForm() {
             document.getElementById('appContainer').innerHTML = `
                 <div class="auth-card fade-up">
@@ -664,220 +654,104 @@
                         <button class="tab-btn active" id="loginTabBtn">🔐 Login</button>
                         <button class="tab-btn" id="registerTabBtn">📝 Register</button>
                     </div>
-                    
                     <div id="loginPanel">
-                        <div class="hwid-box">
-                            <i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 20)}...</span>
-                        </div>
-                        
-                        <div class="input-group">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="loginUsername" placeholder="Username" autocomplete="off">
-                        </div>
-                        <div class="input-group">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="loginPassword" placeholder="Password" autocomplete="off">
-                        </div>
+                        <div class="hwid-box"><i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 20)}...</span></div>
+                        <div class="input-group"><i class="fas fa-user"></i><input type="text" id="loginUsername" placeholder="Username"></div>
+                        <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password"></div>
                         <button class="submit-btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
                     </div>
-                    
                     <div id="registerPanel" style="display: none;">
-                        <div class="hwid-box">
-                            <i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 20)}...</span>
-                            <br><small style="color:#4caf50;">⚠️ This HWID will be permanently locked to your account</small>
-                        </div>
-                        
-                        <div class="input-group">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="regUsername" placeholder="Username (min 3 chars)" autocomplete="off">
-                        </div>
-                        <div class="input-group">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="regEmail" placeholder="Email Address" autocomplete="off">
-                        </div>
-                        <div class="input-group">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="regPassword" placeholder="Password (min 8 chars)" autocomplete="off" onkeyup="updateStrength()">
-                        </div>
-                        <div class="password-strength" id="strengthIndicator">
-                            <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
-                        </div>
-                        <div class="input-group">
-                            <i class="fas fa-check-circle"></i>
-                            <input type="password" id="regConfirmPassword" placeholder="Confirm Password" autocomplete="off">
-                        </div>
+                        <div class="hwid-box"><i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 20)}...</span><br><small>⚠️ This HWID will be locked to your account</small></div>
+                        <div class="input-group"><i class="fas fa-user"></i><input type="text" id="regUsername" placeholder="Username (min 3 chars)"></div>
+                        <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="regEmail" placeholder="Email Address"></div>
+                        <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="regPassword" placeholder="Password (min 8 chars)" onkeyup="updateStrength()"></div>
+                        <div class="password-strength"><div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div></div>
+                        <div class="input-group"><i class="fas fa-check-circle"></i><input type="password" id="regConfirmPassword" placeholder="Confirm Password"></div>
                         <button class="submit-btn" id="registerBtn"><i class="fas fa-user-plus"></i> Register & Lock HWID</button>
                     </div>
-                    
-                    <div class="back-link">
-                        <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard Selection</a>
-                    </div>
-                    
-                    <div style="margin-top: 1rem; text-align: center; font-size: 0.65rem; color: #8e9eb5;">
-                        <i class="fas fa-fingerprint"></i> HWID Locked Account | Device verification required
-                    </div>
+                    <div class="back-link"><a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard</a></div>
                 </div>
             `;
             
-            // Tab switching
             const loginTab = document.getElementById('loginTabBtn');
             const registerTab = document.getElementById('registerTabBtn');
             const loginPanel = document.getElementById('loginPanel');
             const registerPanel = document.getElementById('registerPanel');
             
-            loginTab.addEventListener('click', () => {
-                loginTab.classList.add('active');
-                registerTab.classList.remove('active');
-                loginPanel.style.display = 'block';
-                registerPanel.style.display = 'none';
-            });
+            loginTab.onclick = () => { loginTab.classList.add('active'); registerTab.classList.remove('active'); loginPanel.style.display = 'block'; registerPanel.style.display = 'none'; };
+            registerTab.onclick = () => { registerTab.classList.add('active'); loginTab.classList.remove('active'); loginPanel.style.display = 'none'; registerPanel.style.display = 'block'; };
             
-            registerTab.addEventListener('click', () => {
-                registerTab.classList.add('active');
-                loginTab.classList.remove('active');
-                loginPanel.style.display = 'none';
-                registerPanel.style.display = 'block';
-            });
-            
-            // Login button
-            document.getElementById('loginBtn').addEventListener('click', () => {
-                const username = document.getElementById('loginUsername').value.trim();
-                const password = document.getElementById('loginPassword').value;
-                login(username, password);
-            });
-            
-            // Register button
-            document.getElementById('registerBtn').addEventListener('click', () => {
-                const username = document.getElementById('regUsername').value.trim();
-                const email = document.getElementById('regEmail').value.trim();
-                const password = document.getElementById('regPassword').value;
-                const confirm = document.getElementById('regConfirmPassword').value;
-                
-                if (password !== confirm) {
-                    showToast("❌ Passwords do not match");
-                    return;
-                }
-                register(username, email, password);
-            });
-            
-            // Enter key press
-            document.getElementById('loginUsername')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
-            document.getElementById('loginPassword')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
+            document.getElementById('loginBtn').onclick = () => login(document.getElementById('loginUsername').value.trim(), document.getElementById('loginPassword').value);
+            document.getElementById('registerBtn').onclick = () => {
+                const pwd = document.getElementById('regPassword').value;
+                if (pwd !== document.getElementById('regConfirmPassword').value) { showToast("❌ Passwords do not match"); return; }
+                register(document.getElementById('regUsername').value.trim(), document.getElementById('regEmail').value.trim(), pwd);
+            };
         }
         
         function updateStrength() {
-            const password = document.getElementById('regPassword')?.value || '';
-            const strength = checkPasswordStrength(password);
+            const pwd = document.getElementById('regPassword')?.value || '';
+            const strength = checkPasswordStrength(pwd);
             const fill = document.getElementById('strengthFill');
             if (!fill) return;
             const colors = ['#ff4444', '#ffaa44', '#ffff44', '#44ff44'];
             const widths = ['25%', '50%', '75%', '100%'];
-            if (strength > 0) {
-                fill.style.width = widths[strength - 1];
-                fill.style.background = colors[strength - 1];
-            } else {
-                fill.style.width = '0%';
-            }
+            if (strength > 0) { fill.style.width = widths[strength - 1]; fill.style.background = colors[strength - 1]; }
+            else { fill.style.width = '0%'; }
         }
         
         function renderUserDashboard(username) {
             const users = SecureStorage.get('users');
             const userData = users[username];
-            const registeredDate = new Date(userData.registeredAt).toLocaleDateString();
-            const lastLogin = userData.lastLogin ? new Date(userData.lastLogin).toLocaleString() : 'First login';
-            
             document.getElementById('appContainer').innerHTML = `
                 <div class="dashboard-card fade-up">
-                    <div class="user-avatar">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
+                    <div class="user-avatar"><i class="fas fa-user-shield"></i></div>
                     <h2>${username}</h2>
                     <p><i class="fas fa-envelope"></i> ${userData.email}</p>
-                    
                     <div class="info-grid">
-                        <div class="info-item"><div class="label">Account Created</div><div class="value">${registeredDate}</div></div>
-                        <div class="info-item"><div class="label">Last Login</div><div class="value">${lastLogin}</div></div>
-                        <div class="info-item"><div class="label">Login Count</div><div class="value">${userData.loginCount}</div></div>
-                        <div class="info-item"><div class="label">HWID Status</div><div class="value" style="color:#4caf50;">Locked ✓</div></div>
+                        <div><div class="label">Created</div><div class="value">${new Date(userData.registeredAt).toLocaleDateString()}</div></div>
+                        <div><div class="label">Logins</div><div class="value">${userData.loginCount}</div></div>
+                        <div><div class="label">HWID</div><div class="value" style="color:#4caf50;">Locked ✓</div></div>
                     </div>
-                    
-                    <div class="hwid-locked">
-                        <i class="fas fa-fingerprint"></i> Device HWID: ${CURRENT_HWID.substring(0, 20)}...
-                        <br><small>This account is locked to this device</small>
-                    </div>
-                    
-                    <div style="background: rgba(0,224,255,0.1); border-radius: 16px; padding: 0.8rem; margin: 1rem 0;">
-                        <i class="fas fa-gem"></i> PRRX Premium Access
-                        <div style="font-size: 0.7rem;">HWID Lock Active | Secure Session</div>
-                    </div>
-                    
+                    <div class="hwid-locked"><i class="fas fa-fingerprint"></i> HWID: ${CURRENT_HWID.substring(0, 20)}...</div>
                     <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                    
-                    <div class="back-link" style="margin-top: 1rem;">
-                        <a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back to Dashboard Selection</a>
-                    </div>
+                    <div class="back-link"><a href="dashboard.html"><i class="fas fa-arrow-left"></i> Back</a></div>
                 </div>
             `;
-            
-            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.getElementById('logoutBtn').onclick = logout;
         }
         
-        // ========== ANTI-DEBUGGING ==========
+        // Anti-Debugging
         let devToolsOpen = false;
-        setInterval(() => {
-            const start = performance.now();
-            debugger;
-            const end = performance.now();
-            if (end - start > 100 && !devToolsOpen) {
-                devToolsOpen = true;
-                document.getElementById('antiDevTools').classList.add('active');
-            }
-        }, 2000);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-                (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U') ||
-                (e.ctrlKey && e.key === 's') || (e.ctrlKey && e.key === 'S')) {
-                e.preventDefault();
-                showToast("🔒 Ultra Secure: Action blocked");
-                return false;
-            }
-        });
-        
+        setInterval(() => { const start = performance.now(); debugger; if (performance.now() - start > 100 && !devToolsOpen) { devToolsOpen = true; document.getElementById('antiDevTools').classList.add('active'); } }, 2000);
+        document.addEventListener('keydown', (e) => { if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) { e.preventDefault(); showToast("🔒 Action blocked"); return false; } });
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
         document.addEventListener('selectstart', (e) => e.preventDefault());
-        if (window.self !== window.top) { window.top.location = window.self.location; }
+        if (window.self !== window.top) window.top.location = window.self.location;
         
-        // Custom Cursor
+        // Cursor
         if (window.innerWidth > 768) {
             const cd = document.querySelector('.cursor-dot'), co = document.querySelector('.cursor-outline');
             if (cd && co) {
-                document.addEventListener('mousemove', (e) => {
-                    cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-                    co.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
-                });
-                document.querySelectorAll('a, button, .auth-card, .dashboard-card').forEach(el => {
+                document.addEventListener('mousemove', (e) => { cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`; co.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`; });
+                document.querySelectorAll('a, button, .auth-card').forEach(el => {
                     el.addEventListener('mouseenter', () => { co.style.width = '48px'; co.style.height = '48px'; co.style.borderColor = '#a020f0'; });
                     el.addEventListener('mouseleave', () => { co.style.width = '32px'; co.style.height = '32px'; co.style.borderColor = 'rgba(0,224,255,0.6)'; });
                 });
             }
         }
         
-        // Scroll animations
+        // Animations
         const fadeElements = document.querySelectorAll('.fade-up');
         const observer = new IntersectionObserver((e) => { e.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 });
         fadeElements.forEach(el => observer.observe(el));
         
-        // Make functions global
         window.updateStrength = updateStrength;
-        
-        // Initialize
         initDatabase();
-        if (!checkSession()) { showLoginForm(); }
+        if (!checkSession()) showLoginForm();
         
-        console.log("%c🔐 PRRX ULTRA SECURE LOGIN ACTIVE", "color: #00e0ff; font-size: 14px; font-weight: bold;");
-        console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0; font-size: 11px;");
-        console.log("%c⚠️ HWID Lock Active | Login & Register Available | E2E Encrypted", "color: #ffaa00; font-size: 11px;");
+        console.log("%c🔐 PRRX ULTRA SECURE LOGIN ACTIVE", "color: #00e0ff; font-size: 14px;");
+        console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0;");
     </script>
 </body>
 </html>
