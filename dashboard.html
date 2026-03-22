@@ -114,7 +114,7 @@
         #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
         .content { position: relative; z-index: 2; max-width: 500px; margin: 0 auto; padding: 6rem 1.5rem 2rem; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
         
-        /* Navbar - Updated to match index.html */
+        /* Navbar */
         .navbar {
             position: fixed;
             top: 0;
@@ -266,16 +266,16 @@
         .chat-btn {
             width: 100%;
             padding: 0.8rem;
-            background: rgba(37, 211, 102, 0.2);
-            border: 1px solid #25D366;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border: none;
             border-radius: 40px;
-            color: #25D366;
+            color: white;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 1rem;
         }
-        .chat-btn:hover { background: #25D366; color: #fff; box-shadow: 0 0 15px #25D366; }
+        .chat-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
         
         .toast-notification {
             position: fixed;
@@ -570,6 +570,9 @@
             };
             SecureStorage.set('session', session);
             
+            // Also store in localStorage for chat to access
+            localStorage.setItem('prrx_dashboard_session', JSON.stringify(session));
+            
             showToast(`✅ Welcome back, ${username}! HWID verified.`);
             renderDashboard(username);
             return true;
@@ -578,6 +581,7 @@
         // ========== LOGOUT ==========
         function logout() {
             SecureStorage.remove('session');
+            localStorage.removeItem('prrx_dashboard_session');
             showToast("🔒 Logged out successfully");
             showLoginForm();
         }
@@ -590,6 +594,16 @@
                 return true;
             }
             return false;
+        }
+        
+        // ========== OPEN LIVE CHAT WITH SESSION ==========
+        function openLiveChat() {
+            // Make sure session is stored before opening chat
+            const session = SecureStorage.get('session');
+            if (session) {
+                localStorage.setItem('prrx_dashboard_session', JSON.stringify(session));
+            }
+            window.location.href = 'live-chat.html';
         }
         
         // ========== UI RENDERING ==========
@@ -625,9 +639,7 @@
                 </div>
             `;
             
-            document.getElementById('gotoChatBtn').addEventListener('click', () => {
-                window.location.href = 'live-chat.html';
-            });
+            document.getElementById('gotoChatBtn').addEventListener('click', openLiveChat);
         }
         
         function loginSubmit() {
@@ -673,9 +685,7 @@
                 </div>
             `;
             
-            document.getElementById('gotoChatBtnReg').addEventListener('click', () => {
-                window.location.href = 'live-chat.html';
-            });
+            document.getElementById('gotoChatBtnReg').addEventListener('click', openLiveChat);
         }
         
         function registerSubmit() {
@@ -722,14 +732,12 @@
                     </div>
                     
                     <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                    <button class="chat-btn" id="dashboardChatBtn"><i class="fas fa-comments"></i> Join Live Chat</button>
+                    <button class="chat-btn" id="dashboardChatBtn"><i class="fas fa-comments"></i> Open Live Chat</button>
                 </div>
             `;
             
             document.getElementById('logoutBtn').addEventListener('click', logout);
-            document.getElementById('dashboardChatBtn').addEventListener('click', () => {
-                window.location.href = 'live-chat.html';
-            });
+            document.getElementById('dashboardChatBtn').addEventListener('click', openLiveChat);
         }
         
         // ========== ANTI-DEBUGGING ==========
@@ -783,7 +791,7 @@
         
         console.log("%c🔒 PRRX HWID LOCK SYSTEM ACTIVE", "color: #00e0ff; font-size: 14px;");
         console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0; font-size: 12px;");
-        console.log("%c💬 Live Chat available - Click button to join!", "color: #25D366; font-size: 11px;");
+        console.log("%c💬 Live Chat Integrated - Click button to join with auto-login!", "color: #2ecc71; font-size: 11px;");
     </script>
 </body>
 </html>
