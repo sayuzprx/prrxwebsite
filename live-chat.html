@@ -11,12 +11,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 100%);
+            background: #0a0a0a;
             color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
         }
         
+        /* Animated Background */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -72,7 +73,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background: rgba(10,10,15,0.9);
+            background: rgba(10,10,10,0.95);
             backdrop-filter: blur(12px);
             z-index: 100;
             border-bottom: 1px solid rgba(46,204,113,0.3);
@@ -125,7 +126,7 @@
             display: flex;
             gap: 1.5rem;
             flex-wrap: wrap;
-            background: rgba(255,255,255,0.03);
+            background: rgba(20,20,20,0.8);
             backdrop-filter: blur(10px);
             border-radius: 28px;
             padding: 1.5rem;
@@ -140,7 +141,7 @@
         
         .user-sidebar {
             width: 300px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             border-radius: 20px;
             padding: 1.2rem;
             border: 1px solid rgba(46,204,113,0.2);
@@ -159,15 +160,14 @@
         }
         .search-box input {
             flex: 1;
-            background: rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.5);
             border: 1px solid rgba(46,204,113,0.3);
             border-radius: 30px;
             padding: 0.6rem 1rem;
             color: white;
             outline: none;
-            transition: all 0.3s;
         }
-        .search-box input:focus { border-color: #2ecc71; box-shadow: 0 0 10px rgba(46,204,113,0.3); }
+        .search-box input:focus { border-color: #2ecc71; }
         .search-box button {
             background: rgba(46,204,113,0.2);
             border: 1px solid #2ecc71;
@@ -175,9 +175,8 @@
             padding: 0.6rem 1rem;
             color: #2ecc71;
             cursor: pointer;
-            transition: all 0.3s;
         }
-        .search-box button:hover { background: #2ecc71; color: #0a0a0f; }
+        .search-box button:hover { background: #2ecc71; color: #0a0a0a; }
         .user-list {
             max-height: 450px;
             overflow-y: auto;
@@ -191,11 +190,6 @@
             cursor: pointer;
             transition: all 0.2s;
             margin-bottom: 0.3rem;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
         }
         .user-item:hover { background: rgba(46,204,113,0.15); transform: translateX(5px); }
         .user-item.online { border-left: 3px solid #2ecc71; }
@@ -222,14 +216,14 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
             border-radius: 20px;
             overflow: hidden;
         }
         .chat-header {
             padding: 1rem;
             border-bottom: 1px solid rgba(46,204,113,0.2);
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
         }
         .chat-header h3 { font-size: 1rem; }
         .chat-header h3 i { color: #2ecc71; margin-right: 0.5rem; }
@@ -268,9 +262,7 @@
             padding: 0.7rem 1rem;
             border-radius: 18px;
             max-width: 70%;
-            transition: all 0.2s;
         }
-        .message:hover .message-content { background: rgba(255,255,255,0.08); }
         .message-own { justify-content: flex-end; }
         .message-own .message-content {
             background: rgba(46,204,113,0.15);
@@ -320,19 +312,18 @@
             gap: 0.5rem;
             padding: 1rem;
             border-top: 1px solid rgba(46,204,113,0.2);
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.3);
         }
         .chat-input-area input {
             flex: 1;
-            background: rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.5);
             border: 1px solid rgba(46,204,113,0.3);
             border-radius: 30px;
             padding: 0.8rem 1rem;
             color: white;
             outline: none;
-            transition: all 0.3s;
         }
-        .chat-input-area input:focus { border-color: #2ecc71; box-shadow: 0 0 10px rgba(46,204,113,0.3); }
+        .chat-input-area input:focus { border-color: #2ecc71; }
         .chat-input-area button {
             background: linear-gradient(135deg, #2ecc71, #27ae60);
             border: none;
@@ -341,9 +332,8 @@
             color: white;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
         }
-        .chat-input-area button:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(46,204,113,0.4); }
+        .chat-input-area button:hover { transform: scale(1.02); }
         .leave-btn { background: rgba(255,80,80,0.2) !important; border: 1px solid #ff5050 !important; color: #ff5050 !important; }
         .clear-btn { background: rgba(255,165,0,0.2) !important; border: 1px solid #ffa500 !important; color: #ffa500 !important; }
         
@@ -351,7 +341,8 @@
         .redirect-screen {
             text-align: center;
             padding: 3rem;
-            background: rgba(255,255,255,0.03);
+            background: rgba(20,20,20,0.8);
+            backdrop-filter: blur(10px);
             border-radius: 28px;
             border: 1px solid rgba(46,204,113,0.2);
             animation: fadeInUp 0.5s ease;
@@ -384,14 +375,13 @@
             bottom: 20px;
             right: 20px;
             background: #2ecc71;
-            color: #0a0a0f;
+            color: #0a0a0a;
             padding: 12px 24px;
             border-radius: 40px;
             font-weight: 600;
             z-index: 10000;
             transform: translateX(400px);
             transition: transform 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         .toast.show { transform: translateX(0); }
         
@@ -403,7 +393,6 @@
             .navbar { padding: 0.8rem 1rem; }
             .menu { gap: 1rem; }
             .user-sidebar { width: 100%; }
-            .chat-input-area button { padding: 0.6rem 1rem; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -423,7 +412,12 @@
         </div>
     </div>
 
-    <div class="container" id="app"></div>
+    <div class="container" id="app">
+        <div style="text-align: center; padding: 2rem;">
+            <div class="redirect-spinner"></div>
+            <p style="margin-top: 1rem; color: #2ecc71;">Checking login status...</p>
+        </div>
+    </div>
     <div id="toast" class="toast"></div>
 
     <script>
@@ -449,7 +443,6 @@ RULES:
 1. Be helpful, friendly, and concise
 2. Answer questions about PRRX panel features, pricing, downloads, and support
 3. Keep responses under 3 sentences when possible
-4. Always be positive and encouraging
 `;
 
         let conversationHistory = [];
@@ -517,13 +510,24 @@ RULES:
         
         // ========== CHECK IF USER IS LOGGED IN ==========
         function isUserLoggedIn() {
-            // Check SecureStorage session
+            // Check SecureStorage session (same as dashboard)
             const session = SecureStorage.get('session');
             if (session && session.hwid === CURRENT_HWID) {
                 return { loggedIn: true, user: session };
             }
             
-            // Check users database
+            // Check dashboard session in localStorage
+            const dashSession = localStorage.getItem('prrx_dashboard_session');
+            if (dashSession) {
+                try {
+                    const parsed = JSON.parse(dashSession);
+                    if (parsed.hwid === CURRENT_HWID) {
+                        return { loggedIn: true, user: parsed };
+                    }
+                } catch(e) {}
+            }
+            
+            // Check users database for HWID match
             const users = SecureStorage.get('users');
             if (users) {
                 for (const [username, userData] of Object.entries(users)) {
@@ -800,7 +804,6 @@ RULES:
             }
             currentUser = null;
             showToast("Left chat");
-            // Redirect to dashboard
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 1000);
@@ -849,7 +852,6 @@ RULES:
                 </div>
             `;
             
-            // Redirect after 2 seconds
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 2000);
@@ -888,30 +890,41 @@ RULES:
         // ========== INIT - CHECK LOGIN STATUS ==========
         loadLearnedResponses();
         
-        const loginStatus = isUserLoggedIn();
-        console.log("🔐 HWID:", CURRENT_HWID);
-        console.log("👤 Login Status:", loginStatus);
+        // Show checking status
+        document.getElementById('app').innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <div class="redirect-spinner"></div>
+                <p style="margin-top: 1rem; color: #2ecc71;">Checking login status...</p>
+                <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #888;">HWID: ${CURRENT_HWID.substring(0, 16)}...</p>
+            </div>
+        `;
         
-        if (loginStatus.loggedIn) {
-            currentUser = loginStatus.user;
+        setTimeout(() => {
+            const loginStatus = isUserLoggedIn();
+            console.log("🔐 HWID:", CURRENT_HWID);
+            console.log("👤 Login Status:", loginStatus);
             
-            let users = SecureStorage.get('chat_users') || [];
-            if (!users.find(u => u.username === currentUser.username)) {
-                users.push({ username: currentUser.username, online: true, hwid: currentUser.hwid });
-                SecureStorage.set('chat_users', users);
+            if (loginStatus.loggedIn && loginStatus.user) {
+                currentUser = loginStatus.user;
+                
+                let users = SecureStorage.get('chat_users') || [];
+                if (!users.find(u => u.username === currentUser.username)) {
+                    users.push({ username: currentUser.username, online: true, hwid: currentUser.hwid });
+                    SecureStorage.set('chat_users', users);
+                }
+                
+                loadMessages();
+                
+                if (messages.length === 0) {
+                    addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${currentUser.username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+                }
+                
+                renderChatInterface();
+                setInterval(() => updateOnlineUsers(), 5000);
+            } else {
+                showRedirectScreen();
             }
-            
-            loadMessages();
-            
-            if (messages.length === 0) {
-                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${currentUser.username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
-            }
-            
-            renderChatInterface();
-            setInterval(() => updateOnlineUsers(), 5000);
-        } else {
-            showRedirectScreen();
-        }
+        }, 500);
         
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
