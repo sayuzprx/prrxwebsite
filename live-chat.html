@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a0a;
@@ -17,7 +17,6 @@
             overflow-x: hidden;
         }
         
-        /* Animated Background */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -122,7 +121,59 @@
             min-height: 100vh;
         }
         
-        /* Chat Container */
+        .join-screen {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(20,20,20,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            border: 1px solid rgba(46,204,113,0.2);
+            max-width: 500px;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .join-screen i {
+            font-size: 4rem;
+            color: #2ecc71;
+            margin-bottom: 1rem;
+        }
+        .join-screen input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(46,204,113,0.3);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            margin: 1rem 0;
+            outline: none;
+            text-align: center;
+        }
+        .join-screen input:focus {
+            border-color: #2ecc71;
+            box-shadow: 0 0 15px rgba(46,204,113,0.3);
+        }
+        .join-screen button {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .join-screen button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(46,204,113,0.4);
+        }
+        
         .chat-container {
             display: flex;
             gap: 1.5rem;
@@ -134,10 +185,6 @@
             border: 1px solid rgba(46,204,113,0.2);
             min-height: 70vh;
             animation: fadeInUp 0.6s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .user-sidebar {
@@ -338,60 +385,6 @@
         .leave-btn { background: rgba(255,80,80,0.2) !important; border: 1px solid #ff5050 !important; color: #ff5050 !important; }
         .clear-btn { background: rgba(255,165,0,0.2) !important; border: 1px solid #ffa500 !important; color: #ffa500 !important; }
         
-        /* Join Screen */
-        .join-screen {
-            text-align: center;
-            padding: 3rem;
-            background: rgba(20,20,20,0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            border: 1px solid rgba(46,204,113,0.2);
-            max-width: 500px;
-            margin: 0 auto;
-            animation: fadeInUp 0.5s ease;
-        }
-        .join-screen i {
-            font-size: 4rem;
-            color: #2ecc71;
-            margin-bottom: 1rem;
-        }
-        .join-screen input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 50px;
-            color: white;
-            font-size: 1rem;
-            margin: 1rem 0;
-            outline: none;
-            text-align: center;
-        }
-        .join-screen input:focus { border-color: #2ecc71; box-shadow: 0 0 15px rgba(46,204,113,0.3); }
-        .join-screen button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
-        .join-screen button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
-        
-        /* Loading Spinner */
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(46,204,113,0.2);
-            border-top: 3px solid #2ecc71;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
         .toast {
             position: fixed;
             bottom: 20px;
@@ -434,13 +427,7 @@
         </div>
     </div>
 
-    <div class="container" id="app">
-        <div style="text-align: center; padding: 3rem;">
-            <div class="loading-spinner"></div>
-            <p style="margin-top: 1rem; color: #2ecc71;">Checking login status...</p>
-            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #666;">Please wait</p>
-        </div>
-    </div>
+    <div class="container" id="app"></div>
     <div id="toast" class="toast"></div>
 
     <script>
@@ -448,7 +435,6 @@
         const GEMINI_API_KEY = "AIzaSyB3YDwE7KKnOVB43rtpePFZLBpljv0ld-k";
         const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
         
-        // ========== PRRX PANEL INFORMATION ==========
         const PRRX_KNOWLEDGE = `
 You are PRRX Bot, the official AI assistant for PRRX Gaming Panel.
 
@@ -462,10 +448,7 @@ PRRX PANEL INFORMATION:
 - Download: PRRX.HEX.1.rar from GitHub Releases
 - WhatsApp Group: https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx
 
-RULES:
-1. Be helpful, friendly, and concise
-2. Answer questions about PRRX panel features, pricing, downloads, and support
-3. Keep responses under 3 sentences when possible
+RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel features, pricing, downloads, and support.
 `;
 
         let conversationHistory = [];
@@ -506,78 +489,18 @@ RULES:
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        // ========== HWID GENERATION ==========
-        function generateHWID() {
-            const components = [
-                navigator.userAgent,
-                navigator.language,
-                screen.width + 'x' + screen.height,
-                screen.colorDepth,
-                new Date().getTimezoneOffset(),
-                navigator.hardwareConcurrency || 4,
-                navigator.deviceMemory || 4,
-                navigator.platform,
-                navigator.maxTouchPoints || 0,
-                window.screen.pixelDepth
-            ];
-            let hash = 0;
-            const str = components.join('|');
-            for (let i = 0; i < str.length; i++) {
-                hash = ((hash << 5) - hash) + str.charCodeAt(i);
-                hash |= 0;
-            }
-            return Math.abs(hash).toString(16).toUpperCase();
-        }
-        
-        const CURRENT_HWID = generateHWID();
-        
-        // ========== CHECK LOGIN STATUS ==========
-        function isUserLoggedIn() {
-            const session = SecureStorage.get('session');
-            if (session && session.hwid === CURRENT_HWID) {
-                return { loggedIn: true, user: session };
-            }
-            
-            const dashSession = localStorage.getItem('prrx_dashboard_session');
-            if (dashSession) {
-                try {
-                    const parsed = JSON.parse(dashSession);
-                    if (parsed.hwid === CURRENT_HWID) {
-                        return { loggedIn: true, user: parsed };
-                    }
-                } catch(e) {}
-            }
-            
-            const users = SecureStorage.get('users');
-            if (users) {
-                for (const [username, userData] of Object.entries(users)) {
-                    if (userData.hwid === CURRENT_HWID) {
-                        return { loggedIn: true, user: { username: username, hwid: CURRENT_HWID } };
-                    }
-                }
-            }
-            
-            return { loggedIn: false, user: null };
-        }
-        
         // ========== AI RESPONSE ==========
         let aiLearningMemory = [];
         
         function loadLearnedResponses() {
             const learned = SecureStorage.get('ai_learned');
-            if (learned) {
-                aiLearningMemory = learned;
-            }
+            if (learned) aiLearningMemory = learned;
         }
         
         function saveLearnedResponse(question, answer) {
             const exists = aiLearningMemory.find(item => item.question.toLowerCase() === question.toLowerCase());
             if (!exists) {
-                aiLearningMemory.push({
-                    question: question,
-                    answer: answer,
-                    learnedAt: new Date().toISOString()
-                });
+                aiLearningMemory.push({ question: question, answer: answer, learnedAt: new Date().toISOString() });
                 SecureStorage.set('ai_learned', aiLearningMemory);
             }
         }
@@ -592,18 +515,12 @@ RULES:
         
         async function getAIResponse(userMessage, username) {
             const learnedResponse = getLearnedResponse(userMessage);
-            if (learnedResponse) {
-                return `🤖 ${learnedResponse}`;
-            }
+            if (learnedResponse) return `🤖 ${learnedResponse}`;
             
             try {
                 const recentHistory = conversationHistory.slice(-5);
                 let contextMessage = PRRX_KNOWLEDGE + `\n\nCurrent user: ${username}\n\nPrevious conversation:\n`;
-                
-                recentHistory.forEach(msg => {
-                    contextMessage += `${msg.sender}: ${msg.message}\n`;
-                });
-                
+                recentHistory.forEach(msg => { contextMessage += `${msg.sender}: ${msg.message}\n`; });
                 contextMessage += `\nUser: ${userMessage}\n\nPRRX Bot:`;
                 
                 const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
@@ -616,16 +533,12 @@ RULES:
                 });
                 
                 const data = await response.json();
-                
-                if (data.error) {
-                    return fallbackResponse(userMessage);
-                }
+                if (data.error) return fallbackResponse(userMessage);
                 
                 let aiResponse = data.candidates[0].content.parts[0].text;
                 aiResponse = aiResponse.replace(/PRRX Bot:/gi, '').trim();
                 saveLearnedResponse(userMessage, aiResponse);
                 return aiResponse;
-                
             } catch (error) {
                 return fallbackResponse(userMessage);
             }
@@ -649,12 +562,8 @@ RULES:
         
         function loadMessages() {
             const saved = SecureStorage.get('chat_messages');
-            if (saved) {
-                messages = saved;
-            } else {
-                messages = [];
-                saveMessages();
-            }
+            messages = saved ? saved : [];
+            saveMessages();
             return messages;
         }
         
@@ -682,11 +591,7 @@ RULES:
         
         function updateOnlineUsers() {
             const savedUsers = SecureStorage.get('chat_users');
-            if (savedUsers) {
-                onlineUsers = savedUsers.filter(u => u.online);
-            } else {
-                onlineUsers = [];
-            }
+            onlineUsers = savedUsers ? savedUsers.filter(u => u.online) : [];
             let filtered = onlineUsers;
             if (searchTerm) {
                 filtered = onlineUsers.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -781,7 +686,7 @@ RULES:
         }
         
         function searchUsers() {
-            searchTerm = document.getElementById('searchInput').value;
+            searchTerm = document.getElementById('searchInput')?.value || '';
             updateOnlineUsers();
         }
         
@@ -807,7 +712,10 @@ RULES:
         }
         
         function renderChatInterface() {
-            document.getElementById('app').innerHTML = `
+            const app = document.getElementById('app');
+            if (!app) return;
+            
+            app.innerHTML = `
                 <div class="chat-container">
                     <div class="user-sidebar">
                         <h3><i class="fas fa-users"></i> Online Users</h3>
@@ -818,6 +726,7 @@ RULES:
                         <div class="user-list" id="userList"></div>
                         <div class="online-count"><i class="fas fa-circle" style="color:#2ecc71; font-size:0.6rem;"></i> <span id="onlineCount">0</span> users online</div>
                     </div>
+                    
                     <div class="chat-main">
                         <div class="chat-header">
                             <h3><i class="fas fa-robot"></i> AI-Powered Chat - Welcome ${currentUser?.username}!</h3>
@@ -832,43 +741,67 @@ RULES:
                     </div>
                 </div>
             `;
+            
             renderMessages();
             updateOnlineUsers();
         }
         
         function showJoinScreen() {
-            document.getElementById('app').innerHTML = `
+            const app = document.getElementById('app');
+            if (!app) return;
+            
+            app.innerHTML = `
                 <div class="join-screen">
                     <i class="fas fa-robot"></i>
                     <h2>PRRX AI-Powered Chat</h2>
                     <p style="color: #888; margin-bottom: 1rem;">🤖 Powered by Google Gemini AI | E2E Encrypted</p>
-                    <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20">
+                    <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20" autocomplete="off">
                     <button id="joinBtn">Join Chat</button>
                     <p style="color: #666; font-size: 0.7rem; margin-top: 1rem;">Messages are E2E encrypted | Be respectful</p>
                 </div>
             `;
-            document.getElementById('joinBtn').addEventListener('click', () => {
-                const username = document.getElementById('usernameInput').value.trim();
-                if (!username) { showToast("❌ Please enter a username"); return; }
-                if (username.length < 2) { showToast("❌ Username must be at least 2 characters"); return; }
-                currentUser = { username: username };
-                let users = SecureStorage.get('chat_users') || [];
-                if (!users.find(u => u.username === username)) {
-                    users.push({ username: username, online: true });
-                    SecureStorage.set('chat_users', users);
-                }
-                loadMessages();
-                if (messages.length === 0) {
-                    addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
-                } else {
-                    addMessage("System", `${username} joined the chat`, false, false);
-                }
-                renderChatInterface();
-                setInterval(() => updateOnlineUsers(), 5000);
-            });
-            document.getElementById('usernameInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('joinBtn').click();
-            });
+            
+            const joinBtn = document.getElementById('joinBtn');
+            const usernameInput = document.getElementById('usernameInput');
+            
+            if (joinBtn) {
+                joinBtn.onclick = () => {
+                    const username = usernameInput?.value.trim();
+                    if (!username) {
+                        showToast("❌ Please enter a username");
+                        return;
+                    }
+                    if (username.length < 2) {
+                        showToast("❌ Username must be at least 2 characters");
+                        return;
+                    }
+                    
+                    currentUser = { username: username };
+                    
+                    let users = SecureStorage.get('chat_users') || [];
+                    if (!users.find(u => u.username === username)) {
+                        users.push({ username: username, online: true });
+                        SecureStorage.set('chat_users', users);
+                    }
+                    
+                    loadMessages();
+                    
+                    if (messages.length === 0) {
+                        addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+                    } else {
+                        addMessage("System", `${username} joined the chat`, false, false);
+                    }
+                    
+                    renderChatInterface();
+                    setInterval(() => updateOnlineUsers(), 5000);
+                };
+            }
+            
+            if (usernameInput) {
+                usernameInput.onkeypress = (e) => {
+                    if (e.key === 'Enter') joinBtn?.click();
+                };
+            }
         }
         
         // ========== ANTI-DEBUGGING ==========
@@ -901,41 +834,18 @@ RULES:
             });
         }
         
-        // ========== INIT - CHECK LOGIN WITH TIMEOUT ==========
+        // ========== INIT ==========
         loadLearnedResponses();
+        showJoinScreen();
         
-        // Show checking status with timeout
-        setTimeout(() => {
-            const loginStatus = isUserLoggedIn();
-            console.log("🔐 HWID:", CURRENT_HWID);
-            console.log("👤 Login Status:", loginStatus);
-            
-            if (loginStatus.loggedIn && loginStatus.user) {
-                currentUser = loginStatus.user;
-                let users = SecureStorage.get('chat_users') || [];
-                if (!users.find(u => u.username === currentUser.username)) {
-                    users.push({ username: currentUser.username, online: true, hwid: currentUser.hwid });
-                    SecureStorage.set('chat_users', users);
-                }
-                loadMessages();
-                if (messages.length === 0) {
-                    addMessage("PRRX AI Bot", `Welcome back, ${currentUser.username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
-                }
-                renderChatInterface();
-                setInterval(() => updateOnlineUsers(), 5000);
-            } else {
-                showJoinScreen();
-            }
-        }, 2000);
+        console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
+        console.log("%c🔐 E2E Encrypted | Google Gemini AI | Open Chat", "color: #3498db; font-size: 12px");
         
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
         window.searchUsers = searchUsers;
         window.startPrivateChat = startPrivateChat;
         window.leaveChat = leaveChat;
-        
-        console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🔐 E2E Encrypted | HWID Protected | Auto-check after 2 seconds", "color: #3498db; font-size: 12px");
     </script>
 </body>
 </html>
