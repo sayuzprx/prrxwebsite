@@ -287,19 +287,6 @@
         }
         .toast.show { transform: translateX(0); }
         
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
         .loading-spinner {
             width: 50px;
             height: 50px;
@@ -307,6 +294,7 @@
             border-top: 3px solid #2ecc71;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
+            margin: 0 auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
@@ -358,7 +346,7 @@ PRRX PANEL INFORMATION:
 - Download: PRRX.HEX.1.rar from GitHub Releases
 - WhatsApp Group: https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx
 
-RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel features, pricing, downloads, and support.
+RULES: Be helpful, friendly, and concise.
 `;
 
         let conversationHistory = [];
@@ -406,7 +394,10 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
             const session = localStorage.getItem('prrx_chat_session');
             if (session) {
                 try {
-                    return JSON.parse(session);
+                    const parsed = JSON.parse(session);
+                    if (parsed && parsed.username) {
+                        return parsed;
+                    }
                 } catch(e) {
                     console.error("Failed to parse session:", e);
                 }
@@ -580,6 +571,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
         
         function leaveChat() {
             showToast("🔒 Leaving chat...");
+            localStorage.removeItem('prrx_chat_session');
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 500);
@@ -623,32 +615,6 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
         }
         
         // ========== ANTI-DEBUGGING ==========
-        let devToolsOpen = false;
-        setInterval(() => {
-            const start = performance.now();
-            debugger;
-            const end = performance.now();
-            if (end - start > 100 && !devToolsOpen) {
-                devToolsOpen = true;
-                const antiDiv = document.createElement('div');
-                antiDiv.className = 'anti-devtools';
-                antiDiv.innerHTML = '<i class="fas fa-shield-horned"></i><p>⚠️ SECURITY ALERT: Developer Tools Detected<br>Please close DevTools to continue.</p>';
-                document.body.appendChild(antiDiv);
-                antiDiv.style.position = 'fixed';
-                antiDiv.style.top = '0';
-                antiDiv.style.left = '0';
-                antiDiv.style.width = '100%';
-                antiDiv.style.height = '100%';
-                antiDiv.style.background = '#0a0a0a';
-                antiDiv.style.zIndex = '20000';
-                antiDiv.style.display = 'flex';
-                antiDiv.style.justifyContent = 'center';
-                antiDiv.style.alignItems = 'center';
-                antiDiv.style.flexDirection = 'column';
-                antiDiv.style.backdropFilter = 'blur(20px)';
-            }
-        }, 2000);
-        
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
                 e.preventDefault();
@@ -672,38 +638,37 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
         // ========== INIT ==========
         loadLearnedResponses();
         
-        // Show loading indicator
+        // Show loading
         const app = document.getElementById('app');
         app.innerHTML = `
-            <div style="display: flex; justify-content: center; align-items: center; height: 70vh;">
+            <div style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: column;">
                 <div class="loading-spinner"></div>
-                <p style="margin-left: 1rem; color: #2ecc71;">Loading chat...</p>
+                <p style="margin-top: 1rem; color: #2ecc71;">Loading chat...</p>
+                <p style="margin-top: 0.5rem; font-size: 0.7rem; color: #666;">Checking session...</p>
             </div>
         `;
         
-        // Load session and start chat
-        setTimeout(() => {
-            const sessionUser = getUserFromSession();
-            console.log("Session user:", sessionUser);
+        // Load session and start chat immediately
+        const sessionUser = getUserFromSession();
+        console.log("🔐 Session check:", sessionUser);
+        
+        if (sessionUser && sessionUser.username) {
+            currentUser = sessionUser;
+            loadMessages();
             
-            if (sessionUser && sessionUser.username) {
-                currentUser = sessionUser;
-                loadMessages();
-                
-                if (messages.length === 0) {
-                    addMessage("PRRX AI Bot", `Welcome back, ${currentUser.username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
-                }
-                
-                renderChatInterface();
-                console.log("✅ Chat interface loaded successfully");
-            } else {
-                console.log("❌ No session found, redirecting to dashboard");
-                showToast("Session expired. Redirecting...");
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
+            if (messages.length === 0) {
+                addMessage("PRRX AI Bot", `Welcome back, ${currentUser.username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
             }
-        }, 500);
+            
+            renderChatInterface();
+            console.log("✅ Chat loaded for user:", currentUser.username);
+        } else {
+            console.log("❌ No valid session found, redirecting to dashboard");
+            showToast("No active session. Redirecting to dashboard...");
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        }
         
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
