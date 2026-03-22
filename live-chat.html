@@ -7,20 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- Ultra Security Headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
-        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-        img-src 'self' data: https:;
-        connect-src 'self';
-        frame-ancestors 'none';
-    ">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
@@ -32,7 +18,6 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            cursor: none;
         }
         
         .bg-animation {
@@ -173,29 +158,9 @@
             color: #2ecc71;
         }
         
-        .anti-devtools {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            z-index: 20000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            backdrop-filter: blur(20px);
-        }
-        .anti-devtools.active { display: flex; }
-        .anti-devtools i { font-size: 4rem; color: #ff5050; margin-bottom: 1rem; animation: shake 0.5s ease infinite; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .anti-devtools p { color: #ff5050; font-size: 1.2rem; text-align: center; }
-        
         @media (max-width: 768px) {
             .loading-container { padding: 1.5rem; }
             .logo { font-size: 2rem; }
-            .security-badge { flex-direction: column; gap: 0.3rem; }
         }
     </style>
 </head>
@@ -204,10 +169,6 @@
     <div class="bg-animation"></div>
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
-    <div class="anti-devtools" id="antiDevTools">
-        <i class="fas fa-shield-horned"></i>
-        <p>⚠️ SECURITY ALERT: Developer Tools Detected<br>Please close DevTools to continue.</p>
-    </div>
 
     <div class="loading-container">
         <div class="logo">PRRX</div>
@@ -227,7 +188,7 @@
     </div>
 
     <script>
-        // ========== ULTRA SECURE ENCRYPTION (Same as Dashboard) ==========
+        // ========== ENCRYPTION (Same as Dashboard) ==========
         const ENCRYPTION_KEY = 'PRRX_HWID_KEY_2026_SECURE';
         
         function encryptData(data) {
@@ -263,7 +224,7 @@
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        // ========== HWID GENERATION (Same as Dashboard) ==========
+        // ========== HWID GENERATION ==========
         function generateHWID() {
             const components = [
                 navigator.userAgent,
@@ -322,17 +283,6 @@
         }
         
         // ========== ANTI-DEBUGGING ==========
-        let devToolsOpen = false;
-        setInterval(() => {
-            const start = performance.now();
-            debugger;
-            const end = performance.now();
-            if (end - start > 100 && !devToolsOpen) {
-                devToolsOpen = true;
-                document.getElementById('antiDevTools').classList.add('active');
-            }
-        }, 2000);
-        
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
                 e.preventDefault();
@@ -342,7 +292,7 @@
         
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
         
-        // ========== REDIRECT AFTER SECURE CHECK ==========
+        // ========== REDIRECT AFTER CHECK ==========
         setTimeout(() => {
             const loginStatus = isUserLoggedIn();
             console.log("%c🔐 PRRX SECURE LOADING", "color: #2ecc71; font-size: 14px");
@@ -351,9 +301,16 @@
             
             if (loginStatus.loggedIn && loginStatus.user) {
                 // Store session for chat
-                localStorage.setItem('prrx_chat_session', JSON.stringify(loginStatus.user));
+                const sessionData = {
+                    username: loginStatus.user.username,
+                    hwid: CURRENT_HWID,
+                    loginTime: new Date().toISOString()
+                };
+                localStorage.setItem('prrx_chat_session', JSON.stringify(sessionData));
+                console.log("✅ Session saved for chat:", sessionData);
                 window.location.href = 'chat-interface.html';
             } else {
+                console.log("❌ Not logged in, redirecting to dashboard");
                 window.location.href = 'dashboard.html';
             }
         }, 2200);
