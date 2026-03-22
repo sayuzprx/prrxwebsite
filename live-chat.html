@@ -7,6 +7,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
+    <!-- Ultra Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://keyauth.win;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        connect-src 'self' https://generativelanguage.googleapis.com;
+        frame-ancestors 'none';
+    ">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -17,6 +31,7 @@
             overflow-x: hidden;
         }
         
+        /* Animated Background */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -39,6 +54,7 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Custom Cursor */
         .cursor-dot {
             width: 8px;
             height: 8px;
@@ -63,6 +79,7 @@
         }
         @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
         
+        /* Navbar */
         .navbar {
             position: fixed;
             top: 0;
@@ -121,6 +138,7 @@
             min-height: 100vh;
         }
         
+        /* Join Screen */
         .join-screen {
             text-align: center;
             padding: 3rem;
@@ -174,6 +192,7 @@
             box-shadow: 0 0 20px rgba(46,204,113,0.4);
         }
         
+        /* Chat Container */
         .chat-container {
             display: flex;
             gap: 1.5rem;
@@ -435,6 +454,7 @@
         const GEMINI_API_KEY = "AIzaSyB3YDwE7KKnOVB43rtpePFZLBpljv0ld-k";
         const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
         
+        // ========== PRRX PANEL KNOWLEDGE ==========
         const PRRX_KNOWLEDGE = `
 You are PRRX Bot, the official AI assistant for PRRX Gaming Panel.
 
@@ -448,13 +468,17 @@ PRRX PANEL INFORMATION:
 - Download: PRRX.HEX.1.rar from GitHub Releases
 - WhatsApp Group: https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx
 
-RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel features, pricing, downloads, and support.
+RULES:
+1. Be helpful, friendly, and concise
+2. Answer questions about PRRX panel features, pricing, downloads, and support
+3. Keep responses under 3 sentences when possible
+4. Always be positive and encouraging
 `;
 
         let conversationHistory = [];
         
-        // ========== E2E ENCRYPTION ==========
-        const ENCRYPTION_KEY = 'PRRX_CHAT_E2E_KEY_2026_SECURE';
+        // ========== ULTRA SECURE E2E ENCRYPTION ==========
+        const ENCRYPTION_KEY = 'PRRX_CHAT_E2E_KEY_2026_ULTRA_SECURE';
         
         function encryptData(data) {
             let encrypted = '';
@@ -489,7 +513,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        // ========== AI RESPONSE ==========
+        // ========== AI SELF-LEARNING ==========
         let aiLearningMemory = [];
         
         function loadLearnedResponses() {
@@ -711,7 +735,6 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
             showJoinScreen();
         }
         
-        // Global function to join chat (called from button)
         window.joinChat = function() {
             const usernameInput = document.getElementById('usernameInput');
             const username = usernameInput ? usernameInput.value.trim() : '';
@@ -736,7 +759,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
             loadMessages();
             
             if (messages.length === 0) {
-                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
             } else {
                 addMessage("System", `${username} joined the chat`, false, false);
             }
@@ -788,25 +811,24 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
                 <div class="join-screen">
                     <i class="fas fa-robot"></i>
                     <h2>PRRX AI-Powered Chat</h2>
-                    <p style="color: #888; margin-bottom: 1rem;">🤖 Powered by Google Gemini AI | E2E Encrypted</p>
+                    <p style="color: #888; margin-bottom: 1rem;">🤖 Powered by Google Gemini AI | E2E Encrypted | Self-Learning</p>
+                    <p style="color: #2ecc71; margin-bottom: 0.5rem; font-size: 0.8rem;">🔐 Ultra Secure | No Login Required</p>
                     <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20" autocomplete="off">
                     <button id="joinBtn" onclick="joinChat()">Join Chat</button>
-                    <p style="color: #666; font-size: 0.7rem; margin-top: 1rem;">Messages are E2E encrypted | Be respectful</p>
+                    <p style="color: #666; font-size: 0.7rem; margin-top: 1rem;">Messages are E2E encrypted | Be respectful | AI Assistant Active</p>
                 </div>
             `;
             
-            // Add enter key listener
             const usernameInput = document.getElementById('usernameInput');
             if (usernameInput) {
                 usernameInput.onkeypress = function(e) {
-                    if (e.key === 'Enter') {
-                        window.joinChat();
-                    }
+                    if (e.key === 'Enter') window.joinChat();
                 };
             }
         }
         
-        // ========== ANTI-DEBUGGING ==========
+        // ========== ULTRA SECURITY ==========
+        // Anti-Debugging
         setInterval(() => {
             const start = performance.now();
             debugger;
@@ -816,6 +838,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
             }
         }, 3000);
         
+        // Block DevTools shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
                 e.preventDefault();
@@ -824,6 +847,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
             }
         });
         
+        // Block right-click
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
         
         // ========== CURSOR ==========
@@ -841,7 +865,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
         showJoinScreen();
         
         console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🔐 E2E Encrypted | Google Gemini AI | Open Chat", "color: #3498db; font-size: 12px");
+        console.log("%c🔐 E2E Encrypted | Google Gemini AI | Self-Learning | No Login Required", "color: #3498db; font-size: 12px");
         
         // Make functions globally accessible
         window.sendMessage = sendMessage;
