@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a0a;
@@ -110,7 +110,7 @@
         .container {
             position: relative;
             z-index: 2;
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 6rem 1.5rem 2rem;
             min-height: 100vh;
@@ -125,11 +125,10 @@
             display: flex;
             flex-direction: column;
             height: 70vh;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
         }
         
         .chat-header {
-            padding: 1.2rem 1.5rem;
+            padding: 1rem 1.5rem;
             border-bottom: 1px solid rgba(46,204,113,0.2);
             background: rgba(0,0,0,0.4);
             display: flex;
@@ -144,36 +143,30 @@
             gap: 0.5rem;
         }
         .chat-header h3 i { color: #2ecc71; }
-        .chat-header .user-info {
+        .user-info {
             font-size: 0.8rem;
             color: #2ecc71;
             background: rgba(46,204,113,0.15);
             padding: 0.3rem 1rem;
             border-radius: 20px;
-            border: 1px solid rgba(46,204,113,0.3);
         }
         
         .chat-messages {
             flex: 1;
-            padding: 1.5rem;
+            padding: 1rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.8rem;
         }
         
         .message {
             display: flex;
             gap: 0.8rem;
-            animation: fadeInUp 0.3s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .message-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, #2ecc71, #27ae60);
             border-radius: 50%;
             display: flex;
@@ -185,7 +178,7 @@
         .message-content {
             flex: 1;
             background: rgba(255,255,255,0.05);
-            padding: 0.7rem 1rem;
+            padding: 0.6rem 1rem;
             border-radius: 18px;
             max-width: 70%;
         }
@@ -199,7 +192,7 @@
             color: #2ecc71;
             margin-bottom: 0.2rem;
         }
-        .message-text { font-size: 0.85rem; word-wrap: break-word; line-height: 1.4; }
+        .message-text { font-size: 0.85rem; word-wrap: break-word; }
         .message-time {
             font-size: 0.55rem;
             color: #666;
@@ -226,8 +219,6 @@
             border-radius: 50%;
             animation: typing 1s infinite;
         }
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes typing {
             0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
             30% { transform: translateY(-5px); opacity: 1; }
@@ -238,7 +229,6 @@
             gap: 0.5rem;
             padding: 1rem;
             border-top: 1px solid rgba(46,204,113,0.2);
-            background: rgba(0,0,0,0.4);
         }
         .chat-input-area input {
             flex: 1;
@@ -264,9 +254,7 @@
         .clear-btn { background: rgba(255,165,0,0.2) !important; border: 1px solid #ffa500 !important; color: #ffa500 !important; }
         
         .security-footer {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
+            text-align: center;
             margin-top: 1rem;
             font-size: 0.6rem;
             color: #2ecc71;
@@ -278,7 +266,7 @@
             right: 20px;
             background: #2ecc71;
             color: #0a0a0a;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 40px;
             font-weight: 600;
             z-index: 10000;
@@ -288,24 +276,20 @@
         .toast.show { transform: translateX(0); }
         
         .loading-spinner {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border: 3px solid rgba(46,204,113,0.2);
             border-top: 3px solid #2ecc71;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #2ecc71; border-radius: 10px; }
         
         @media (max-width: 768px) {
             .navbar { padding: 0.8rem 1rem; }
             .menu { gap: 1rem; }
             .chat-header { flex-direction: column; gap: 0.5rem; text-align: center; }
+            .message-content { max-width: 85%; }
         }
     </style>
 </head>
@@ -325,7 +309,12 @@
         </div>
     </div>
 
-    <div class="container" id="app"></div>
+    <div class="container" id="app">
+        <div style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: column;">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 1rem; color: #2ecc71;">Loading chat...</p>
+        </div>
+    </div>
     <div id="toast" class="toast"></div>
 
     <script>
@@ -344,9 +333,8 @@ PRRX PANEL INFORMATION:
 - Main Menu: Key Bind, Settings Menu, Your PC Inform, Real Chat {Live}, Payment Method, Report Menu, About
 - Payment Plans: 300 LKR (1 Week), 600 LKR (3 Weeks), 850 LKR (1 Month), 1500 LKR (6 Months), 2299 LKR (1 Year), 2499 LKR (1 Year+)
 - Download: PRRX.HEX.1.rar from GitHub Releases
-- WhatsApp Group: https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx
 
-RULES: Be helpful, friendly, and concise.
+RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel features, pricing, downloads.
 `;
 
         let conversationHistory = [];
@@ -390,22 +378,9 @@ RULES: Be helpful, friendly, and concise.
         };
         
         // ========== GET USER FROM SESSION ==========
-        function getUserFromSession() {
-            const session = localStorage.getItem('prrx_chat_session');
-            if (session) {
-                try {
-                    const parsed = JSON.parse(session);
-                    if (parsed && parsed.username) {
-                        return parsed;
-                    }
-                } catch(e) {
-                    console.error("Failed to parse session:", e);
-                }
-            }
-            return null;
-        }
+        const chatUsername = localStorage.getItem('prrx_chat_user');
         
-        // ========== AI SELF-LEARNING ==========
+        // ========== AI RESPONSE ==========
         let aiLearningMemory = [];
         
         function loadLearnedResponses() {
@@ -456,7 +431,6 @@ RULES: Be helpful, friendly, and concise.
                 saveLearnedResponse(userMessage, aiResponse);
                 return aiResponse;
             } catch (error) {
-                console.error("AI Error:", error);
                 return fallbackResponse(userMessage);
             }
         }
@@ -571,7 +545,7 @@ RULES: Be helpful, friendly, and concise.
         
         function leaveChat() {
             showToast("🔒 Leaving chat...");
-            localStorage.removeItem('prrx_chat_session');
+            localStorage.removeItem('prrx_chat_user');
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 500);
@@ -586,19 +560,15 @@ RULES: Be helpful, friendly, and concise.
         
         function renderChatInterface() {
             const app = document.getElementById('app');
-            if (!app) return;
-            
             app.innerHTML = `
                 <div class="chat-container">
                     <div class="chat-header">
                         <h3><i class="fas fa-robot"></i> PRRX AI Assistant</h3>
-                        <div class="user-info">
-                            <i class="fas fa-user-shield"></i> ${currentUser?.username || 'User'}
-                        </div>
+                        <div class="user-info"><i class="fas fa-user"></i> ${currentUser.username}</div>
                     </div>
                     <div class="chat-messages" id="messages"></div>
                     <div class="chat-input-area">
-                        <input type="text" id="messageInput" placeholder="Ask me anything about PRRX Panel..." onkeypress="if(event.key==='Enter') sendMessage()">
+                        <input type="text" id="messageInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendMessage()">
                         <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
                         <button onclick="clearChat()" class="clear-btn"><i class="fas fa-trash"></i> Clear</button>
                         <button onclick="leaveChat()" class="leave-btn"><i class="fas fa-sign-out-alt"></i> Leave</button>
@@ -607,64 +577,29 @@ RULES: Be helpful, friendly, and concise.
                 <div class="security-footer">
                     <span><i class="fas fa-shield-alt"></i> E2E Encrypted</span>
                     <span><i class="fas fa-robot"></i> Gemini AI</span>
-                    <span><i class="fas fa-brain"></i> Self-Learning</span>
                 </div>
             `;
-            
             renderMessages();
-        }
-        
-        // ========== ANTI-DEBUGGING ==========
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-                showToast("🔒 Security: DevTools blocked");
-                return false;
-            }
-        });
-        
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
-        
-        // ========== CURSOR ==========
-        if (window.innerWidth > 768) {
-            const cd = document.querySelector('.cursor-dot');
-            const co = document.querySelector('.cursor-outline');
-            document.addEventListener('mousemove', (e) => {
-                cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-                co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
-            });
         }
         
         // ========== INIT ==========
         loadLearnedResponses();
         
-        // Show loading
-        const app = document.getElementById('app');
-        app.innerHTML = `
-            <div style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: column;">
-                <div class="loading-spinner"></div>
-                <p style="margin-top: 1rem; color: #2ecc71;">Loading chat...</p>
-                <p style="margin-top: 0.5rem; font-size: 0.7rem; color: #666;">Checking session...</p>
-            </div>
-        `;
+        console.log("🔐 Chat username from storage:", chatUsername);
         
-        // Load session and start chat immediately
-        const sessionUser = getUserFromSession();
-        console.log("🔐 Session check:", sessionUser);
-        
-        if (sessionUser && sessionUser.username) {
-            currentUser = sessionUser;
+        if (chatUsername) {
+            currentUser = { username: chatUsername };
             loadMessages();
             
             if (messages.length === 0) {
-                addMessage("PRRX AI Bot", `Welcome back, ${currentUser.username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${currentUser.username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
             }
             
             renderChatInterface();
-            console.log("✅ Chat loaded for user:", currentUser.username);
+            console.log("✅ Chat loaded for:", currentUser.username);
         } else {
-            console.log("❌ No valid session found, redirecting to dashboard");
-            showToast("No active session. Redirecting to dashboard...");
+            console.log("❌ No username found, redirecting to dashboard");
+            showToast("Please login first");
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 1500);
@@ -674,7 +609,25 @@ RULES: Be helpful, friendly, and concise.
         window.clearChat = clearChat;
         window.leaveChat = leaveChat;
         
-        console.log("%c🤖 PRRX ULTRA SECURE AI CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
+        // ========== SECURITY ==========
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                showToast("🔒 DevTools blocked");
+                return false;
+            }
+        });
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
+        
+        // Cursor
+        if (window.innerWidth > 768) {
+            const cd = document.querySelector('.cursor-dot');
+            const co = document.querySelector('.cursor-outline');
+            document.addEventListener('mousemove', (e) => {
+                cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+                co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+            });
+        }
     </script>
 </body>
 </html>
