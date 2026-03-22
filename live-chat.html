@@ -711,6 +711,40 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
             showJoinScreen();
         }
         
+        // Global function to join chat (called from button)
+        window.joinChat = function() {
+            const usernameInput = document.getElementById('usernameInput');
+            const username = usernameInput ? usernameInput.value.trim() : '';
+            
+            if (!username) {
+                showToast("❌ Please enter a username");
+                return;
+            }
+            if (username.length < 2) {
+                showToast("❌ Username must be at least 2 characters");
+                return;
+            }
+            
+            currentUser = { username: username };
+            
+            let users = SecureStorage.get('chat_users') || [];
+            if (!users.find(u => u.username === username)) {
+                users.push({ username: username, online: true });
+                SecureStorage.set('chat_users', users);
+            }
+            
+            loadMessages();
+            
+            if (messages.length === 0) {
+                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+            } else {
+                addMessage("System", `${username} joined the chat`, false, false);
+            }
+            
+            renderChatInterface();
+            setInterval(() => updateOnlineUsers(), 5000);
+        };
+        
         function renderChatInterface() {
             const app = document.getElementById('app');
             if (!app) return;
@@ -756,50 +790,18 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
                     <h2>PRRX AI-Powered Chat</h2>
                     <p style="color: #888; margin-bottom: 1rem;">🤖 Powered by Google Gemini AI | E2E Encrypted</p>
                     <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20" autocomplete="off">
-                    <button id="joinBtn">Join Chat</button>
+                    <button id="joinBtn" onclick="joinChat()">Join Chat</button>
                     <p style="color: #666; font-size: 0.7rem; margin-top: 1rem;">Messages are E2E encrypted | Be respectful</p>
                 </div>
             `;
             
-            const joinBtn = document.getElementById('joinBtn');
+            // Add enter key listener
             const usernameInput = document.getElementById('usernameInput');
-            
-            if (joinBtn) {
-                joinBtn.onclick = () => {
-                    const username = usernameInput?.value.trim();
-                    if (!username) {
-                        showToast("❌ Please enter a username");
-                        return;
-                    }
-                    if (username.length < 2) {
-                        showToast("❌ Username must be at least 2 characters");
-                        return;
-                    }
-                    
-                    currentUser = { username: username };
-                    
-                    let users = SecureStorage.get('chat_users') || [];
-                    if (!users.find(u => u.username === username)) {
-                        users.push({ username: username, online: true });
-                        SecureStorage.set('chat_users', users);
-                    }
-                    
-                    loadMessages();
-                    
-                    if (messages.length === 0) {
-                        addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
-                    } else {
-                        addMessage("System", `${username} joined the chat`, false, false);
-                    }
-                    
-                    renderChatInterface();
-                    setInterval(() => updateOnlineUsers(), 5000);
-                };
-            }
-            
             if (usernameInput) {
-                usernameInput.onkeypress = (e) => {
-                    if (e.key === 'Enter') joinBtn?.click();
+                usernameInput.onkeypress = function(e) {
+                    if (e.key === 'Enter') {
+                        window.joinChat();
+                    }
                 };
             }
         }
@@ -841,6 +843,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
         console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
         console.log("%c🔐 E2E Encrypted | Google Gemini AI | Open Chat", "color: #3498db; font-size: 12px");
         
+        // Make functions globally accessible
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
         window.searchUsers = searchUsers;
