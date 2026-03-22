@@ -280,11 +280,51 @@
         .menu a:hover::after { width: 100%; }
         .menu a:hover { color: #2ecc71; }
         
-        .cta-section { text-align: center; margin: 2rem 0; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 24px; }
-        .cta-button { background: linear-gradient(90deg, #2ecc71, #27ae60); padding: 0.7rem 1.8rem; border-radius: 50px; font-weight: bold; border: none; color: white; cursor: pointer; }
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .cta-button {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        .cta-button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
         
-        footer { text-align: center; padding: 1.5rem; font-size: 0.65rem; color: #666; border-top: 1px solid rgba(255,255,255,0.05); }
-        .toast-notification { position: fixed; bottom: 20px; right: 20px; background: rgba(46,204,113,0.95); color: #fff; padding: 8px 16px; border-radius: 40px; font-size: 0.8rem; z-index: 10000; transform: translateX(400px); transition: transform 0.3s ease; }
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.65rem;
+            color: #666;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(46,204,113,0.95);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
         .toast-notification.show { transform: translateX(0); }
         
         @media (max-width: 768px) {
@@ -292,6 +332,7 @@
             .navbar { flex-direction: column; gap: 1rem; }
             .topics-container { flex-direction: column; }
             .panel-container { min-height: 50vh; }
+            .cta-button { padding: 0.6rem 1.5rem; font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -336,19 +377,20 @@
 
         <div class="topics-container">
             <div class="left-topics">
-                <div class="topic-item" data-delay="0"><h3><i class="fas fa-keyboard"></i> Key Bind</h3><p>Customize your hotkeys</p></div>
-                <div class="topic-item" data-delay="1"><h3><i class="fas fa-sliders-h"></i> Settings Menu</h3><p>Full configuration panel</p></div>
-                <div class="topic-item" data-delay="2"><h3><i class="fas fa-desktop"></i> Your PC Inform</h3><p>System specifications</p></div>
-                <div class="topic-item" data-delay="3"><h3><i class="fas fa-comments"></i> Real Chat {Live}</h3><p>Live community chat</p></div>
+                <div class="topic-item" data-delay="0"><h3><i class="fas fa-keyboard"></i> Key Bind</h3><p>Customize your hotkeys for quick access</p></div>
+                <div class="topic-item" data-delay="1"><h3><i class="fas fa-sliders-h"></i> Settings Menu</h3><p>Full configuration panel for your preferences</p></div>
+                <div class="topic-item" data-delay="2"><h3><i class="fas fa-desktop"></i> Your PC Inform</h3><p>System specifications and performance stats</p></div>
+                <div class="topic-item" data-delay="3"><h3><i class="fas fa-comments"></i> Real Chat {Live}</h3><p>Live community chat and support</p></div>
             </div>
             <div class="right-topics">
-                <div class="topic-item" data-delay="4"><h3><i class="fas fa-crosshairs"></i> AIM ASSISTANCE</h3><p>AIMBOT +++, HEAD, EXTERNAL, DRAG</p></div>
-                <div class="topic-item" data-delay="5"><h3><i class="fas fa-eye"></i> VISUAL ENHANCEMENT</h3><p>CHAMS Menu, ESP, 3D CHAMS</p></div>
-                <div class="topic-item" data-delay="6"><h3><i class="fas fa-shield-alt"></i> ANTI-CHEAT</h3><p>Anti Cheates, Anti Report, FPS Boost</p></div>
-                <div class="topic-item" data-delay="7"><h3><i class="fas fa-cog"></i> INTERNAL ESP BOX</h3><p>ESP Fixed Mod</p></div>
+                <div class="topic-item" data-delay="4"><h3><i class="fas fa-crosshairs"></i> AIM ASSISTANCE</h3><p>AIMBOT +++, HEAD, EXTERNAL, DRAG, Mouse Settings</p></div>
+                <div class="topic-item" data-delay="5"><h3><i class="fas fa-eye"></i> VISUAL ENHANCEMENT</h3><p>CHAMS Menu, ESP, 3D CHAMS, Female Fix, Blue/Red CHAMS</p></div>
+                <div class="topic-item" data-delay="6"><h3><i class="fas fa-shield-alt"></i> ANTI-CHEAT</h3><p>Anti Cheates, Anti Report, FPS Boost, Optimization</p></div>
+                <div class="topic-item" data-delay="7"><h3><i class="fas fa-cog"></i> INTERNAL ESP BOX</h3><p>ESP Fixed Mod with advanced detection</p></div>
             </div>
         </div>
 
+        <!-- WhatsApp Widget -->
         <div class="whatsapp-widget">
             <div class="widget-header">
                 <i class="fab fa-whatsapp"></i>
@@ -362,39 +404,38 @@
             <a href="https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx" target="_blank" class="whatsapp-btn" id="whatsappJoinBtn"><i class="fab fa-whatsapp"></i> Join WhatsApp Group</a>
         </div>
 
+        <!-- News & Updates Section -->
         <div class="news-section">
-            <div class="section-header"><h2><i class="fas fa-newspaper"></i> News & Updates</h2><p>Latest announcements, patch notes</p></div>
+            <div class="section-header"><h2><i class="fas fa-newspaper"></i> News & Updates</h2><p>Latest announcements, patch notes, and feature updates</p></div>
             <div class="news-grid" id="newsGrid"></div>
         </div>
 
+        <!-- CTA Section with Download Button -->
         <div class="cta-section">
-            <h3>Ready to dominate?</h3>
+            <h3 style="margin-bottom: 0.8rem;">Ready to dominate?</h3>
             <button class="cta-button" id="downloadBtn"><i class="fas fa-download"></i> GET PRRX PREMIUM</button>
         </div>
         
-        <footer><p>© 2025 PRRX Panel — Ultra Secure Gaming Solutions | E2E Encrypted | HWID Protected</p></footer>
+        <footer>
+            <p>© 2025 PRRX Panel — Ultra Secure Gaming Solutions | E2E Encrypted | HWID Protected</p>
+        </footer>
     </div>
     
     <div id="toast" class="toast-notification"></div>
 
     <script>
-        // ========== LOADING SCREEN - SIMPLE TIMER ==========
+        // ========== LOADING SCREEN ==========
         let progress = 0;
         const progressBar = document.getElementById('progressBar');
         const percentageSpan = document.getElementById('loadingPercentage');
         
-        // Simple interval to update progress
         const timer = setInterval(() => {
             progress += 2;
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(timer);
-                
-                // Hide loading screen
                 document.getElementById('loadingScreen').classList.add('hidden');
                 document.getElementById('mainContent').classList.add('visible');
-                
-                // Start animations
                 assemblePanel();
                 animateTopics();
             }
@@ -497,9 +538,9 @@
         
         // ========== NEWS ==========
         const newsData = [
-            { type: "update", date: "March 22, 2026", title: "PRRX v3.2 Released!", preview: "New features: AIMBOT EXTERNAL AI, Enhanced ESP", expanded: "<strong>What's New:</strong><ul><li>AIMBOT EXTERNAL AI</li><li>Enhanced ESP with 3D tracking</li><li>Improved FPS Boost (+15%)</li></ul>" },
-            { type: "announcement", date: "March 20, 2026", title: "Server Maintenance Completed", preview: "Singapore server upgraded. All systems operational.", expanded: "Singapore server upgraded.<ul><li>30% faster response</li><li>Reduced latency</li></ul>" },
-            { type: "patch", date: "March 18, 2026", title: "Hotfix v3.1.2", preview: "Critical anti-cheat update released.", expanded: "<strong>Hotfix:</strong><ul><li>Updated detection signatures</li><li>Improved HWID protection</li></ul>" }
+            { type: "update", date: "March 22, 2026", title: "PRRX v3.2 Released!", preview: "New features: AIMBOT EXTERNAL AI, Enhanced ESP, Performance optimizations.", expanded: "<strong>What's New:</strong><ul><li>AIMBOT EXTERNAL AI - AI-powered aim assistance</li><li>Enhanced ESP with 3D location tracking</li><li>Improved FPS Boost (+15% performance)</li><li>Fixed Mouse Drag issues</li></ul>" },
+            { type: "announcement", date: "March 20, 2026", title: "Server Maintenance Completed", preview: "Singapore server upgraded. All systems operational with improved stability.", expanded: "The Singapore server has been upgraded.<ul><li>30% faster response times</li><li>Improved connection stability</li><li>Reduced latency (avg 45ms → 32ms)</li></ul>" },
+            { type: "patch", date: "March 18, 2026", title: "Hotfix v3.1.2 - Anti-Cheat Update", preview: "Critical anti-cheat update released. Please update to latest version.", expanded: "<strong>Hotfix Details:</strong><ul><li>Updated detection signatures</li><li>Fixed false positive issues</li><li>Improved HWID protection</li></ul>" }
         ];
         
         function renderNews() {
@@ -523,6 +564,17 @@
             if (card.classList.contains('active')) card.classList.remove('active');
             else { document.querySelectorAll('.news-card').forEach(c => c.classList.remove('active')); card.classList.add('active'); }
         }
+        
+        // ========== DOWNLOAD BUTTON (WORKING) ==========
+        document.getElementById('downloadBtn')?.addEventListener('click', function() {
+            window.open('https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX%20HEX.rar', '_blank');
+            showToast("🔒 Secure download started");
+        });
+        
+        // ========== WHATSAPP BUTTON ==========
+        document.getElementById('whatsappJoinBtn')?.addEventListener('click', function() {
+            showToast("💬 Opening WhatsApp group...");
+        });
         
         // ========== SECURITY ==========
         document.addEventListener('keydown', (e) => {
@@ -557,11 +609,6 @@
         document.getElementById('navHome')?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         document.getElementById('navFeatures')?.addEventListener('click', () => window.location.href = 'features.html');
         document.getElementById('navChat')?.addEventListener('click', () => window.location.href = 'live-chat.html');
-        document.getElementById('downloadBtn')?.addEventListener('click', () => {
-            window.open('https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX%20HEX.rar', '_blank');
-            showToast("🔒 Secure download started");
-        });
-        document.getElementById('whatsappJoinBtn')?.addEventListener('click', () => showToast("💬 Opening WhatsApp group..."));
         
         // ========== INIT ==========
         window.addEventListener('load', () => {
@@ -574,6 +621,7 @@
         window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
         
         console.log("%c🔐 PRRX ULTRA SECURE ACTIVE", "color: #2ecc71; font-size: 14px");
+        console.log("%c💾 Download button active: PRRX HEX.rar", "color: #fff; font-size: 12px");
     </script>
 </body>
 </html>
