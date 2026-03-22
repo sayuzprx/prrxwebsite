@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX Official | Real-Time Chat</title>
+    <title>PRRX Official | Real-Time Chat - No History</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
@@ -20,83 +20,6 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-        
-        /* Loading Screen */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 100%);
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-        .loading-screen.hidden { opacity: 0; visibility: hidden; }
-        
-        .loading-logo {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, #2ecc71, #27ae60);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: loadingShimmer 1.5s ease infinite, logoPulse 1.2s ease infinite;
-            margin-bottom: 2rem;
-        }
-        @keyframes loadingShimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-        
-        .loading-spinner {
-            width: 70px;
-            height: 70px;
-            border: 4px solid rgba(46,204,113,0.15);
-            border-top: 4px solid #2ecc71;
-            border-right: 4px solid #27ae60;
-            border-radius: 50%;
-            animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            margin-bottom: 2rem;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .loading-progress-container { width: 250px; margin: 1rem 0; }
-        .loading-progress { width: 100%; height: 3px; background: rgba(46,204,113,0.2); border-radius: 4px; overflow: hidden; }
-        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #2ecc71, #27ae60); animation: progressFill 1.4s ease-out forwards; }
-        @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
-        .loading-percentage { font-size: 0.8rem; color: #2ecc71; margin-top: 0.5rem; font-weight: 600; }
-        .loading-text { font-size: 0.85rem; color: #888; letter-spacing: 2px; margin-top: 1rem; }
-        .loading-dots span { display: inline-block; animation: dotBlink 1.4s infinite; }
-        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dotBlink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
-        
-        .loading-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        .loading-particle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: radial-gradient(circle, #2ecc71, #27ae60);
-            border-radius: 50%;
-            opacity: 0;
-            animation: floatParticle 2.5s ease-out forwards;
-        }
-        @keyframes floatParticle {
-            0% { opacity: 0; transform: translateY(0) scale(0); }
-            15% { opacity: 0.8; transform: translateY(-20px) scale(1); }
-            100% { opacity: 0; transform: translateY(-120px) scale(0); }
-        }
-        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #2ecc71; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
         
         /* Background Animation */
         .bg-animation {
@@ -136,7 +59,7 @@
         .content {
             position: relative;
             z-index: 2;
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 2rem;
             min-height: 100vh;
@@ -237,22 +160,9 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .online-dot {
-            width: 8px;
-            height: 8px;
-            background: #2ecc71;
-            border-radius: 50%;
-            animation: onlinePulse 1.5s infinite;
-        }
+        .online-dot { width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; animation: onlinePulse 1.5s infinite; }
         @keyframes onlinePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .user-badge {
-            font-size: 0.8rem;
-            color: #2ecc71;
-            background: rgba(46,204,113,0.15);
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            border: 1px solid rgba(46,204,113,0.3);
-        }
+        .user-badge { font-size: 0.8rem; color: #2ecc71; background: rgba(46,204,113,0.15); padding: 0.3rem 1rem; border-radius: 20px; border: 1px solid rgba(46,204,113,0.3); }
         
         .chat-messages {
             flex: 1;
@@ -263,7 +173,6 @@
             gap: 0.8rem;
         }
         
-        /* Messages */
         .message {
             display: flex;
             gap: 0.8rem;
@@ -294,30 +203,13 @@
             transition: all 0.3s;
             border: 1px solid rgba(46,204,113,0.1);
         }
-        .message:hover .message-content {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(46,204,113,0.3);
-        }
+        .message:hover .message-content { background: rgba(255,255,255,0.08); border-color: rgba(46,204,113,0.3); }
         .message-own { justify-content: flex-end; }
-        .message-own .message-content {
-            background: rgba(46,204,113,0.15);
-            border: 1px solid rgba(46,204,113,0.3);
-        }
-        .message-sender {
-            font-size: 0.7rem;
-            color: #2ecc71;
-            margin-bottom: 0.2rem;
-        }
+        .message-own .message-content { background: rgba(46,204,113,0.15); border: 1px solid rgba(46,204,113,0.3); }
+        .message-sender { font-size: 0.7rem; color: #2ecc71; margin-bottom: 0.2rem; }
         .message-text { font-size: 0.85rem; word-wrap: break-word; line-height: 1.4; }
-        .message-time {
-            font-size: 0.55rem;
-            color: #666;
-            margin-top: 0.2rem;
-            text-align: right;
-        }
-        .bot-message .message-avatar {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-        }
+        .message-time { font-size: 0.55rem; color: #666; margin-top: 0.2rem; text-align: right; }
+        .bot-message .message-avatar { background: linear-gradient(135deg, #f39c12, #e67e22); }
         .bot-message .message-sender { color: #f39c12; }
         
         .chat-input-area {
@@ -425,28 +317,8 @@
 </head>
 <body>
 
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-particles" id="loadingParticles"></div>
-        <div class="loading-logo">PRRX</div>
-        <div class="loading-spinner"></div>
-        <div class="loading-progress-container">
-            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
-            <div class="loading-percentage" id="loadingPercentage">0%</div>
-        </div>
-        <div class="loading-text">
-            Loading PRRX Chat
-            <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
-        </div>
-        <div class="loading-security">
-            <i class="fas fa-shield-alt"></i> Firebase Real-Time
-            <i class="fas fa-users"></i> Live Users Counter
-        </div>
-    </div>
-
-    <!-- Particle Canvas -->
-    <canvas id="particleCanvas"></canvas>
     <div class="bg-animation"></div>
+    <canvas id="particleCanvas"></canvas>
     
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
@@ -490,30 +362,11 @@
         const messagesRef = database.ref('messages');
         const onlineUsersRef = database.ref('online_users');
         
-        // ========== ONLINE USERS ==========
+        // ========== NO HISTORY FOR NEW USERS ==========
         let currentUser = null;
+        let userJoinTime = null;
+        let isListening = false;
         let onlineUsersCount = 0;
-        
-        function updateOnlineStatus() {
-            if (!currentUser) return;
-            const userRef = onlineUsersRef.child(currentUser.username);
-            userRef.set({
-                username: currentUser.username,
-                lastSeen: Date.now(),
-                online: true
-            });
-            userRef.onDisconnect().remove();
-        }
-        
-        function loadOnlineUsers() {
-            onlineUsersRef.on('value', (snapshot) => {
-                let count = 0;
-                snapshot.forEach(() => { count++; });
-                onlineUsersCount = count;
-                const onlineCountSpan = document.getElementById('onlineCount');
-                if (onlineCountSpan) onlineCountSpan.textContent = onlineUsersCount;
-            });
-        }
         
         // ========== BOT COMMANDS ==========
         const COMMANDS = `📋 **Available Commands:**
@@ -550,53 +403,29 @@
             return null;
         }
         
-        // ========== WELCOME MESSAGES ==========
-        const welcomeMessages = [
-            "🎉 Welcome to PRRX Chat! Type `!help` to see available commands!",
-            "👋 Hey there! Need help with PRRX? Type `!aimbot` or `!esp`!",
-            "🔥 Welcome! Chat with other users! Type `!help` for commands!",
-            "💬 You're now in PRRX Live Chat! Be respectful and have fun!",
-            "🎮 Ready to dominate? Type `!aimbot` for AIMBOT guide!"
-        ];
-        
-        function getRandomWelcome() {
-            return welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+        // ========== WELCOME MESSAGE ==========
+        function getWelcomeMessage(username) {
+            return `🎉 Welcome ${username}! 👋\n\nYou're in a fresh session. Only messages sent after you joined will appear. Type !help for commands.`;
         }
         
-        // ========== FIREBASE FUNCTIONS ==========
-        function sendMessage(text, isBot = false) {
-            if (!text.trim() || !currentUser) return;
+        // ========== DISPLAY MESSAGE ==========
+        function displayMessage(msg) {
+            const messagesDiv = document.getElementById('messages');
+            if (!messagesDiv) return;
             
-            const message = {
-                sender: isBot ? "PRRX Bot" : currentUser.username,
-                text: text.trim(),
-                timestamp: Date.now(),
-                isBot: isBot
-            };
-            messagesRef.push(message);
-        }
-        
-        function loadMessages() {
-            messagesRef.off();
-            messagesRef.on('child_added', (snapshot) => {
-                const msg = snapshot.val();
-                const isOwn = currentUser && msg.sender === currentUser.username && !msg.isBot;
-                const messagesDiv = document.getElementById('messages');
-                if (messagesDiv) {
-                    const msgHtml = `
-                        <div class="message ${isOwn ? 'message-own' : ''} ${msg.isBot ? 'bot-message' : ''}">
-                            <div class="message-avatar">${msg.isBot ? '<i class="fas fa-robot"></i>' : msg.sender.charAt(0).toUpperCase()}</div>
-                            <div class="message-content">
-                                <div class="message-sender">${escapeHtml(msg.sender)} ${msg.isBot ? '(Bot)' : ''}</div>
-                                <div class="message-text">${escapeHtml(msg.text).replace(/\n/g, '<br>')}</div>
-                                <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
-                            </div>
-                        </div>
-                    `;
-                    messagesDiv.insertAdjacentHTML('beforeend', msgHtml);
-                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                }
-            });
+            const isOwn = currentUser && msg.sender === currentUser.username && !msg.isBot;
+            const msgHtml = `
+                <div class="message ${isOwn ? 'message-own' : ''} ${msg.isBot ? 'bot-message' : ''}">
+                    <div class="message-avatar">${msg.isBot ? '<i class="fas fa-robot"></i>' : msg.sender.charAt(0).toUpperCase()}</div>
+                    <div class="message-content">
+                        <div class="message-sender">${escapeHtml(msg.sender)} ${msg.isBot ? '(Bot)' : ''}</div>
+                        <div class="message-text">${escapeHtml(msg.text).replace(/\n/g, '<br>')}</div>
+                        <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                </div>
+            `;
+            messagesDiv.insertAdjacentHTML('beforeend', msgHtml);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
         
         function escapeHtml(text) {
@@ -612,6 +441,86 @@
             setTimeout(() => toast.classList.remove('show'), 2000);
         }
         
+        // ========== SEND MESSAGE ==========
+        function sendMessage(text, isBot = false) {
+            if (!text.trim() || !currentUser) return;
+            
+            const message = {
+                sender: isBot ? "PRRX Bot" : currentUser.username,
+                text: text.trim(),
+                timestamp: Date.now(),
+                isBot: isBot
+            };
+            messagesRef.push(message);
+        }
+        
+        // ========== LOAD MESSAGES AFTER JOIN (NO HISTORY) ==========
+        function loadMessagesAfterJoin() {
+            if (!currentUser || !userJoinTime) return;
+            
+            const messagesDiv = document.getElementById('messages');
+            if (messagesDiv) messagesDiv.innerHTML = '';
+            
+            // Load ONLY messages with timestamp >= userJoinTime
+            messagesRef
+                .orderByChild('timestamp')
+                .startAt(userJoinTime)
+                .once('value', (snapshot) => {
+                    const messages = [];
+                    snapshot.forEach(child => {
+                        messages.push({ key: child.key, ...child.val() });
+                    });
+                    
+                    messages.sort((a, b) => a.timestamp - b.timestamp);
+                    
+                    messages.forEach(msg => {
+                        // Skip if timestamp is before join time
+                        if (msg.timestamp < userJoinTime) return;
+                        displayMessage(msg);
+                    });
+                });
+        }
+        
+        // ========== LISTEN FOR NEW MESSAGES ==========
+        function listenForNewMessages() {
+            if (isListening) return;
+            isListening = true;
+            
+            messagesRef
+                .orderByChild('timestamp')
+                .startAt(userJoinTime)
+                .on('child_added', (snapshot) => {
+                    const msg = snapshot.val();
+                    // Only show messages from after join time
+                    if (msg.timestamp >= userJoinTime) {
+                        displayMessage(msg);
+                    }
+                });
+        }
+        
+        // ========== ONLINE USERS ==========
+        function updateOnlineStatus() {
+            if (!currentUser) return;
+            const userRef = onlineUsersRef.child(currentUser.username);
+            userRef.set({
+                username: currentUser.username,
+                lastSeen: Date.now(),
+                online: true
+            });
+            userRef.onDisconnect().remove();
+        }
+        
+        function loadOnlineUsers() {
+            onlineUsersRef.on('value', (snapshot) => {
+                let count = 0;
+                snapshot.forEach(() => { count++; });
+                onlineUsersCount = count;
+                const onlineCountSpan = document.getElementById('onlineCount');
+                if (onlineCountSpan) onlineCountSpan.textContent = onlineUsersCount;
+            });
+        }
+        
+        // ========== RENDER CHAT INTERFACE ==========
         function renderChatInterface() {
             const app = document.getElementById('app');
             app.innerHTML = `
@@ -632,9 +541,9 @@
                 </div>
             `;
             
-            const messagesDiv = document.getElementById('messages');
-            if (messagesDiv) messagesDiv.innerHTML = '';
-            loadMessages();
+            // Load messages after join (NO HISTORY)
+            loadMessagesAfterJoin();
+            listenForNewMessages();
             loadOnlineUsers();
         }
         
@@ -654,14 +563,35 @@
             }
         }
         
+        // ========== JOIN CHAT (SET JOIN TIME) ==========
+        function joinChat(username) {
+            currentUser = { username: username };
+            
+            // Record join time - THIS IS KEY FOR NO HISTORY
+            userJoinTime = Date.now();
+            
+            // Send welcome message
+            const welcomeText = getWelcomeMessage(username);
+            sendMessage(welcomeText, true);
+            
+            // Send commands
+            setTimeout(() => {
+                sendMessage(COMMANDS, true);
+            }, 800);
+            
+            renderChatInterface();
+            updateOnlineStatus();
+        }
+        
+        // ========== JOIN SCREEN ==========
         function showJoinScreen() {
             const app = document.getElementById('app');
             app.innerHTML = `
                 <div class="join-screen">
                     <i class="fas fa-comments"></i>
                     <h2>PRRX Real-Time Chat</h2>
-                    <p style="color: #888; margin-bottom: 1rem;">🔥 Powered by Firebase | Real-time messaging</p>
-                    <p style="color: #2ecc71; margin-bottom: 1rem;"><span id="previewOnlineCount">0</span> users online now</p>
+                    <p style="color: #888; margin-bottom: 1rem;">🔥 Powered by Firebase | No message history</p>
+                    <p style="color: #2ecc71; margin-bottom: 1rem;">✨ New users see ONLY messages sent after they join</p>
                     <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20">
                     <button id="joinBtn">Join Chat</button>
                 </div>
@@ -679,18 +609,7 @@
                 const username = document.getElementById('usernameInput').value.trim();
                 if (!username) { showToast("Please enter a username"); return; }
                 if (username.length < 2) { showToast("Username must be at least 2 characters"); return; }
-                
-                currentUser = { username: username };
-                updateOnlineStatus();
-                
-                const welcomeText = getRandomWelcome();
-                sendMessage(welcomeText);
-                
-                setTimeout(() => {
-                    sendMessage(COMMANDS, true);
-                }, 800);
-                
-                renderChatInterface();
+                joinChat(username);
             };
             
             document.getElementById('usernameInput').onkeypress = (e) => {
@@ -698,7 +617,7 @@
             };
         }
         
-        // ========== LOADING SCREEN ==========
+        // ========== LOADING SCREEN & PARTICLE SYSTEM ==========
         let loadingProgress = 0;
         const percentageElement = document.getElementById('loadingPercentage');
         
@@ -734,7 +653,7 @@
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const loadingScreen = document.getElementById('loadingScreen');
-                loadingScreen.classList.add('hidden');
+                if (loadingScreen) loadingScreen.classList.add('hidden');
                 document.getElementById('mainContent').classList.add('visible');
                 setTimeout(() => {
                     if (loadingScreen) loadingScreen.style.display = 'none';
@@ -763,7 +682,6 @@
                 this.opacity = Math.random() * 0.5 + 0.2;
                 this.color = `rgba(46, 204, 113, ${this.opacity})`;
             }
-            
             update() {
                 const dx = this.x - mouseX;
                 const dy = this.y - mouseY;
@@ -781,7 +699,6 @@
                 if (this.y < 0) this.y = canvas.height;
                 if (this.y > canvas.height) this.y = 0;
             }
-            
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -792,18 +709,13 @@
         
         function initParticles() {
             particles = [];
-            for (let i = 0; i < 180; i++) {
-                particles.push(new Particle());
-            }
+            for (let i = 0; i < 180; i++) particles.push(new Particle());
         }
         
         function animateParticles() {
             if (!ctx) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animateParticles);
         }
         
@@ -811,7 +723,6 @@
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            
             const cd = document.querySelector('.cursor-dot');
             const co = document.querySelector('.cursor-outline');
             if (cd && co) {
@@ -856,7 +767,7 @@
         window.sendMessageFromInput = sendMessageFromInput;
         
         console.log("%c💬 PRRX REAL-TIME CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c👥 Online Users Counter Active", "color: #f39c12; font-size: 12px");
+        console.log("%c✨ NO HISTORY: New users see only messages sent after they join", "color: #f39c12; font-size: 12px");
         console.log("%c🔥 Firebase Real-Time | Bot Commands | Particle System", "color: #3498db; font-size: 12px");
     </script>
 </body>
