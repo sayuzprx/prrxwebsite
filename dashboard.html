@@ -10,9 +10,40 @@
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 100%);
+            background: #0a0a0a;
             color: #fff;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(46,204,113,0.03) 0%, transparent 50%);
+            animation: rotateBg 30s linear infinite;
+        }
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px);
+        }
+        @keyframes rotateBg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         /* ========== CUSTOM LOADING SCREEN ========== */
@@ -22,7 +53,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #050b1a 0%, #0a0f2a 50%, #050b1a 100%);
+            background: #0a0a0a;
             z-index: 10001;
             display: flex;
             flex-direction: column;
@@ -34,7 +65,7 @@
         .loading-logo {
             font-size: 3.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, #00e0ff, #a020f0);
+            background: linear-gradient(135deg, #ffffff, #2ecc71, #27ae60);
             background-size: 200% auto;
             -webkit-background-clip: text;
             background-clip: text;
@@ -47,20 +78,20 @@
         .loading-spinner {
             width: 70px;
             height: 70px;
-            border: 4px solid rgba(0,224,255,0.15);
-            border-top: 4px solid #00e0ff;
-            border-right: 4px solid #a020f0;
+            border: 4px solid rgba(46,204,113,0.15);
+            border-top: 4px solid #2ecc71;
+            border-right: 4px solid #27ae60;
             border-radius: 50%;
             animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
             margin-bottom: 2rem;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loading-progress-container { width: 250px; margin: 1rem 0; }
-        .loading-progress { width: 100%; height: 3px; background: rgba(0,224,255,0.2); border-radius: 4px; overflow: hidden; }
-        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #00e0ff, #a020f0); animation: progressFill 1.4s ease-out forwards; }
+        .loading-progress { width: 100%; height: 3px; background: rgba(46,204,113,0.2); border-radius: 4px; overflow: hidden; }
+        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #2ecc71, #27ae60); animation: progressFill 1.4s ease-out forwards; }
         @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
-        .loading-percentage { font-size: 0.8rem; color: #00e0ff; margin-top: 0.5rem; font-weight: 600; }
-        .loading-text { font-size: 0.85rem; color: #8e9eb5; letter-spacing: 2px; margin-top: 1rem; }
+        .loading-percentage { font-size: 0.8rem; color: #2ecc71; margin-top: 0.5rem; font-weight: 600; }
+        .loading-text { font-size: 0.85rem; color: #888; letter-spacing: 2px; margin-top: 1rem; }
         .loading-dots span { display: inline-block; animation: dotBlink 1.4s infinite; }
         .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
         .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
@@ -70,7 +101,7 @@
             position: absolute;
             width: 3px;
             height: 3px;
-            background: radial-gradient(circle, #00e0ff, #a020f0);
+            background: radial-gradient(circle, #2ecc71, #27ae60);
             border-radius: 50%;
             opacity: 0;
             animation: floatParticle 2.5s ease-out forwards;
@@ -80,9 +111,9 @@
             15% { opacity: 0.8; transform: translateY(-20px) scale(1); }
             100% { opacity: 0; transform: translateY(-120px) scale(0); }
         }
-        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #00e0ff80; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
+        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #2ecc71; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
         .loading-security i { animation: securityPulse 1s ease infinite; }
-        @keyframes securityPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 5px #00e0ff; } }
+        @keyframes securityPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; text-shadow: 0 0 5px #2ecc71; } }
         
         /* Anti-DevTools */
         .anti-devtools {
@@ -91,7 +122,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #050b1a;
+            background: #0a0a0a;
             z-index: 20000;
             display: none;
             justify-content: center;
@@ -106,12 +137,12 @@
         
         /* Custom Cursor */
         @media (min-width: 768px) {
-            .cursor-dot { width: 8px; height: 8px; background-color: #00e0ff; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px #00e0ff; }
-            .cursor-outline { width: 32px; height: 32px; border: 2px solid rgba(0,224,255,0.6); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: transform 0.2s ease, width 0.2s, height 0.2s; backdrop-filter: blur(2px); }
+            .cursor-dot { width: 8px; height: 8px; background-color: #2ecc71; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.1s ease; box-shadow: 0 0 12px #2ecc71; }
+            .cursor-outline { width: 32px; height: 32px; border: 2px solid rgba(46,204,113,0.6); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transition: transform 0.2s ease, width 0.2s, height 0.2s; backdrop-filter: blur(2px); }
         }
         @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
         
-        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; display: block; pointer-events: none; }
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block; pointer-events: none; }
         .content { position: relative; z-index: 2; max-width: 500px; margin: 0 auto; padding: 6rem 1.5rem 2rem; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
         
         /* Navbar */
@@ -124,45 +155,88 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background: rgba(5,11,26,0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(12px);
             z-index: 100;
-            border-bottom: 1px solid rgba(0,224,255,0.2);
+            border-bottom: 1px solid rgba(46,204,113,0.3);
+            animation: slideDown 0.5s ease;
         }
-        .logo { font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #fff, #00e0ff); -webkit-background-clip: text; background-clip: text; color: transparent; text-decoration: none; cursor: pointer; }
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            background: linear-gradient(135deg, #fff, #2ecc71); 
+            -webkit-background-clip: text; 
+            background-clip: text; 
+            color: transparent; 
+            text-decoration: none;
+        }
         .menu { display: flex; gap: 2rem; }
-        .menu a { color: #fff; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; }
-        .menu a:hover { color: #00e0ff; }
+        .menu a { 
+            color: #fff; 
+            text-decoration: none; 
+            font-weight: 500; 
+            font-size: 0.9rem; 
+            transition: all 0.3s;
+            position: relative;
+        }
+        .menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: #2ecc71;
+            transition: width 0.3s;
+        }
+        .menu a:hover::after { width: 100%; }
+        .menu a:hover { color: #2ecc71; }
         
         /* Auth Card */
         .auth-card {
-            background: rgba(15, 25, 45, 0.85);
+            background: rgba(20,20,20,0.8);
             backdrop-filter: blur(12px);
             border-radius: 28px;
             padding: 2rem;
             text-align: center;
-            border: 1px solid #00e0ff40;
+            border: 1px solid rgba(46,204,113,0.3);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.6s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .hwid-box {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.5);
             border-radius: 12px;
             padding: 0.8rem;
             margin: 1rem 0;
             font-size: 0.7rem;
             font-family: monospace;
             word-break: break-all;
+            border: 1px solid rgba(46,204,113,0.2);
         }
-        .hwid-box i { color: #00e0ff; margin-right: 0.5rem; }
+        .hwid-box i { color: #2ecc71; margin-right: 0.5rem; }
         .input-group {
             display: flex;
             align-items: center;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid #00e0ff40;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(46,204,113,0.3);
             border-radius: 50px;
             padding: 0.8rem 1rem;
             margin: 1rem 0;
+            transition: all 0.3s;
         }
-        .input-group i { color: #00e0ff; margin-right: 0.8rem; width: 20px; }
+        .input-group:focus-within {
+            border-color: #2ecc71;
+            box-shadow: 0 0 15px rgba(46,204,113,0.3);
+        }
+        .input-group i { color: #2ecc71; margin-right: 0.8rem; width: 20px; }
         .input-group input {
             background: transparent;
             border: none;
@@ -175,13 +249,13 @@
             display: flex;
             gap: 1rem;
             margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(0,224,255,0.2);
+            border-bottom: 1px solid rgba(46,204,113,0.2);
             padding-bottom: 1rem;
         }
         .tab-btn {
             background: transparent;
             border: none;
-            color: #8e9eb5;
+            color: #888;
             font-size: 1rem;
             font-weight: 600;
             padding: 0.5rem 1rem;
@@ -191,12 +265,12 @@
             flex: 1;
         }
         .tab-btn.active {
-            background: linear-gradient(90deg, #00e0ff20, #a020f020);
-            color: #00e0ff;
-            border: 1px solid #00e0ff;
+            background: rgba(46,204,113,0.15);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
         }
         .submit-btn {
-            background: linear-gradient(90deg, #00e0ff, #a020f0);
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
             border: none;
             padding: 0.8rem;
             border-radius: 50px;
@@ -204,24 +278,25 @@
             font-weight: bold;
             width: 100%;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
             margin-top: 0.5rem;
         }
-        .submit-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px #00e0ff; }
+        .submit-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
         
         /* Dashboard Card */
         .dashboard-card {
-            background: rgba(15, 25, 45, 0.85);
+            background: rgba(20,20,20,0.8);
             backdrop-filter: blur(12px);
             border-radius: 28px;
             padding: 2rem;
-            border: 1px solid #00e0ff40;
+            border: 1px solid rgba(46,204,113,0.3);
             text-align: center;
+            animation: fadeInUp 0.6s ease;
         }
         .user-avatar {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #00e0ff, #a020f0);
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -229,6 +304,11 @@
             margin: 0 auto 1.5rem;
             font-size: 2rem;
             font-weight: bold;
+            animation: pulseGlow 2s ease infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(46,204,113,0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(46,204,113,0); }
         }
         .info-grid {
             display: grid;
@@ -236,13 +316,13 @@
             gap: 1rem;
             margin: 1.5rem 0;
             padding: 1rem;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             border-radius: 20px;
         }
-        .info-item .label { font-size: 0.7rem; color: #8e9eb5; }
-        .info-item .value { font-size: 1rem; font-weight: 600; color: #00e0ff; }
+        .info-item .label { font-size: 0.7rem; color: #888; }
+        .info-item .value { font-size: 1rem; font-weight: 600; color: #2ecc71; }
         .hwid-locked {
-            background: rgba(0,224,255,0.1);
+            background: rgba(46,204,113,0.1);
             border-radius: 16px;
             padding: 0.8rem;
             margin: 1rem 0;
@@ -252,13 +332,14 @@
         .logout-btn {
             width: 100%;
             padding: 0.8rem;
-            background: rgba(255,80,80,0.2);
+            background: rgba(255,80,80,0.15);
             border: 1px solid #ff5050;
             border-radius: 40px;
             color: #ff5050;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            margin-top: 0.5rem;
         }
         .logout-btn:hover { background: #ff5050; color: #fff; }
         
@@ -274,29 +355,45 @@
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
         .chat-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
+        .chat-btn i { animation: bounce 1s ease infinite; }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(3px); }
+        }
         
         .toast-notification {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(0,224,255,0.95);
-            color: #050b1a;
-            padding: 10px 20px;
+            background: #2ecc71;
+            color: #0a0a0a;
+            padding: 12px 24px;
             border-radius: 40px;
             font-weight: 600;
             z-index: 10000;
             transform: translateX(400px);
             transition: transform 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         .toast-notification.show { transform: translateX(0); }
         
-        @media (max-width: 768px) { .navbar { padding: 0.8rem 1rem; } .menu { gap: 1rem; } .content { padding: 5rem 1rem 2rem; } }
+        @media (max-width: 768px) { 
+            .navbar { padding: 0.8rem 1rem; } 
+            .menu { gap: 1rem; } 
+            .content { padding: 5rem 1rem 2rem; }
+        }
     </style>
 </head>
 <body>
 
+    <div class="bg-animation"></div>
+    
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-particles" id="loadingParticles"></div>
@@ -332,7 +429,7 @@
             <a href="index.html">HOME</a>
             <a href="features.html">FEATURES</a>
             <a href="live-chat.html">LIVE CHAT</a>
-            <a href="dashboard.html" style="color: #00e0ff;">DASHBOARD</a>
+            <a href="dashboard.html" style="color: #2ecc71;">DASHBOARD</a>
         </div>
     </div>
 
@@ -345,12 +442,12 @@
     <script type="module">
         import * as THREE from 'three';
         const canvas = document.getElementById('bg-canvas');
-        const scene = new THREE.Scene(); scene.background = new THREE.Color(0x050b1a);
+        const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0a0a0a);
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(0, 0, 5);
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
         const geometry = new THREE.TorusKnotGeometry(1.1, 0.28, 160, 24, 3, 4);
-        const material = new THREE.MeshStandardMaterial({ color: 0x00e0ff, emissive: 0x1a4c8a, emissiveIntensity: 0.5 });
+        const material = new THREE.MeshStandardMaterial({ color: 0x2ecc71, emissive: 0x1a4c3a, emissiveIntensity: 0.3, metalness: 0.8, roughness: 0.3 });
         const torusKnot = new THREE.Mesh(geometry, material); scene.add(torusKnot);
         const particlesGeometry = new THREE.BufferGeometry();
         const positions = new Float32Array(1200 * 3);
@@ -363,13 +460,13 @@
             positions[i*3+2] = radius * Math.cos(phi);
         }
         particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-        const particleSystem = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({ color: 0x66ccff, size: 0.04 }));
+        const particleSystem = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({ color: 0x2ecc71, size: 0.04 }));
         scene.add(particleSystem);
         const ringGeo = new THREE.TorusGeometry(1.6, 0.04, 48, 400);
-        const ring = new THREE.Mesh(ringGeo, new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x0088ff, emissiveIntensity: 0.4 }));
+        const ring = new THREE.Mesh(ringGeo, new THREE.MeshStandardMaterial({ color: 0x2ecc71, emissive: 0x2ecc71, emissiveIntensity: 0.3 }));
         scene.add(ring);
-        const ambientLight = new THREE.AmbientLight(0x111122); scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0x2266ff, 0.8); pointLight.position.set(2, 3, 4); scene.add(pointLight);
+        const ambientLight = new THREE.AmbientLight(0x111111); scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0x2ecc71, 0.8); pointLight.position.set(2, 3, 4); scene.add(pointLight);
         const starGeo = new THREE.BufferGeometry();
         const starPos = [];
         for (let i = 0; i < 600; i++) { starPos.push((Math.random() - 0.5) * 150); starPos.push((Math.random() - 0.5) * 80); starPos.push((Math.random() - 0.5) * 40 - 15); }
@@ -570,7 +667,7 @@
             };
             SecureStorage.set('session', session);
             
-            // Also store in localStorage for chat to access
+            // Store for chat access
             localStorage.setItem('prrx_dashboard_session', JSON.stringify(session));
             
             showToast(`✅ Welcome back, ${username}! HWID verified.`);
@@ -596,14 +693,16 @@
             return false;
         }
         
-        // ========== OPEN LIVE CHAT WITH SESSION ==========
+        // ========== OPEN LIVE CHAT ==========
         function openLiveChat() {
-            // Make sure session is stored before opening chat
             const session = SecureStorage.get('session');
             if (session) {
                 localStorage.setItem('prrx_dashboard_session', JSON.stringify(session));
             }
-            window.location.href = 'live-chat.html';
+            showToast("💬 Opening Live Chat...");
+            setTimeout(() => {
+                window.location.href = 'live-chat.html';
+            }, 300);
         }
         
         // ========== UI RENDERING ==========
@@ -616,7 +715,7 @@
                     </div>
                     
                     <div class="hwid-box">
-                        <i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 16)}...</span>
+                        <i class="fas fa-microchip"></i> Device HWID: <span style="color:#2ecc71;">${CURRENT_HWID.substring(0, 16)}...</span>
                     </div>
                     
                     <form id="loginForm" onsubmit="event.preventDefault(); loginSubmit()">
@@ -633,7 +732,7 @@
                     
                     <button class="chat-btn" id="gotoChatBtn"><i class="fas fa-comments"></i> Join Live Chat</button>
                     
-                    <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #8e9eb5;">
+                    <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #888;">
                         <i class="fas fa-fingerprint"></i> HWID Locked Account | Device verification required
                     </div>
                 </div>
@@ -657,8 +756,8 @@
                     </div>
                     
                     <div class="hwid-box">
-                        <i class="fas fa-microchip"></i> Device HWID: <span style="color:#00e0ff;">${CURRENT_HWID.substring(0, 16)}...</span>
-                        <br><small style="color:#4caf50;">This HWID will be locked to your account</small>
+                        <i class="fas fa-microchip"></i> Device HWID: <span style="color:#2ecc71;">${CURRENT_HWID.substring(0, 16)}...</span>
+                        <br><small style="color:#2ecc71;">This HWID will be locked to your account</small>
                     </div>
                     
                     <form id="registerForm" onsubmit="event.preventDefault(); registerSubmit()">
@@ -712,12 +811,12 @@
                         <i class="fas fa-user-shield"></i>
                     </div>
                     <h2>${username}</h2>
-                    <p><i class="fas fa-check-circle" style="color:#4caf50;"></i> HWID Verified</p>
+                    <p><i class="fas fa-check-circle" style="color:#2ecc71;"></i> HWID Verified</p>
                     
                     <div class="info-grid">
                         <div class="info-item"><div class="label">Account Created</div><div class="value">${registeredDate}</div></div>
                         <div class="info-item"><div class="label">Last Login</div><div class="value">${lastLogin}</div></div>
-                        <div class="info-item"><div class="label">HWID Status</div><div class="value" style="color:#4caf50;">Locked ✓</div></div>
+                        <div class="info-item"><div class="label">HWID Status</div><div class="value" style="color:#2ecc71;">Locked ✓</div></div>
                         <div class="info-item"><div class="label">Security</div><div class="value">E2E Encrypted</div></div>
                     </div>
                     
@@ -726,9 +825,9 @@
                         <br><small>This account is locked to this device</small>
                     </div>
                     
-                    <div style="background: rgba(0,224,255,0.1); border-radius: 16px; padding: 0.8rem; margin: 1rem 0;">
+                    <div style="background: rgba(46,204,113,0.1); border-radius: 16px; padding: 0.8rem; margin: 1rem 0;">
                         <i class="fas fa-gem"></i> PRRX Premium Access
-                        <div style="font-size: 0.7rem; color:#8e9eb5;">HWID Lock Active | Secure Session</div>
+                        <div style="font-size: 0.7rem; color:#888;">HWID Lock Active | Secure Session</div>
                     </div>
                     
                     <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
@@ -773,8 +872,8 @@
                     co.style.transform = `translate(${e.clientX - 16}px, ${e.clientY - 16}px)`;
                 });
                 document.querySelectorAll('a, button, .auth-card, .dashboard-card').forEach(el => {
-                    el.addEventListener('mouseenter', () => { co.style.width = '48px'; co.style.height = '48px'; co.style.borderColor = '#a020f0'; });
-                    el.addEventListener('mouseleave', () => { co.style.width = '32px'; co.style.height = '32px'; co.style.borderColor = 'rgba(0,224,255,0.6)'; });
+                    el.addEventListener('mouseenter', () => { co.style.width = '48px'; co.style.height = '48px'; co.style.borderColor = '#2ecc71'; });
+                    el.addEventListener('mouseleave', () => { co.style.width = '32px'; co.style.height = '32px'; co.style.borderColor = 'rgba(46,204,113,0.6)'; });
                 });
             }
         }
@@ -789,9 +888,9 @@
         initDatabase();
         if (!checkSession()) { showLoginForm(); }
         
-        console.log("%c🔒 PRRX HWID LOCK SYSTEM ACTIVE", "color: #00e0ff; font-size: 14px;");
-        console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #a020f0; font-size: 12px;");
-        console.log("%c💬 Live Chat Integrated - Click button to join with auto-login!", "color: #2ecc71; font-size: 11px;");
+        console.log("%c🔒 PRRX HWID LOCK SYSTEM ACTIVE", "color: #2ecc71; font-size: 14px;");
+        console.log(`%cDevice HWID: ${CURRENT_HWID}`, "color: #27ae60; font-size: 12px;");
+        console.log("%c💬 Live Chat Integrated - Click button to join!", "color: #2ecc71; font-size: 11px;");
     </script>
 </body>
 </html>
