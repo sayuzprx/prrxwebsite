@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a0a;
@@ -122,60 +122,6 @@
             min-height: 100vh;
         }
         
-        /* Join Screen */
-        .join-screen {
-            text-align: center;
-            padding: 3rem;
-            background: rgba(20,20,20,0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            border: 1px solid rgba(46,204,113,0.2);
-            max-width: 500px;
-            margin: 0 auto;
-            animation: fadeInUp 0.5s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .join-screen i {
-            font-size: 4rem;
-            color: #2ecc71;
-            margin-bottom: 1rem;
-        }
-        .join-screen input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 50px;
-            color: white;
-            font-size: 1rem;
-            margin: 1rem 0;
-            outline: none;
-            text-align: center;
-        }
-        .join-screen input:focus {
-            border-color: #2ecc71;
-            box-shadow: 0 0 15px rgba(46,204,113,0.3);
-        }
-        .join-screen button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            color: white;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-        }
-        .join-screen button:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(46,204,113,0.4);
-        }
-        
         /* Chat Container */
         .chat-container {
             display: flex;
@@ -188,6 +134,10 @@
             border: 1px solid rgba(46,204,113,0.2);
             min-height: 70vh;
             animation: fadeInUp 0.6s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .user-sidebar {
@@ -388,6 +338,60 @@
         .leave-btn { background: rgba(255,80,80,0.2) !important; border: 1px solid #ff5050 !important; color: #ff5050 !important; }
         .clear-btn { background: rgba(255,165,0,0.2) !important; border: 1px solid #ffa500 !important; color: #ffa500 !important; }
         
+        /* Join Screen */
+        .join-screen {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(20,20,20,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            border: 1px solid rgba(46,204,113,0.2);
+            max-width: 500px;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s ease;
+        }
+        .join-screen i {
+            font-size: 4rem;
+            color: #2ecc71;
+            margin-bottom: 1rem;
+        }
+        .join-screen input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(46,204,113,0.3);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            margin: 1rem 0;
+            outline: none;
+            text-align: center;
+        }
+        .join-screen input:focus { border-color: #2ecc71; box-shadow: 0 0 15px rgba(46,204,113,0.3); }
+        .join-screen button {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        .join-screen button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
+        
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(46,204,113,0.2);
+            border-top: 3px solid #2ecc71;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         .toast {
             position: fixed;
             bottom: 20px;
@@ -430,7 +434,13 @@
         </div>
     </div>
 
-    <div class="container" id="app"></div>
+    <div class="container" id="app">
+        <div style="text-align: center; padding: 3rem;">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 1rem; color: #2ecc71;">Checking login status...</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #666;">Please wait</p>
+        </div>
+    </div>
     <div id="toast" class="toast"></div>
 
     <script>
@@ -456,7 +466,6 @@ RULES:
 1. Be helpful, friendly, and concise
 2. Answer questions about PRRX panel features, pricing, downloads, and support
 3. Keep responses under 3 sentences when possible
-4. Always be positive and encouraging
 `;
 
         let conversationHistory = [];
@@ -496,6 +505,60 @@ RULES:
             },
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
+        
+        // ========== HWID GENERATION ==========
+        function generateHWID() {
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                screen.colorDepth,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 4,
+                navigator.deviceMemory || 4,
+                navigator.platform,
+                navigator.maxTouchPoints || 0,
+                window.screen.pixelDepth
+            ];
+            let hash = 0;
+            const str = components.join('|');
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash).toString(16).toUpperCase();
+        }
+        
+        const CURRENT_HWID = generateHWID();
+        
+        // ========== CHECK LOGIN STATUS ==========
+        function isUserLoggedIn() {
+            const session = SecureStorage.get('session');
+            if (session && session.hwid === CURRENT_HWID) {
+                return { loggedIn: true, user: session };
+            }
+            
+            const dashSession = localStorage.getItem('prrx_dashboard_session');
+            if (dashSession) {
+                try {
+                    const parsed = JSON.parse(dashSession);
+                    if (parsed.hwid === CURRENT_HWID) {
+                        return { loggedIn: true, user: parsed };
+                    }
+                } catch(e) {}
+            }
+            
+            const users = SecureStorage.get('users');
+            if (users) {
+                for (const [username, userData] of Object.entries(users)) {
+                    if (userData.hwid === CURRENT_HWID) {
+                        return { loggedIn: true, user: { username: username, hwid: CURRENT_HWID } };
+                    }
+                }
+            }
+            
+            return { loggedIn: false, user: null };
+        }
         
         // ========== AI RESPONSE ==========
         let aiLearningMemory = [];
@@ -570,19 +633,12 @@ RULES:
         
         function fallbackResponse(message) {
             const lowerMsg = message.toLowerCase();
-            if (lowerMsg.includes('aimbot')) {
-                return "🎯 AIMBOT: Go to Settings Menu > AIM ASSISTANCE. Toggle AIMBOT +++ for max accuracy!";
-            } else if (lowerMsg.includes('esp')) {
-                return "👁️ Visual Enhancement: Use CHAMS MENU for player highlighting and ESP for location tracking!";
-            } else if (lowerMsg.includes('price') || lowerMsg.includes('cost')) {
-                return "💰 PRRX Plans: 1 Week - 300 LKR | 1 Month - 850 LKR | 1 Year - 2299 LKR";
-            } else if (lowerMsg.includes('download')) {
-                return "📥 Download: https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX.HEX.1.rar";
-            } else if (lowerMsg.includes('help')) {
-                return "📋 I can help with: AIMBOT, ESP, Anti-Cheat, Prices, Download. Just ask!";
-            } else {
-                return "I'm here to help! Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or download.";
-            }
+            if (lowerMsg.includes('aimbot')) return "🎯 AIMBOT: Go to Settings Menu > AIM ASSISTANCE. Toggle AIMBOT +++ for max accuracy!";
+            if (lowerMsg.includes('esp')) return "👁️ Visual Enhancement: Use CHAMS MENU for player highlighting and ESP for location tracking!";
+            if (lowerMsg.includes('price')) return "💰 PRRX Plans: 1 Week - 300 LKR | 1 Month - 850 LKR | 1 Year - 2299 LKR";
+            if (lowerMsg.includes('download')) return "📥 Download: https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX.HEX.1.rar";
+            if (lowerMsg.includes('help')) return "📋 I can help with: AIMBOT, ESP, Anti-Cheat, Prices, Download. Just ask!";
+            return "I'm here to help! Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or download.";
         }
         
         // ========== CHAT SYSTEM ==========
@@ -617,12 +673,10 @@ RULES:
             };
             messages.push(newMsg);
             saveMessages();
-            
             if (!isBot) {
                 conversationHistory.push({ sender: sender, message: message });
                 if (conversationHistory.length > 20) conversationHistory.shift();
             }
-            
             return newMsg;
         }
         
@@ -633,15 +687,11 @@ RULES:
             } else {
                 onlineUsers = [];
             }
-            
             let filtered = onlineUsers;
             if (searchTerm) {
-                filtered = onlineUsers.filter(u => 
-                    u.username.toLowerCase().includes(searchTerm.toLowerCase())
-                );
+                filtered = onlineUsers.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()));
             }
             renderUserList(filtered);
-            
             const countSpan = document.getElementById('onlineCount');
             if (countSpan) countSpan.textContent = onlineUsers.length;
         }
@@ -649,12 +699,10 @@ RULES:
         function renderUserList(users) {
             const userListDiv = document.getElementById('userList');
             if (!userListDiv) return;
-            
             if (users.length === 0) {
                 userListDiv.innerHTML = '<div style="text-align:center; padding:1rem; color:#666;">No users online</div>';
                 return;
             }
-            
             userListDiv.innerHTML = users.map(user => `
                 <div class="user-item online" onclick="startPrivateChat('${user.username}')">
                     <div class="user-avatar">${user.username.charAt(0).toUpperCase()}</div>
@@ -666,7 +714,6 @@ RULES:
         function renderMessages() {
             const messagesDiv = document.getElementById('messages');
             if (!messagesDiv) return;
-            
             messagesDiv.innerHTML = messages.map(msg => `
                 <div class="message ${msg.isOwn ? 'message-own' : ''} ${msg.isBot ? 'bot-message' : ''}">
                     <div class="message-avatar">${msg.isBot ? '<i class="fas fa-robot"></i>' : msg.sender.charAt(0).toUpperCase()}</div>
@@ -677,14 +724,12 @@ RULES:
                     </div>
                 </div>
             `).join('');
-            
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
         
         function showTypingIndicator() {
             const messagesDiv = document.getElementById('messages');
             if (!messagesDiv) return;
-            
             const typingDiv = document.createElement('div');
             typingDiv.id = 'typing-indicator';
             typingDiv.className = 'typing-indicator';
@@ -708,13 +753,10 @@ RULES:
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             if (!message || !currentUser) return;
-            
             addMessage(currentUser.username, message, true, false);
             input.value = '';
             renderMessages();
-            
             showTypingIndicator();
-            
             try {
                 const aiResponse = await getAIResponse(message, currentUser.username);
                 removeTypingIndicator();
@@ -776,7 +818,6 @@ RULES:
                         <div class="user-list" id="userList"></div>
                         <div class="online-count"><i class="fas fa-circle" style="color:#2ecc71; font-size:0.6rem;"></i> <span id="onlineCount">0</span> users online</div>
                     </div>
-                    
                     <div class="chat-main">
                         <div class="chat-header">
                             <h3><i class="fas fa-robot"></i> AI-Powered Chat - Welcome ${currentUser?.username}!</h3>
@@ -791,7 +832,6 @@ RULES:
                     </div>
                 </div>
             `;
-            
             renderMessages();
             updateOnlineUsers();
         }
@@ -802,43 +842,30 @@ RULES:
                     <i class="fas fa-robot"></i>
                     <h2>PRRX AI-Powered Chat</h2>
                     <p style="color: #888; margin-bottom: 1rem;">🤖 Powered by Google Gemini AI | E2E Encrypted</p>
-                    <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20" autocomplete="off">
+                    <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20">
                     <button id="joinBtn">Join Chat</button>
                     <p style="color: #666; font-size: 0.7rem; margin-top: 1rem;">Messages are E2E encrypted | Be respectful</p>
                 </div>
             `;
-            
             document.getElementById('joinBtn').addEventListener('click', () => {
                 const username = document.getElementById('usernameInput').value.trim();
-                if (!username) {
-                    showToast("❌ Please enter a username");
-                    return;
-                }
-                if (username.length < 2) {
-                    showToast("❌ Username must be at least 2 characters");
-                    return;
-                }
-                
+                if (!username) { showToast("❌ Please enter a username"); return; }
+                if (username.length < 2) { showToast("❌ Username must be at least 2 characters"); return; }
                 currentUser = { username: username };
-                
                 let users = SecureStorage.get('chat_users') || [];
                 if (!users.find(u => u.username === username)) {
                     users.push({ username: username, online: true });
                     SecureStorage.set('chat_users', users);
                 }
-                
                 loadMessages();
-                
                 if (messages.length === 0) {
-                    addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+                    addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
                 } else {
                     addMessage("System", `${username} joined the chat`, false, false);
                 }
-                
                 renderChatInterface();
                 setInterval(() => updateOnlineUsers(), 5000);
             });
-            
             document.getElementById('usernameInput').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') document.getElementById('joinBtn').click();
             });
@@ -874,18 +901,41 @@ RULES:
             });
         }
         
-        // ========== INIT ==========
+        // ========== INIT - CHECK LOGIN WITH TIMEOUT ==========
         loadLearnedResponses();
-        showJoinScreen();
         
-        console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🔐 E2E Encrypted | Google Gemini AI | Open Chat", "color: #3498db; font-size: 12px");
+        // Show checking status with timeout
+        setTimeout(() => {
+            const loginStatus = isUserLoggedIn();
+            console.log("🔐 HWID:", CURRENT_HWID);
+            console.log("👤 Login Status:", loginStatus);
+            
+            if (loginStatus.loggedIn && loginStatus.user) {
+                currentUser = loginStatus.user;
+                let users = SecureStorage.get('chat_users') || [];
+                if (!users.find(u => u.username === currentUser.username)) {
+                    users.push({ username: currentUser.username, online: true, hwid: currentUser.hwid });
+                    SecureStorage.set('chat_users', users);
+                }
+                loadMessages();
+                if (messages.length === 0) {
+                    addMessage("PRRX AI Bot", `Welcome back, ${currentUser.username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+                }
+                renderChatInterface();
+                setInterval(() => updateOnlineUsers(), 5000);
+            } else {
+                showJoinScreen();
+            }
+        }, 2000);
         
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
         window.searchUsers = searchUsers;
         window.startPrivateChat = startPrivateChat;
         window.leaveChat = leaveChat;
+        
+        console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
+        console.log("%c🔐 E2E Encrypted | HWID Protected | Auto-check after 2 seconds", "color: #3498db; font-size: 12px");
     </script>
 </body>
 </html>
