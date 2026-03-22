@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX | Real-Time Chat</title>
+    <title>PRRX Official | Real-Time Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
@@ -12,15 +12,93 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0a0a;
+            background: #0a0a0f;
             color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
         }
         
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 100%);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+        
+        .loading-logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #2ecc71, #27ae60);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: loadingShimmer 1.5s ease infinite, logoPulse 1.2s ease infinite;
+            margin-bottom: 2rem;
+        }
+        @keyframes loadingShimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 4px solid rgba(46,204,113,0.15);
+            border-top: 4px solid #2ecc71;
+            border-right: 4px solid #27ae60;
+            border-radius: 50%;
+            animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            margin-bottom: 2rem;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .loading-progress-container { width: 250px; margin: 1rem 0; }
+        .loading-progress { width: 100%; height: 3px; background: rgba(46,204,113,0.2); border-radius: 4px; overflow: hidden; }
+        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #2ecc71, #27ae60); animation: progressFill 1.4s ease-out forwards; }
+        @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
+        .loading-percentage { font-size: 0.8rem; color: #2ecc71; margin-top: 0.5rem; font-weight: 600; }
+        .loading-text { font-size: 0.85rem; color: #888; letter-spacing: 2px; margin-top: 1rem; }
+        .loading-dots span { display: inline-block; animation: dotBlink 1.4s infinite; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBlink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
+        
+        .loading-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .loading-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, #2ecc71, #27ae60);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatParticle 2.5s ease-out forwards;
+        }
+        @keyframes floatParticle {
+            0% { opacity: 0; transform: translateY(0) scale(0); }
+            15% { opacity: 0.8; transform: translateY(-20px) scale(1); }
+            100% { opacity: 0; transform: translateY(-120px) scale(0); }
+        }
+        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #2ecc71; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
+        
+        /* Background Animation */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -43,6 +121,236 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Particle Canvas */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        /* Main Content */
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .content.visible { opacity: 1; }
+        
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(46,204,113,0.2);
+        }
+        .logo { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #fff, #2ecc71); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
+        .menu { display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; }
+        .menu a { color: #fff; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; position: relative; padding: 0.5rem 0; cursor: pointer; }
+        .menu a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; background: linear-gradient(90deg, #2ecc71, #27ae60); transition: width 0.3s ease; }
+        .menu a:hover::after, .menu a.active::after { width: 100%; }
+        .menu a:hover, .menu a.active { color: #2ecc71; text-shadow: 0 0 8px rgba(46,204,113,0.5); }
+        
+        /* Join Screen */
+        .join-screen {
+            text-align: center;
+            padding: 2.5rem;
+            background: rgba(20,20,20,0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            max-width: 450px;
+            margin: 0 auto;
+            animation: fadeInUp 0.5s ease;
+            border: 1px solid rgba(46,204,113,0.3);
+        }
+        .join-screen i { font-size: 4rem; color: #2ecc71; margin-bottom: 1rem; animation: floatIcon 3s ease infinite; }
+        @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .join-screen input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(46,204,113,0.3);
+            border-radius: 50px;
+            color: white;
+            margin: 1rem 0;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .join-screen input:focus { border-color: #2ecc71; box-shadow: 0 0 15px rgba(46,204,113,0.3); outline: none; }
+        .join-screen button {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .join-screen button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
+        
+        /* Chat Container */
+        .chat-container {
+            background: rgba(20,20,20,0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            border: 1px solid rgba(46,204,113,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .chat-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(46,204,113,0.2);
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .chat-header h3 { font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .chat-header h3 i { color: #2ecc71; animation: pulse 2s ease infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        .online-count-badge {
+            background: rgba(46,204,113,0.2);
+            border: 1px solid #2ecc71;
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: #2ecc71;
+            border-radius: 50%;
+            animation: onlinePulse 1.5s infinite;
+        }
+        @keyframes onlinePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .user-badge {
+            font-size: 0.8rem;
+            color: #2ecc71;
+            background: rgba(46,204,113,0.15);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(46,204,113,0.3);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        
+        /* Messages */
+        .message {
+            display: flex;
+            gap: 0.8rem;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(46,204,113,0.3);
+        }
+        .message-content {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            padding: 0.6rem 1rem;
+            border-radius: 18px;
+            max-width: 70%;
+            transition: all 0.3s;
+            border: 1px solid rgba(46,204,113,0.1);
+        }
+        .message:hover .message-content {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(46,204,113,0.3);
+        }
+        .message-own { justify-content: flex-end; }
+        .message-own .message-content {
+            background: rgba(46,204,113,0.15);
+            border: 1px solid rgba(46,204,113,0.3);
+        }
+        .message-sender {
+            font-size: 0.7rem;
+            color: #2ecc71;
+            margin-bottom: 0.2rem;
+        }
+        .message-text { font-size: 0.85rem; word-wrap: break-word; line-height: 1.4; }
+        .message-time {
+            font-size: 0.55rem;
+            color: #666;
+            margin-top: 0.2rem;
+            text-align: right;
+        }
+        .bot-message .message-avatar {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        .bot-message .message-sender { color: #f39c12; }
+        
+        .chat-input-area {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid rgba(46,204,113,0.2);
+            background: rgba(0,0,0,0.3);
+        }
+        .chat-input-area input {
+            flex: 1;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(46,204,113,0.3);
+            border-radius: 30px;
+            padding: 0.8rem 1rem;
+            color: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .chat-input-area input:focus { border-color: #2ecc71; box-shadow: 0 0 15px rgba(46,204,113,0.3); }
+        .chat-input-area button {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            border: none;
+            border-radius: 30px;
+            padding: 0.8rem 1.2rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .chat-input-area button:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(46,204,113,0.4); }
+        
+        /* Custom Cursor */
         .cursor-dot {
             width: 8px;
             height: 8px;
@@ -67,200 +375,6 @@
         }
         @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
         
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background: rgba(10,10,10,0.95);
-            backdrop-filter: blur(12px);
-            z-index: 100;
-            border-bottom: 1px solid rgba(46,204,113,0.3);
-        }
-        .logo { 
-            font-size: 1.5rem; 
-            font-weight: 800; 
-            background: linear-gradient(135deg, #fff, #2ecc71); 
-            -webkit-background-clip: text; 
-            background-clip: text; 
-            color: transparent; 
-            text-decoration: none;
-        }
-        .menu { display: flex; gap: 2rem; }
-        .menu a { 
-            color: #fff; 
-            text-decoration: none; 
-            font-weight: 500; 
-            transition: all 0.3s;
-            position: relative;
-        }
-        .menu a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: #2ecc71;
-            transition: width 0.3s;
-        }
-        .menu a:hover::after { width: 100%; }
-        .menu a:hover { color: #2ecc71; }
-        
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 6rem 1.5rem 2rem;
-            min-height: 100vh;
-        }
-        
-        .join-screen {
-            text-align: center;
-            padding: 2.5rem;
-            background: rgba(20,20,20,0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            max-width: 450px;
-            margin: 0 auto;
-        }
-        .join-screen i { font-size: 4rem; color: #2ecc71; margin-bottom: 1rem; }
-        .join-screen input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 50px;
-            color: white;
-            margin: 1rem 0;
-            text-align: center;
-        }
-        .join-screen input:focus { border-color: #2ecc71; }
-        .join-screen button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            color: white;
-            font-weight: bold;
-            width: 100%;
-            cursor: pointer;
-        }
-        
-        .chat-container {
-            background: rgba(20,20,20,0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            border: 1px solid rgba(46,204,113,0.3);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 70vh;
-        }
-        
-        .chat-header {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(46,204,113,0.2);
-            background: rgba(0,0,0,0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .chat-header h3 { font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-        .chat-header h3 i { color: #2ecc71; }
-        .user-badge {
-            font-size: 0.8rem;
-            color: #2ecc71;
-            background: rgba(46,204,113,0.15);
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-        }
-        
-        .chat-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        
-        .message {
-            display: flex;
-            gap: 0.8rem;
-            animation: fadeIn 0.2s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .message-avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-        .message-content {
-            flex: 1;
-            background: rgba(255,255,255,0.05);
-            padding: 0.6rem 1rem;
-            border-radius: 18px;
-            max-width: 70%;
-        }
-        .message-own { justify-content: flex-end; }
-        .message-own .message-content {
-            background: rgba(46,204,113,0.15);
-            border: 1px solid rgba(46,204,113,0.3);
-        }
-        .message-sender {
-            font-size: 0.7rem;
-            color: #2ecc71;
-            margin-bottom: 0.2rem;
-        }
-        .message-text { font-size: 0.85rem; word-wrap: break-word; }
-        .message-time {
-            font-size: 0.55rem;
-            color: #666;
-            margin-top: 0.2rem;
-            text-align: right;
-        }
-        
-        .chat-input-area {
-            display: flex;
-            gap: 0.5rem;
-            padding: 1rem;
-            border-top: 1px solid rgba(46,204,113,0.2);
-        }
-        .chat-input-area input {
-            flex: 1;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 30px;
-            padding: 0.8rem 1rem;
-            color: white;
-            outline: none;
-        }
-        .chat-input-area input:focus { border-color: #2ecc71; }
-        .chat-input-area button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            border-radius: 30px;
-            padding: 0.8rem 1.2rem;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
         .toast {
             position: fixed;
             bottom: 20px;
@@ -275,34 +389,90 @@
         }
         .toast.show { transform: translateX(0); }
         
-        @media (max-width: 768px) {
-            .navbar { padding: 0.8rem 1rem; }
-            .menu { gap: 1rem; }
+        .anti-devtools {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            z-index: 20000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(20px);
         }
+        .anti-devtools.active { display: flex; }
+        .anti-devtools i { font-size: 4rem; color: #ff5050; margin-bottom: 1rem; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .content { padding: 1rem; }
+            .navbar { flex-direction: column; gap: 1rem; }
+            .chat-header { flex-direction: column; text-align: center; }
+            .message-content { max-width: 85%; }
+        }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #2ecc71; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="bg-animation"></div>
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-
-    <div class="navbar">
-        <a href="index.html" class="logo">PRRX</a>
-        <div class="menu">
-            <a href="index.html">HOME</a>
-            <a href="features.html">FEATURES</a>
-            <a href="live-chat.html">CHAT</a>
-            <a href="dashboard.html">DASHBOARD</a>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-particles" id="loadingParticles"></div>
+        <div class="loading-logo">PRRX</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-progress-container">
+            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
+        </div>
+        <div class="loading-text">
+            Loading PRRX Chat
+            <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+        </div>
+        <div class="loading-security">
+            <i class="fas fa-shield-alt"></i> Firebase Real-Time
+            <i class="fas fa-users"></i> Live Users Counter
         </div>
     </div>
 
-    <div class="container" id="app"></div>
+    <!-- Particle Canvas -->
+    <canvas id="particleCanvas"></canvas>
+    <div class="bg-animation"></div>
+    
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+    <div class="anti-devtools" id="antiDevTools">
+        <i class="fas fa-shield-horned"></i>
+        <p>⚠️ Security Alert: Developer Tools Detected<br>Please close DevTools to continue.</p>
+    </div>
+
+    <div class="content" id="mainContent">
+        <div class="navbar">
+            <a href="index.html" class="logo">PRRX</a>
+            <div class="menu">
+                <a href="index.html">HOME</a>
+                <a href="features.html">FEATURES</a>
+                <a href="live-chat.html" class="active">LIVE CHAT</a>
+                <a href="dashboard.html">DASHBOARD</a>
+            </div>
+        </div>
+
+        <div id="app"></div>
+    </div>
+    
     <div id="toast" class="toast"></div>
 
     <script>
         // ========== FIREBASE CONFIGURATION ==========
-        // ✅ YOUR DATABASE URL
         const firebaseConfig = {
             apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
             authDomain: "prrx-chat.firebaseapp.com",
@@ -318,6 +488,32 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
         const messagesRef = database.ref('messages');
+        const onlineUsersRef = database.ref('online_users');
+        
+        // ========== ONLINE USERS ==========
+        let currentUser = null;
+        let onlineUsersCount = 0;
+        
+        function updateOnlineStatus() {
+            if (!currentUser) return;
+            const userRef = onlineUsersRef.child(currentUser.username);
+            userRef.set({
+                username: currentUser.username,
+                lastSeen: Date.now(),
+                online: true
+            });
+            userRef.onDisconnect().remove();
+        }
+        
+        function loadOnlineUsers() {
+            onlineUsersRef.on('value', (snapshot) => {
+                let count = 0;
+                snapshot.forEach(() => { count++; });
+                onlineUsersCount = count;
+                const onlineCountSpan = document.getElementById('onlineCount');
+                if (onlineCountSpan) onlineCountSpan.textContent = onlineUsersCount;
+            });
+        }
         
         // ========== BOT COMMANDS ==========
         const COMMANDS = `📋 **Available Commands:**
@@ -359,41 +555,40 @@
             "🎉 Welcome to PRRX Chat! Type `!help` to see available commands!",
             "👋 Hey there! Need help with PRRX? Type `!aimbot` or `!esp`!",
             "🔥 Welcome! Chat with other users! Type `!help` for commands!",
-            "💬 You're now in PRRX Live Chat! Be respectful and have fun!"
+            "💬 You're now in PRRX Live Chat! Be respectful and have fun!",
+            "🎮 Ready to dominate? Type `!aimbot` for AIMBOT guide!"
         ];
         
         function getRandomWelcome() {
             return welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
         }
         
-        // ========== CHAT STATE ==========
-        let currentUser = null;
-        
         // ========== FIREBASE FUNCTIONS ==========
-        function sendMessage(text) {
+        function sendMessage(text, isBot = false) {
             if (!text.trim() || !currentUser) return;
             
             const message = {
-                sender: currentUser.username,
+                sender: isBot ? "PRRX Bot" : currentUser.username,
                 text: text.trim(),
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                isBot: isBot
             };
-            
             messagesRef.push(message);
         }
         
         function loadMessages() {
+            messagesRef.off();
             messagesRef.on('child_added', (snapshot) => {
                 const msg = snapshot.val();
-                const isOwn = currentUser && msg.sender === currentUser.username;
+                const isOwn = currentUser && msg.sender === currentUser.username && !msg.isBot;
                 const messagesDiv = document.getElementById('messages');
                 if (messagesDiv) {
                     const msgHtml = `
-                        <div class="message ${isOwn ? 'message-own' : ''}">
-                            <div class="message-avatar">${msg.sender.charAt(0).toUpperCase()}</div>
+                        <div class="message ${isOwn ? 'message-own' : ''} ${msg.isBot ? 'bot-message' : ''}">
+                            <div class="message-avatar">${msg.isBot ? '<i class="fas fa-robot"></i>' : msg.sender.charAt(0).toUpperCase()}</div>
                             <div class="message-content">
-                                <div class="message-sender">${escapeHtml(msg.sender)}</div>
-                                <div class="message-text">${escapeHtml(msg.text)}</div>
+                                <div class="message-sender">${escapeHtml(msg.sender)} ${msg.isBot ? '(Bot)' : ''}</div>
+                                <div class="message-text">${escapeHtml(msg.text).replace(/\n/g, '<br>')}</div>
                                 <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
                             </div>
                         </div>
@@ -423,11 +618,15 @@
                 <div class="chat-container">
                     <div class="chat-header">
                         <h3><i class="fas fa-fire"></i> PRRX Real-Time Chat</h3>
+                        <div class="online-count-badge">
+                            <div class="online-dot"></div>
+                            <span><span id="onlineCount">0</span> users online</span>
+                        </div>
                         <div class="user-badge"><i class="fas fa-user"></i> ${currentUser.username}</div>
                     </div>
                     <div class="chat-messages" id="messages"></div>
                     <div class="chat-input-area">
-                        <input type="text" id="messageInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendMessageFromInput()">
+                        <input type="text" id="messageInput" placeholder="Type a message... Type !help for commands" onkeypress="if(event.key==='Enter') sendMessageFromInput()">
                         <button onclick="sendMessageFromInput()"><i class="fas fa-paper-plane"></i> Send</button>
                     </div>
                 </div>
@@ -435,8 +634,8 @@
             
             const messagesDiv = document.getElementById('messages');
             if (messagesDiv) messagesDiv.innerHTML = '';
-            
             loadMessages();
+            loadOnlineUsers();
         }
         
         function sendMessageFromInput() {
@@ -449,12 +648,7 @@
                 const botResponse = getBotResponse(message);
                 if (botResponse) {
                     setTimeout(() => {
-                        const botMessage = {
-                            sender: "PRRX Bot",
-                            text: botResponse,
-                            timestamp: Date.now()
-                        };
-                        messagesRef.push(botMessage);
+                        sendMessage(botResponse, true);
                     }, 500);
                 }
             }
@@ -467,11 +661,19 @@
                     <i class="fas fa-comments"></i>
                     <h2>PRRX Real-Time Chat</h2>
                     <p style="color: #888; margin-bottom: 1rem;">🔥 Powered by Firebase | Real-time messaging</p>
-                    <p style="color: #2ecc71; margin-bottom: 1rem;">Messages sync across ALL users instantly!</p>
+                    <p style="color: #2ecc71; margin-bottom: 1rem;"><span id="previewOnlineCount">0</span> users online now</p>
                     <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20">
                     <button id="joinBtn">Join Chat</button>
                 </div>
             `;
+            
+            // Show online count on join screen
+            onlineUsersRef.on('value', (snapshot) => {
+                let count = 0;
+                snapshot.forEach(() => { count++; });
+                const previewCount = document.getElementById('previewOnlineCount');
+                if (previewCount) previewCount.textContent = count;
+            });
             
             document.getElementById('joinBtn').onclick = () => {
                 const username = document.getElementById('usernameInput').value.trim();
@@ -479,12 +681,13 @@
                 if (username.length < 2) { showToast("Username must be at least 2 characters"); return; }
                 
                 currentUser = { username: username };
+                updateOnlineStatus();
                 
                 const welcomeText = getRandomWelcome();
                 sendMessage(welcomeText);
                 
                 setTimeout(() => {
-                    sendMessage(COMMANDS);
+                    sendMessage(COMMANDS, true);
                 }, 800);
                 
                 renderChatInterface();
@@ -495,7 +698,140 @@
             };
         }
         
-        // ========== SECURITY ==========
+        // ========== LOADING SCREEN ==========
+        let loadingProgress = 0;
+        const percentageElement = document.getElementById('loadingPercentage');
+        
+        function updateLoadingProgress() {
+            const interval = setInterval(() => {
+                loadingProgress += Math.random() * 12;
+                if (loadingProgress >= 100) {
+                    loadingProgress = 100;
+                    clearInterval(interval);
+                }
+                if (percentageElement) percentageElement.textContent = Math.floor(loadingProgress) + '%';
+            }, 100);
+        }
+        
+        function createLoadingParticles() {
+            const container = document.getElementById('loadingParticles');
+            if (!container) return;
+            for (let i = 0; i < 80; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'loading-particle';
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = window.innerHeight + Math.random() * 150 + 'px';
+                particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = 1.5 + Math.random() * 1.5 + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        updateLoadingProgress();
+        createLoadingParticles();
+        
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+                document.getElementById('mainContent').classList.add('visible');
+                setTimeout(() => {
+                    if (loadingScreen) loadingScreen.style.display = 'none';
+                }, 600);
+            }, 1800);
+        });
+        
+        // ========== PARTICLE SYSTEM ==========
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = 0, mouseY = 0;
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.color = `rgba(46, 204, 113, ${this.opacity})`;
+            }
+            
+            update() {
+                const dx = this.x - mouseX;
+                const dy = this.y - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (120 - dist) / 120;
+                    this.x += Math.cos(angle) * force * 1.5;
+                    this.y += Math.sin(angle) * force * 1.5;
+                }
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+        
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 180; i++) {
+                particles.push(new Particle());
+            }
+        }
+        
+        function animateParticles() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        
+        // ========== MOUSE TRACKING ==========
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            const cd = document.querySelector('.cursor-dot');
+            const co = document.querySelector('.cursor-outline');
+            if (cd && co) {
+                cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+                co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+            }
+        });
+        
+        // ========== ANTI-DEBUGGING ==========
+        let devToolsOpen = false;
+        setInterval(() => {
+            const start = performance.now();
+            debugger;
+            const end = performance.now();
+            if (end - start > 100 && !devToolsOpen) {
+                devToolsOpen = true;
+                document.getElementById('antiDevTools').classList.add('active');
+            }
+        }, 2000);
+        
         document.addEventListener('keydown', (e) => {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
                 e.preventDefault();
@@ -505,24 +841,23 @@
         });
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
         
-        // Cursor
-        if (window.innerWidth > 768) {
-            const cd = document.querySelector('.cursor-dot');
-            const co = document.querySelector('.cursor-outline');
-            document.addEventListener('mousemove', (e) => {
-                cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-                co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
-            });
-        }
-        
         // ========== INIT ==========
+        resizeCanvas();
+        initParticles();
+        animateParticles();
+        
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+        
         showJoinScreen();
         
         window.sendMessageFromInput = sendMessageFromInput;
         
         console.log("%c💬 PRRX REAL-TIME CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🔥 Database URL: https://prrx-chat-default-rtdb.firebaseio.com/", "color: #3498db; font-size: 12px");
-        console.log("%c✅ Make sure Firebase Rules are set to .read = true, .write = true", "color: #f39c12; font-size: 12px");
+        console.log("%c👥 Online Users Counter Active", "color: #f39c12; font-size: 12px");
+        console.log("%c🔥 Firebase Real-Time | Bot Commands | Particle System", "color: #3498db; font-size: 12px");
     </script>
 </body>
 </html>
