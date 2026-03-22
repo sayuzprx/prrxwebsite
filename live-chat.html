@@ -7,11 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- Ultra Security Headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
@@ -443,7 +438,7 @@
         const GEMINI_API_KEY = "AIzaSyB3YDwE7KKnOVB43rtpePFZLBpljv0ld-k";
         const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
         
-        // ========== PRRX PANEL INFORMATION FOR AI ==========
+        // ========== PRRX PANEL INFORMATION ==========
         const PRRX_KNOWLEDGE = `
 You are PRRX Bot, the official AI assistant for PRRX Gaming Panel.
 
@@ -461,18 +456,14 @@ PRRX PANEL INFORMATION:
 RULES:
 1. Be helpful, friendly, and concise
 2. Answer questions about PRRX panel features, pricing, downloads, and support
-3. If asked about cheating/ban issues, explain that using the panel responsibly is safe
-4. Keep responses under 3 sentences when possible, but be detailed when needed
-5. Always be positive and encouraging
-6. Remember user's previous messages in this conversation
-7. If user says "thanks" or "thank you", respond warmly
-8. If user says "help", list available commands: help, aimbot, esp, anticheat, price, download, about, tip
+3. Keep responses under 3 sentences when possible
+4. Always be positive and encouraging
+5. If user says "help", list available commands
 `;
 
-        // Store conversation history for context
         let conversationHistory = [];
         
-        // ========== ULTRA SECURE ENCRYPTION ==========
+        // ========== ENCRYPTION ==========
         const ENCRYPTION_KEY = 'PRRX_CHAT_E2E_KEY_2026_SECURE';
         
         function encryptData(data) {
@@ -531,19 +522,44 @@ RULES:
         
         const CURRENT_HWID = generateHWID();
         
-        // ========== GET LOGGED IN USER ==========
+        // ========== CHECK IF USER IS LOGGED IN FROM DASHBOARD ==========
         function getLoggedInUser() {
-            const session = SecureStorage.get('session');
+            // Check both possible storage locations
+            let session = null;
+            
+            // Try to get session from SecureStorage (from login.html)
+            session = SecureStorage.get('session');
             if (session && session.hwid === CURRENT_HWID) {
+                console.log("Found session in SecureStorage:", session);
                 return { username: session.username, hwid: session.hwid };
             }
+            
+            // Try to get from regular localStorage (fallback)
+            const regularSession = localStorage.getItem('prrx_session');
+            if (regularSession) {
+                try {
+                    const parsed = JSON.parse(regularSession);
+                    if (parsed.hwid === CURRENT_HWID) {
+                        console.log("Found session in localStorage:", parsed);
+                        return { username: parsed.username, hwid: parsed.hwid };
+                    }
+                } catch(e) {}
+            }
+            
+            // Try to get from keyauth session
+            const keyauthSession = SecureStorage.get('keyauth_session');
+            if (keyauthSession && keyauthSession.hwid === CURRENT_HWID) {
+                console.log("Found KeyAuth session:", keyauthSession);
+                return { username: keyauthSession.username, hwid: keyauthSession.hwid };
+            }
+            
+            console.log("No session found for HWID:", CURRENT_HWID);
             return null;
         }
         
-        // ========== AI RESPONSE FUNCTION (SELF-LEARNING) ==========
+        // ========== AI RESPONSE ==========
         let aiLearningMemory = [];
         
-        // Load learned responses from storage
         function loadLearnedResponses() {
             const learned = SecureStorage.get('ai_learned');
             if (learned) {
@@ -551,25 +567,18 @@ RULES:
             }
         }
         
-        // Save learned response
         function saveLearnedResponse(question, answer) {
-            // Check if already exists
             const exists = aiLearningMemory.find(item => item.question.toLowerCase() === question.toLowerCase());
             if (!exists) {
                 aiLearningMemory.push({
                     question: question,
                     answer: answer,
-                    learnedAt: new Date().toISOString(),
-                    usageCount: 1
+                    learnedAt: new Date().toISOString()
                 });
-                SecureStorage.set('ai_learned', aiLearningMemory);
-            } else {
-                exists.usageCount++;
                 SecureStorage.set('ai_learned', aiLearningMemory);
             }
         }
         
-        // Check if AI has learned this question before
         function getLearnedResponse(question) {
             const learned = aiLearningMemory.find(item => 
                 question.toLowerCase().includes(item.question.toLowerCase()) || 
@@ -579,14 +588,12 @@ RULES:
         }
         
         async function getAIResponse(userMessage, username) {
-            // First check if AI has learned this question before
             const learnedResponse = getLearnedResponse(userMessage);
             if (learnedResponse) {
                 return `🤖 [Learned] ${learnedResponse}`;
             }
             
             try {
-                // Build conversation context
                 const recentHistory = conversationHistory.slice(-5);
                 let contextMessage = PRRX_KNOWLEDGE + `\n\nCurrent user: ${username}\n\nPrevious conversation:\n`;
                 
@@ -598,42 +605,25 @@ RULES:
                 
                 const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: contextMessage
-                            }]
-                        }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            maxOutputTokens: 300,
-                            topP: 0.8
-                        }
+                        contents: [{ parts: [{ text: contextMessage }] }],
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 300 }
                     })
                 });
                 
                 const data = await response.json();
                 
                 if (data.error) {
-                    console.error("Gemini API Error:", data.error);
                     return fallbackResponse(userMessage);
                 }
                 
                 let aiResponse = data.candidates[0].content.parts[0].text;
-                
-                // Clean up response
                 aiResponse = aiResponse.replace(/PRRX Bot:/gi, '').trim();
-                
-                // Self-learning: Store this Q&A for future
                 saveLearnedResponse(userMessage, aiResponse);
-                
                 return aiResponse;
                 
             } catch (error) {
-                console.error("AI Error:", error);
                 return fallbackResponse(userMessage);
             }
         }
@@ -641,17 +631,15 @@ RULES:
         function fallbackResponse(message) {
             const lowerMsg = message.toLowerCase();
             if (lowerMsg.includes('aimbot')) {
-                return "🎯 AIMBOT Settings: Go to Settings Menu > AIM ASSISTANCE. Toggle AIMBOT +++ for max accuracy, adjust AIMBOT DRAG for smoothness, and use AIMBOT HEAD for headshots!";
-            } else if (lowerMsg.includes('esp') || lowerMsg.includes('visual')) {
-                return "👁️ Visual Enhancement: Use CHAMS MENU for player highlighting, ESP for location tracking, and 3D CHAMS for outlines. Available in Blue/Red colors!";
-            } else if (lowerMsg.includes('price') || lowerMsg.includes('cost')) {
-                return "💰 PRRX Premium Plans: 1 Week - 300 LKR | 1 Month - 850 LKR | 6 Months - 1500 LKR | 1 Year - 2299 LKR | 1 Year+ - 2499 LKR";
+                return "🎯 AIMBOT: Go to Settings Menu > AIM ASSISTANCE. Toggle AIMBOT +++ for max accuracy!";
+            } else if (lowerMsg.includes('esp')) {
+                return "👁️ Visual Enhancement: Use CHAMS MENU for player highlighting and ESP for location tracking!";
+            } else if (lowerMsg.includes('price')) {
+                return "💰 PRRX Plans: 1 Week - 300 LKR | 1 Month - 850 LKR | 1 Year - 2299 LKR";
             } else if (lowerMsg.includes('download')) {
-                return "📥 Download PRRX v3.2 from GitHub: https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX.HEX.1.rar";
-            } else if (lowerMsg.includes('help')) {
-                return "📋 I can help with: AIMBOT, ESP, Anti-Cheat, Prices, Download, About PRRX. Just ask!";
+                return "📥 Download: https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX.HEX.1.rar";
             } else {
-                return "I'm here to help with PRRX Panel! Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or download. What would you like to know?";
+                return "I'm here to help! Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or download.";
             }
         }
         
@@ -660,7 +648,6 @@ RULES:
         let messages = [];
         let onlineUsers = [];
         let searchTerm = '';
-        let isTyping = false;
         
         function loadMessages() {
             const saved = SecureStorage.get('chat_messages');
@@ -689,7 +676,6 @@ RULES:
             messages.push(newMsg);
             saveMessages();
             
-            // Add to conversation history for AI context
             if (!isBot) {
                 conversationHistory.push({ sender: sender, message: message });
                 if (conversationHistory.length > 20) conversationHistory.shift();
@@ -785,30 +771,28 @@ RULES:
             input.value = '';
             renderMessages();
             
-            // Show typing indicator
             showTypingIndicator();
             
             try {
-                // Get AI response from Gemini
                 const aiResponse = await getAIResponse(message, currentUser.username);
                 removeTypingIndicator();
                 addMessage("PRRX AI Bot", aiResponse, false, true);
                 renderMessages();
             } catch (error) {
                 removeTypingIndicator();
-                addMessage("PRRX AI Bot", "Sorry, I'm having trouble connecting. Please try again!", false, true);
+                addMessage("PRRX AI Bot", "Sorry, I'm having trouble. Please try again!", false, true);
                 renderMessages();
             }
         }
         
         function clearChat() {
-            if (confirm("⚠️ Clear all messages? This cannot be undone.")) {
+            if (confirm("Clear all messages?")) {
                 messages = [];
-                addMessage("System", "Chat history cleared by " + currentUser.username, false, false);
-                addMessage("PRRX AI Bot", "Chat cleared! I'm ready to help you with any questions about PRRX Panel. Ask me about AIMBOT, ESP, Anti-Cheat, or pricing!", false, true);
+                addMessage("System", "Chat cleared by " + currentUser.username, false, false);
+                addMessage("PRRX AI Bot", "Chat cleared! I'm ready to help you.", false, true);
                 saveMessages();
                 renderMessages();
-                showToast("💬 Chat cleared");
+                showToast("Chat cleared");
             }
         }
         
@@ -818,14 +802,14 @@ RULES:
         }
         
         function startPrivateChat(username) {
-            showToast(`💬 Starting private chat with ${username}... (Coming soon!)`);
+            showToast(`Starting private chat with ${username}...`);
         }
         
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2500);
+            setTimeout(() => toast.classList.remove('show'), 2000);
         }
         
         function leaveChat() {
@@ -834,7 +818,7 @@ RULES:
                 SecureStorage.set('chat_users', onlineUsers);
             }
             currentUser = null;
-            showToast("🔒 Left chat");
+            showToast("Left chat");
             showLoginScreen();
         }
         
@@ -878,10 +862,11 @@ RULES:
                     <p style="color: #888; margin: 1rem 0;">🤖 Powered by Google Gemini AI | Self-Learning</p>
                     <p style="color: #2ecc71; margin: 0.5rem 0;">You need to be logged into your dashboard to join the chat</p>
                     <div>
-                        <button onclick="window.location.href='dashboard.html'"><i class="fas fa-sign-in-alt"></i> Login to Dashboard</button>
-                        <button onclick="window.location.href='index.html'" style="background:transparent; border:1px solid #2ecc71;">Back to Home</button>
+                        <button onclick="window.location.href='dashboard.html'"><i class="fas fa-sign-in-alt"></i> Go to Dashboard</button>
+                        <button onclick="window.location.href='login.html'" style="background:transparent; border:1px solid #2ecc71;"><i class="fas fa-key"></i> Login to Account</button>
                     </div>
                     <p style="color: #666; font-size: 0.7rem; margin-top: 1.5rem;">HWID: ${CURRENT_HWID.substring(0, 16)}...</p>
+                    <p style="color: #ffaa00; font-size: 0.7rem; margin-top: 0.5rem;">⚠️ If you're logged in but can't access, please login again at <a href="login.html" style="color:#2ecc71;">login.html</a></p>
                 </div>
             `;
         }
@@ -914,28 +899,18 @@ RULES:
                 cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
                 co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
             });
-            document.querySelectorAll('a, button, .user-item').forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    co.style.width = '50px';
-                    co.style.height = '50px';
-                    co.style.borderColor = '#2ecc71';
-                });
-                el.addEventListener('mouseleave', () => {
-                    co.style.width = '40px';
-                    co.style.height = '40px';
-                    co.style.borderColor = 'rgba(46,204,113,0.6)';
-                });
-            });
         }
         
         // ========== INIT ==========
         loadLearnedResponses();
         
         const loggedInUser = getLoggedInUser();
+        console.log("Current HWID:", CURRENT_HWID);
+        console.log("Logged in user:", loggedInUser);
+        
         if (loggedInUser) {
             currentUser = loggedInUser;
             
-            // Add user to online list
             let users = SecureStorage.get('chat_users') || [];
             if (!users.find(u => u.username === currentUser.username)) {
                 users.push({ username: currentUser.username, online: true, hwid: currentUser.hwid });
@@ -944,9 +919,8 @@ RULES:
             
             loadMessages();
             
-            // Add welcome message if first time
             if (messages.length === 0) {
-                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${currentUser.username}! 👋\n\nI'm your AI assistant powered by Google Gemini. I know everything about PRRX Panel and I can learn from our conversations.\n\n**Try asking me:**\n• "How to use AIMBOT?"\n• "What are the prices?"\n• "How to download PRRX?"\n• "Tell me about Visual Enhancement"`, false, true);
+                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${currentUser.username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, or pricing!`, false, true);
             }
             
             renderChatInterface();
@@ -962,8 +936,7 @@ RULES:
         window.leaveChat = leaveChat;
         
         console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🧠 Google Gemini AI Integrated | Self-Learning Enabled | E2E Encrypted", "color: #fff; font-size: 12px");
-        console.log("%c🔐 HWID Verified: " + CURRENT_HWID.substring(0, 16), "color: #3498db; font-size: 11px");
+        console.log("%c🔐 HWID: " + CURRENT_HWID, "color: #3498db; font-size: 11px");
     </script>
 </body>
 </html>
