@@ -11,6 +11,15 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://generativelanguage.googleapis.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        connect-src 'self' https://generativelanguage.googleapis.com;
+        frame-ancestors 'none';
+    ">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
@@ -175,14 +184,6 @@
             height: 8px;
             background: #2ecc71;
             border-radius: 50%;
-        }
-        .mention-badge {
-            background: #2ecc71;
-            color: #0a0a0a;
-            padding: 2px 6px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            margin-left: 5px;
         }
         
         .room-selector {
@@ -413,6 +414,7 @@
             backdrop-filter: blur(20px);
         }
         .anti-devtools.active { display: flex; }
+        .anti-devtools i { font-size: 4rem; color: #ff5050; margin-bottom: 1rem; }
         
         @media (max-width: 768px) {
             .navbar { padding: 0.8rem 1rem; }
@@ -464,7 +466,7 @@ PRRX INFO:
 Be friendly and concise.
 `;
 
-        // ========== COMMANDS LIST FOR AUTO-SEND ==========
+        // ========== COMMANDS LIST ==========
         const COMMANDS_LIST = `📋 **Available Commands:**
 • ` + "`!help`" + ` - Show this menu
 • ` + "`!aimbot`" + ` - AIMBOT guide
@@ -541,48 +543,6 @@ Be friendly and concise.
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        // ========== HWID GENERATION ==========
-        function generateHWID() {
-            const components = [
-                navigator.userAgent,
-                navigator.language,
-                screen.width + 'x' + screen.height,
-                screen.colorDepth,
-                new Date().getTimezoneOffset(),
-                navigator.hardwareConcurrency || 4,
-                navigator.deviceMemory || 4,
-                navigator.platform,
-                navigator.maxTouchPoints || 0,
-                window.screen.pixelDepth
-            ];
-            let hash = 0;
-            const str = components.join('|');
-            for (let i = 0; i < str.length; i++) {
-                hash = ((hash << 5) - hash) + str.charCodeAt(i);
-                hash |= 0;
-            }
-            return Math.abs(hash).toString(16).toUpperCase();
-        }
-        
-        const CURRENT_HWID = generateHWID();
-        
-        // ========== GET LOGGED IN USER ==========
-        function getLoggedInUser() {
-            const session = SecureStorage.get('session');
-            if (session && session.hwid === CURRENT_HWID) {
-                return session.username;
-            }
-            const users = SecureStorage.get('users');
-            if (users) {
-                for (const [username, userData] of Object.entries(users)) {
-                    if (userData.hwid === CURRENT_HWID) {
-                        return username;
-                    }
-                }
-            }
-            return null;
-        }
-        
         // ========== CHAT STATE ==========
         let currentUser = null;
         let currentRoom = 'public';
@@ -605,7 +565,7 @@ Be friendly and concise.
             SecureStorage.set('chat_data', { messages: messages, onlineUsers: onlineUsers });
         }
         
-        // Process mentions in message
+        // Process mentions
         function processMentions(message, sender) {
             const mentionRegex = /@(\w+)/g;
             let processedMessage = message;
@@ -619,7 +579,6 @@ Be friendly and concise.
                     processedMessage = processedMessage.replace(`@${mentionedUser}`, `<span class="mention">@${mentionedUser}</span>`);
                 }
             }
-            
             return { processedMessage, mentions };
         }
         
@@ -642,7 +601,6 @@ Be friendly and concise.
                 messages.public.push(newMsg);
                 if (messages.public.length > 100) messages.public.shift();
                 
-                // Show notification for mentions
                 if (mentions.length > 0 && !isOwn && !isBot) {
                     mentions.forEach(mentioned => {
                         if (currentUser && mentioned === currentUser.username) {
@@ -721,12 +679,6 @@ Be friendly and concise.
             if (countSpan) countSpan.textContent = onlineUsers.length;
         }
         
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
         function showTypingIndicator() {
             const container = document.getElementById('messages');
             if (!container) return;
@@ -749,7 +701,6 @@ Be friendly and concise.
             if (!message || !currentUser) return;
             
             if (currentRoom === 'public') {
-                // Public Chat - Friendly Bot
                 addMessage('public', currentUser.username, message, true, false, false);
                 renderMessages();
                 input.value = '';
@@ -760,7 +711,6 @@ Be friendly and concise.
                     renderMessages();
                 }, 500);
             } else if (currentRoom === 'ai_assistant') {
-                // Private AI Chat
                 addMessage('ai_assistant', currentUser.username, message, true, false, false);
                 renderMessages();
                 input.value = '';
@@ -770,7 +720,6 @@ Be friendly and concise.
                 addMessage('ai_assistant', 'PRRX AI', aiResponse, false, false, true);
                 renderMessages();
             } else {
-                // Private user chat
                 addMessage(currentRoom, currentUser.username, message, true, false, false);
                 renderMessages();
                 input.value = '';
@@ -848,7 +797,7 @@ Be friendly and concise.
                     <div class="chat-main">
                         <div class="chat-header">
                             <h3><i class="fas fa-comments"></i> <span id="roomName">💬 Public Chat</span></h3>
-                            <div class="user-badge"><i class="fas fa-user-shield"></i> ${currentUser.username}</div>
+                            <div class="user-badge"><i class="fas fa-user"></i> ${currentUser.username}</div>
                         </div>
                         <div class="chat-messages" id="messages"></div>
                         <div class="chat-input-area">
@@ -869,13 +818,12 @@ Be friendly and concise.
             const app = document.getElementById('app');
             app.innerHTML = `
                 <div class="join-screen">
-                    <i class="fas fa-shield-alt"></i>
-                    <h2>PRRX Ultra Secure Chat</h2>
-                    <p style="color: #888; margin-bottom: 0.5rem;">🔐 E2E Encrypted | HWID Protected</p>
-                    <p style="color: #2ecc71; margin-bottom: 1rem;">🤖 Public Bot | 🧠 AI Assistant | @mentions</p>
+                    <i class="fas fa-comments"></i>
+                    <h2>PRRX Live Chat</h2>
+                    <p style="color: #888; margin-bottom: 0.5rem;">🤖 Public Bot | 🧠 AI Assistant | @mentions</p>
+                    <p style="color: #2ecc71; margin-bottom: 1rem;">🔐 E2E Encrypted | Anti-DevTools</p>
                     <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20">
                     <button id="joinBtn">Join Secure Chat</button>
-                    <p style="color: #666; font-size: 0.7rem; margin-top: 1rem;">HWID: ${CURRENT_HWID.substring(0, 16)}...</p>
                 </div>
             `;
             
@@ -891,7 +839,6 @@ Be friendly and concise.
                     saveMessages();
                 }
                 
-                // Auto-welcome with commands list
                 addMessage('public', 'PRRX Bot', `🎉 Welcome ${username}! 🎉\n\n${COMMANDS_LIST}`, false, true, false);
                 
                 if (!messages.private['ai_assistant'] || messages.private['ai_assistant'].length === 0) {
@@ -910,7 +857,7 @@ Be friendly and concise.
             };
         }
         
-        // ========== ANTI-DEBUGGING ==========
+        // ========== ULTRA SECURITY - ANTI-DEBUGGING ==========
         let devToolsOpen = false;
         setInterval(() => {
             const start = performance.now();
@@ -929,9 +876,18 @@ Be friendly and concise.
                 return false;
             }
         });
+        
         document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
         
-        // Cursor
+        // Prevent text selection
+        document.addEventListener('selectstart', (e) => e.preventDefault());
+        
+        // Prevent iframe embedding
+        if (window.self !== window.top) {
+            window.top.location = window.self.location;
+        }
+        
+        // ========== CURSOR ==========
         if (window.innerWidth > 768) {
             const cd = document.querySelector('.cursor-dot');
             const co = document.querySelector('.cursor-outline');
@@ -941,25 +897,9 @@ Be friendly and concise.
             });
         }
         
-        // ========== CHECK LOGIN & INIT ==========
-        const loggedInUsername = getLoggedInUser();
-        
-        if (loggedInUsername) {
-            currentUser = { username: loggedInUsername };
-            loadMessages();
-            showJoinScreen();
-        } else {
-            // Show login required screen
-            document.getElementById('app').innerHTML = `
-                <div class="join-screen">
-                    <i class="fas fa-shield-alt"></i>
-                    <h2>PRRX Secure Chat</h2>
-                    <p style="color: #ffaa00; margin: 1rem 0;">⚠️ You need to be logged into your dashboard</p>
-                    <button onclick="window.location.href='dashboard.html'" style="background: #2ecc71;">Go to Dashboard</button>
-                    <p style="color: #666; font-size: 0.7rem; margin-top: 1rem;">HWID: ${CURRENT_HWID.substring(0, 16)}...</p>
-                </div>
-            `;
-        }
+        // ========== INIT ==========
+        loadMessages();
+        showJoinScreen();
         
         window.sendMessage = sendMessage;
         window.joinPublicChat = joinPublicChat;
@@ -967,8 +907,8 @@ Be friendly and concise.
         window.startPrivateChat = startPrivateChat;
         
         console.log("%c🔐 PRRX ULTRA SECURE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🤖 Public Bot with Auto-Welcome & Commands | @mentions supported", "color: #f39c12; font-size: 12px");
-        console.log("%c🧠 AI Assistant: Google Gemini | 🔒 E2E Encrypted | HWID Protected", "color: #3498db; font-size: 12px");
+        console.log("%c🤖 Public Bot | 🧠 Gemini AI | @mentions", "color: #f39c12; font-size: 12px");
+        console.log("%c🔒 E2E Encrypted | Anti-DevTools | No HWID Required", "color: #3498db; font-size: 12px");
     </script>
 </body>
 </html>
