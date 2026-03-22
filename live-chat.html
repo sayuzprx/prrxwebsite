@@ -21,6 +21,83 @@
             overflow-x: hidden;
         }
         
+        /* ========== CUSTOM LOADING SCREEN ========== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 100%);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+        
+        .loading-logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #2ecc71, #27ae60);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: loadingShimmer 1.5s ease infinite, logoPulse 1.2s ease infinite;
+            margin-bottom: 2rem;
+        }
+        @keyframes loadingShimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 4px solid rgba(46,204,113,0.15);
+            border-top: 4px solid #2ecc71;
+            border-right: 4px solid #27ae60;
+            border-radius: 50%;
+            animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            margin-bottom: 2rem;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .loading-progress-container { width: 250px; margin: 1rem 0; }
+        .loading-progress { width: 100%; height: 3px; background: rgba(46,204,113,0.2); border-radius: 4px; overflow: hidden; }
+        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #2ecc71, #27ae60); animation: progressFill 1.4s ease-out forwards; }
+        @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
+        .loading-percentage { font-size: 0.8rem; color: #2ecc71; margin-top: 0.5rem; font-weight: 600; }
+        .loading-text { font-size: 0.85rem; color: #888; letter-spacing: 2px; margin-top: 1rem; }
+        .loading-dots span { display: inline-block; animation: dotBlink 1.4s infinite; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dotBlink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
+        
+        .loading-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .loading-particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, #2ecc71, #27ae60);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatParticle 2.5s ease-out forwards;
+        }
+        @keyframes floatParticle {
+            0% { opacity: 0; transform: translateY(0) scale(0); }
+            15% { opacity: 0.8; transform: translateY(-20px) scale(1); }
+            100% { opacity: 0; transform: translateY(-120px) scale(0); }
+        }
+        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #2ecc71; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
+        
         /* Background Animation */
         .bg-animation {
             position: fixed;
@@ -317,6 +394,26 @@
 </head>
 <body>
 
+    <!-- ========== LOADING SCREEN ========== -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-particles" id="loadingParticles"></div>
+        <div class="loading-logo">PRRX</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-progress-container">
+            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
+        </div>
+        <div class="loading-text">
+            Loading PRRX Chat
+            <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
+        </div>
+        <div class="loading-security">
+            <i class="fas fa-shield-alt"></i> Firebase Real-Time
+            <i class="fas fa-robot"></i> Bot Assistant
+            <i class="fas fa-history"></i> No Message History
+        </div>
+    </div>
+
     <div class="bg-animation"></div>
     <canvas id="particleCanvas"></canvas>
     
@@ -344,6 +441,120 @@
     <div id="toast" class="toast"></div>
 
     <script>
+        // ========== LOADING SCREEN PROGRESS ==========
+        let loadingProgress = 0;
+        const percentageElement = document.getElementById('loadingPercentage');
+        
+        function updateLoadingProgress() {
+            const interval = setInterval(() => {
+                loadingProgress += Math.random() * 12;
+                if (loadingProgress >= 100) {
+                    loadingProgress = 100;
+                    clearInterval(interval);
+                }
+                if (percentageElement) percentageElement.textContent = Math.floor(loadingProgress) + '%';
+            }, 100);
+        }
+        
+        function createLoadingParticles() {
+            const container = document.getElementById('loadingParticles');
+            if (!container) return;
+            for (let i = 0; i < 80; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'loading-particle';
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = window.innerHeight + Math.random() * 150 + 'px';
+                particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.animationDuration = 1.5 + Math.random() * 1.5 + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        updateLoadingProgress();
+        createLoadingParticles();
+        
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+                document.getElementById('mainContent').classList.add('visible');
+                setTimeout(() => {
+                    if (loadingScreen) loadingScreen.style.display = 'none';
+                }, 600);
+            }, 1800);
+        });
+        
+        // ========== PARTICLE SYSTEM ==========
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = 0, mouseY = 0;
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.color = `rgba(46, 204, 113, ${this.opacity})`;
+            }
+            update() {
+                const dx = this.x - mouseX;
+                const dy = this.y - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 120) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = (120 - dist) / 120;
+                    this.x += Math.cos(angle) * force * 1.5;
+                    this.y += Math.sin(angle) * force * 1.5;
+                }
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+        
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 180; i++) particles.push(new Particle());
+        }
+        
+        function animateParticles() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        
+        // ========== MOUSE TRACKING ==========
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            const cd = document.querySelector('.cursor-dot');
+            const co = document.querySelector('.cursor-outline');
+            if (cd && co) {
+                cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+                co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+            }
+        });
+        
         // ========== FIREBASE CONFIGURATION ==========
         const firebaseConfig = {
             apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
@@ -461,7 +672,6 @@
             const messagesDiv = document.getElementById('messages');
             if (messagesDiv) messagesDiv.innerHTML = '';
             
-            // Load ONLY messages with timestamp >= userJoinTime
             messagesRef
                 .orderByChild('timestamp')
                 .startAt(userJoinTime)
@@ -470,13 +680,9 @@
                     snapshot.forEach(child => {
                         messages.push({ key: child.key, ...child.val() });
                     });
-                    
                     messages.sort((a, b) => a.timestamp - b.timestamp);
-                    
                     messages.forEach(msg => {
-                        // Skip if timestamp is before join time
-                        if (msg.timestamp < userJoinTime) return;
-                        displayMessage(msg);
+                        if (msg.timestamp >= userJoinTime) displayMessage(msg);
                     });
                 });
         }
@@ -491,7 +697,6 @@
                 .startAt(userJoinTime)
                 .on('child_added', (snapshot) => {
                     const msg = snapshot.val();
-                    // Only show messages from after join time
                     if (msg.timestamp >= userJoinTime) {
                         displayMessage(msg);
                     }
@@ -541,7 +746,6 @@
                 </div>
             `;
             
-            // Load messages after join (NO HISTORY)
             loadMessagesAfterJoin();
             listenForNewMessages();
             loadOnlineUsers();
@@ -566,15 +770,11 @@
         // ========== JOIN CHAT (SET JOIN TIME) ==========
         function joinChat(username) {
             currentUser = { username: username };
-            
-            // Record join time - THIS IS KEY FOR NO HISTORY
             userJoinTime = Date.now();
             
-            // Send welcome message
             const welcomeText = getWelcomeMessage(username);
             sendMessage(welcomeText, true);
             
-            // Send commands
             setTimeout(() => {
                 sendMessage(COMMANDS, true);
             }, 800);
@@ -597,14 +797,6 @@
                 </div>
             `;
             
-            // Show online count on join screen
-            onlineUsersRef.on('value', (snapshot) => {
-                let count = 0;
-                snapshot.forEach(() => { count++; });
-                const previewCount = document.getElementById('previewOnlineCount');
-                if (previewCount) previewCount.textContent = count;
-            });
-            
             document.getElementById('joinBtn').onclick = () => {
                 const username = document.getElementById('usernameInput').value.trim();
                 if (!username) { showToast("Please enter a username"); return; }
@@ -616,120 +808,6 @@
                 if (e.key === 'Enter') document.getElementById('joinBtn').click();
             };
         }
-        
-        // ========== LOADING SCREEN & PARTICLE SYSTEM ==========
-        let loadingProgress = 0;
-        const percentageElement = document.getElementById('loadingPercentage');
-        
-        function updateLoadingProgress() {
-            const interval = setInterval(() => {
-                loadingProgress += Math.random() * 12;
-                if (loadingProgress >= 100) {
-                    loadingProgress = 100;
-                    clearInterval(interval);
-                }
-                if (percentageElement) percentageElement.textContent = Math.floor(loadingProgress) + '%';
-            }, 100);
-        }
-        
-        function createLoadingParticles() {
-            const container = document.getElementById('loadingParticles');
-            if (!container) return;
-            for (let i = 0; i < 80; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'loading-particle';
-                particle.style.left = Math.random() * window.innerWidth + 'px';
-                particle.style.top = window.innerHeight + Math.random() * 150 + 'px';
-                particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
-                particle.style.animationDelay = Math.random() * 2 + 's';
-                particle.style.animationDuration = 1.5 + Math.random() * 1.5 + 's';
-                container.appendChild(particle);
-            }
-        }
-        
-        updateLoadingProgress();
-        createLoadingParticles();
-        
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loadingScreen = document.getElementById('loadingScreen');
-                if (loadingScreen) loadingScreen.classList.add('hidden');
-                document.getElementById('mainContent').classList.add('visible');
-                setTimeout(() => {
-                    if (loadingScreen) loadingScreen.style.display = 'none';
-                }, 600);
-            }, 1800);
-        });
-        
-        // ========== PARTICLE SYSTEM ==========
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let mouseX = 0, mouseY = 0;
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.3;
-                this.speedY = (Math.random() - 0.5) * 0.3;
-                this.opacity = Math.random() * 0.5 + 0.2;
-                this.color = `rgba(46, 204, 113, ${this.opacity})`;
-            }
-            update() {
-                const dx = this.x - mouseX;
-                const dy = this.y - mouseY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 120) {
-                    const angle = Math.atan2(dy, dx);
-                    const force = (120 - dist) / 120;
-                    this.x += Math.cos(angle) * force * 1.5;
-                    this.y += Math.sin(angle) * force * 1.5;
-                }
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.y < 0) this.y = canvas.height;
-                if (this.y > canvas.height) this.y = 0;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-        }
-        
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < 180; i++) particles.push(new Particle());
-        }
-        
-        function animateParticles() {
-            if (!ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateParticles);
-        }
-        
-        // ========== MOUSE TRACKING ==========
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            const cd = document.querySelector('.cursor-dot');
-            const co = document.querySelector('.cursor-outline');
-            if (cd && co) {
-                cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-                co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
-            }
-        });
         
         // ========== ANTI-DEBUGGING ==========
         let devToolsOpen = false;
@@ -768,7 +846,8 @@
         
         console.log("%c💬 PRRX REAL-TIME CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
         console.log("%c✨ NO HISTORY: New users see only messages sent after they join", "color: #f39c12; font-size: 12px");
-        console.log("%c🔥 Firebase Real-Time | Bot Commands | Particle System", "color: #3498db; font-size: 12px");
+        console.log("%c🎨 Loading Screen | Particle System | Custom Cursor | Anti-DevTools", "color: #3498db; font-size: 12px");
+        console.log("%c🔥 Firebase Real-Time | Bot Commands | Online Counter", "color: #2ecc71; font-size: 12px");
     </script>
 </body>
 </html>
