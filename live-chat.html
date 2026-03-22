@@ -365,18 +365,6 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
-        .join-screen button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 0.5rem;
-            transition: all 0.3s;
-        }
-        .join-screen button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
         
         .toast {
             position: fixed;
@@ -442,7 +430,6 @@ PRRX PANEL INFORMATION:
 - Main Menu: Key Bind, Settings Menu, Your PC Inform, Real Chat {Live}, Payment Method, Report Menu, About
 - Payment Plans: 300 LKR (1 Week), 600 LKR (3 Weeks), 850 LKR (1 Month), 1500 LKR (6 Months), 2299 LKR (1 Year), 2499 LKR (1 Year+)
 - Download: PRRX.HEX.1.rar from GitHub Releases
-- Website: https://sayuzprx.github.io/prrxwebsite/
 - WhatsApp Group: https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx
 
 RULES:
@@ -454,8 +441,8 @@ RULES:
 
         let conversationHistory = [];
         
-        // ========== ENCRYPTION ==========
-        const ENCRYPTION_KEY = 'PRRX_CHAT_E2E_KEY_2026_SECURE';
+        // ========== SAME ENCRYPTION AS DASHBOARD ==========
+        const ENCRYPTION_KEY = 'PRRX_HWID_KEY_2026_SECURE';
         
         function encryptData(data) {
             let encrypted = '';
@@ -490,7 +477,7 @@ RULES:
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        // ========== HWID GENERATION ==========
+        // ========== SAME HWID GENERATION AS DASHBOARD ==========
         function generateHWID() {
             const components = [
                 navigator.userAgent,
@@ -500,7 +487,9 @@ RULES:
                 new Date().getTimezoneOffset(),
                 navigator.hardwareConcurrency || 4,
                 navigator.deviceMemory || 4,
-                navigator.platform
+                navigator.platform,
+                navigator.maxTouchPoints || 0,
+                window.screen.pixelDepth
             ];
             let hash = 0;
             const str = components.join('|');
@@ -513,61 +502,39 @@ RULES:
         
         const CURRENT_HWID = generateHWID();
         
-        // ========== GET LOGGED IN USER FROM DASHBOARD ==========
-        function getLoggedInUser() {
-            // Try all possible session locations
-            let session = null;
-            
-            // 1. Check SecureStorage 'session' (from login.html)
-            session = SecureStorage.get('session');
+        // ========== GET USER FROM DASHBOARD USING SAME HWID SYSTEM ==========
+        function getUserFromDashboard() {
+            // 1. First check SecureStorage session (same as dashboard)
+            const session = SecureStorage.get('session');
             if (session && session.hwid === CURRENT_HWID) {
-                console.log("✅ Found session in SecureStorage");
-                return { username: session.username, hwid: session.hwid, email: session.email };
+                console.log("✅ Found user via SecureStorage session");
+                return { username: session.username, hwid: session.hwid };
             }
             
-            // 2. Check dashboard session
+            // 2. Check users database for HWID match
+            const users = SecureStorage.get('users');
+            if (users) {
+                for (const [username, userData] of Object.entries(users)) {
+                    if (userData.hwid === CURRENT_HWID) {
+                        console.log("✅ Found user via HWID match in users database");
+                        return { username: username, hwid: CURRENT_HWID };
+                    }
+                }
+            }
+            
+            // 3. Check dashboard session in localStorage
             const dashSession = localStorage.getItem('prrx_dashboard_session');
             if (dashSession) {
                 try {
                     const parsed = JSON.parse(dashSession);
                     if (parsed.hwid === CURRENT_HWID) {
-                        console.log("✅ Found dashboard session");
+                        console.log("✅ Found user via dashboard session");
                         return { username: parsed.username, hwid: parsed.hwid };
                     }
                 } catch(e) {}
             }
             
-            // 3. Check regular localStorage
-            const regularSession = localStorage.getItem('prrx_session');
-            if (regularSession) {
-                try {
-                    const parsed = JSON.parse(regularSession);
-                    if (parsed.hwid === CURRENT_HWID) {
-                        console.log("✅ Found regular session");
-                        return { username: parsed.username, hwid: parsed.hwid };
-                    }
-                } catch(e) {}
-            }
-            
-            // 4. Check KeyAuth session
-            const keyauthSession = SecureStorage.get('keyauth_session');
-            if (keyauthSession && keyauthSession.hwid === CURRENT_HWID) {
-                console.log("✅ Found KeyAuth session");
-                return { username: keyauthSession.username, hwid: keyauthSession.hwid };
-            }
-            
-            // 5. Check users database for HWID match
-            const users = SecureStorage.get('users');
-            if (users) {
-                for (const [username, userData] of Object.entries(users)) {
-                    if (userData.hwid === CURRENT_HWID) {
-                        console.log("✅ Found user by HWID match");
-                        return { username: username, hwid: CURRENT_HWID, email: userData.email };
-                    }
-                }
-            }
-            
-            console.log("❌ No session found for HWID:", CURRENT_HWID);
+            console.log("❌ No logged in user found for HWID:", CURRENT_HWID);
             return null;
         }
         
@@ -853,7 +820,7 @@ RULES:
                     
                     <div class="chat-main">
                         <div class="chat-header">
-                            <h3><i class="fas fa-robot"></i> AI-Powered Chat</h3>
+                            <h3><i class="fas fa-robot"></i> AI-Powered Chat - Gemini AI</h3>
                         </div>
                         <div class="chat-messages" id="messages"></div>
                         <div class="chat-input-area">
@@ -922,8 +889,8 @@ RULES:
         // ========== INIT ==========
         loadLearnedResponses();
         
-        const loggedInUser = getLoggedInUser();
-        console.log("🔐 HWID:", CURRENT_HWID);
+        const loggedInUser = getUserFromDashboard();
+        console.log("🔐 Current HWID:", CURRENT_HWID);
         console.log("👤 Logged in user:", loggedInUser);
         
         if (loggedInUser) {
@@ -954,6 +921,7 @@ RULES:
         window.leaveChat = leaveChat;
         
         console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
+        console.log("%c🔐 Same HWID System as Dashboard - Auto Login Active", "color: #3498db; font-size: 12px");
     </script>
 </body>
 </html>
