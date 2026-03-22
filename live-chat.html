@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX Official | Real-Time AI Chat</title>
+    <title>PRRX | Real-Time Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
@@ -114,95 +114,50 @@
         .container {
             position: relative;
             z-index: 2;
-            max-width: 1400px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 6rem 1.5rem 2rem;
             min-height: 100vh;
         }
         
-        .chat-layout {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .sidebar {
-            width: 280px;
+        .join-screen {
+            text-align: center;
+            padding: 2.5rem;
             background: rgba(20,20,20,0.85);
             backdrop-filter: blur(12px);
-            border-radius: 24px;
-            border: 1px solid rgba(46,204,113,0.3);
-            padding: 1rem;
+            border-radius: 28px;
+            max-width: 450px;
+            margin: 0 auto;
         }
-        .sidebar h3 {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(46,204,113,0.3);
-        }
-        .sidebar h3 i { color: #2ecc71; margin-right: 0.5rem; }
-        
-        .online-users {
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 1rem;
-        }
-        .user-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.6rem;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .user-item:hover { background: rgba(46,204,113,0.15); }
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        .user-name { font-size: 0.85rem; flex: 1; }
-        .online-dot {
-            width: 8px;
-            height: 8px;
-            background: #2ecc71;
-            border-radius: 50%;
-        }
-        
-        .room-selector {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(46,204,113,0.2);
-        }
-        .room-btn {
+        .join-screen i { font-size: 4rem; color: #2ecc71; margin-bottom: 1rem; }
+        .join-screen input {
             width: 100%;
-            padding: 0.6rem;
-            background: rgba(46,204,113,0.1);
+            padding: 0.8rem 1rem;
+            background: rgba(0,0,0,0.5);
             border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 40px;
-            color: #fff;
-            cursor: pointer;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s;
+            border-radius: 50px;
+            color: white;
+            margin: 1rem 0;
+            text-align: center;
         }
-        .room-btn.active {
+        .join-screen input:focus { border-color: #2ecc71; }
+        .join-screen button {
             background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border-color: transparent;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
         }
-        .room-btn:hover { transform: scale(1.02); }
         
-        .chat-main {
-            flex: 1;
+        .chat-container {
             background: rgba(20,20,20,0.85);
             backdrop-filter: blur(12px);
-            border-radius: 24px;
+            border-radius: 28px;
             border: 1px solid rgba(46,204,113,0.3);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             height: 70vh;
@@ -215,7 +170,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
         }
         .chat-header h3 { font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
         .chat-header h3 i { color: #2ecc71; }
@@ -280,38 +234,6 @@
             margin-top: 0.2rem;
             text-align: right;
         }
-        .bot-message .message-avatar {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-        }
-        .bot-message .message-sender { color: #f39c12; }
-        .ai-message .message-avatar {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-        }
-        .ai-message .message-sender { color: #3498db; }
-        .system-message .message-avatar {
-            background: linear-gradient(135deg, #8e44ad, #9b59b6);
-        }
-        .system-message .message-sender { color: #9b59b6; }
-        
-        .typing-indicator {
-            display: flex;
-            gap: 0.3rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            width: fit-content;
-        }
-        .typing-indicator span {
-            width: 8px;
-            height: 8px;
-            background: #2ecc71;
-            border-radius: 50%;
-            animation: typing 1s infinite;
-        }
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-            30% { transform: translateY(-5px); opacity: 1; }
-        }
         
         .chat-input-area {
             display: flex;
@@ -338,38 +260,6 @@
             font-weight: bold;
             cursor: pointer;
         }
-        .chat-input-area button:hover { transform: scale(1.02); }
-        
-        .join-screen {
-            text-align: center;
-            padding: 2.5rem;
-            background: rgba(20,20,20,0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            max-width: 450px;
-            margin: 0 auto;
-        }
-        .join-screen i { font-size: 4rem; color: #2ecc71; margin-bottom: 1rem; }
-        .join-screen input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 50px;
-            color: white;
-            margin: 1rem 0;
-            text-align: center;
-        }
-        .join-screen button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            color: white;
-            font-weight: bold;
-            width: 100%;
-            cursor: pointer;
-        }
         
         .toast {
             position: fixed;
@@ -388,8 +278,6 @@
         @media (max-width: 768px) {
             .navbar { padding: 0.8rem 1rem; }
             .menu { gap: 1rem; }
-            .sidebar { width: 100%; }
-            .message-content { max-width: 85%; }
         }
     </style>
 </head>
@@ -404,7 +292,7 @@
         <div class="menu">
             <a href="index.html">HOME</a>
             <a href="features.html">FEATURES</a>
-            <a href="live-chat.html">LIVE CHAT</a>
+            <a href="live-chat.html">CHAT</a>
             <a href="dashboard.html">DASHBOARD</a>
         </div>
     </div>
@@ -414,6 +302,7 @@
 
     <script>
         // ========== FIREBASE CONFIGURATION ==========
+        // ✅ YOUR DATABASE URL
         const firebaseConfig = {
             apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
             authDomain: "prrx-chat.firebaseapp.com",
@@ -422,32 +311,13 @@
             messagingSenderId: "763130047676",
             appId: "1:763130047676:web:e6566f250e81b9c6b574b9",
             measurementId: "G-SQ0GGFJ704",
-            databaseURL: "https://prrx-chat-default-rtdb.asia-southeast1.firebasedatabase.app"
+            databaseURL: "https://prrx-chat-default-rtdb.firebaseio.com"
         };
         
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        const publicMessagesRef = database.ref('public_messages');
-        const onlineUsersRef = database.ref('online_users');
-        
-        // ========== GOOGLE GEMINI AI ==========
-        const GEMINI_API_KEY = "AIzaSyB3YDwE7KKnOVB43rtpePFZLBpljv0ld-k";
-        const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
-        
-        const PRRX_KNOWLEDGE = `
-You are PRRX AI Assistant. Help users with PRRX Gaming Panel.
-
-PRRX INFO:
-- Sri Lanka's #1 Free Fire Gaming Panel
-- AIMBOT: +++, HEAD, EXTERNAL, DRAG, Mouse Settings
-- VISUAL: CHAMS MENU, ESP, 3D CHAMS, Blue/Red CHAMS
-- ANTI-CHEAT: Anti Cheates, Anti Report, FPS Boost
-- Payment: 300 LKR (1 Week), 850 LKR (1 Month), 2299 LKR (1 Year)
-- Download: PRRX.HEX.1.rar from GitHub Releases
-
-Be friendly and concise.
-`;
+        const messagesRef = database.ref('messages');
         
         // ========== BOT COMMANDS ==========
         const COMMANDS = `📋 **Available Commands:**
@@ -488,57 +358,42 @@ Be friendly and concise.
         const welcomeMessages = [
             "🎉 Welcome to PRRX Chat! Type `!help` to see available commands!",
             "👋 Hey there! Need help with PRRX? Type `!aimbot` or `!esp`!",
-            "🔥 Welcome! Chat with other users or ask the AI Assistant!",
-            "💬 You're now in PRRX Live Chat! Be respectful and have fun!",
-            "🎮 Ready to dominate? Ask about AIMBOT, ESP, or pricing!"
+            "🔥 Welcome! Chat with other users! Type `!help` for commands!",
+            "💬 You're now in PRRX Live Chat! Be respectful and have fun!"
         ];
         
         function getRandomWelcome() {
             return welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
         }
         
-        // ========== SEND SYSTEM MESSAGE ==========
-        function sendSystemMessage(text) {
-            const message = {
-                sender: "System",
-                text: text,
-                timestamp: Date.now(),
-                isSystem: true
-            };
-            publicMessagesRef.push(message);
-        }
+        // ========== CHAT STATE ==========
+        let currentUser = null;
         
-        // ========== FIREBASE - PUBLIC CHAT ==========
-        function sendPublicMessage(text, isBot = false, isSystem = false) {
+        // ========== FIREBASE FUNCTIONS ==========
+        function sendMessage(text) {
             if (!text.trim() || !currentUser) return;
             
             const message = {
-                sender: isSystem ? "System" : (isBot ? "PRRX Bot" : currentUser.username),
+                sender: currentUser.username,
                 text: text.trim(),
-                timestamp: Date.now(),
-                isBot: isBot,
-                isSystem: isSystem
+                timestamp: Date.now()
             };
-            publicMessagesRef.push(message);
+            
+            messagesRef.push(message);
         }
         
-        function loadPublicMessages() {
-            publicMessagesRef.off();
-            publicMessagesRef.on('child_added', (snapshot) => {
+        function loadMessages() {
+            messagesRef.on('child_added', (snapshot) => {
                 const msg = snapshot.val();
-                const isOwn = currentUser && msg.sender === currentUser.username && !msg.isBot && !msg.isSystem;
+                const isOwn = currentUser && msg.sender === currentUser.username;
                 const messagesDiv = document.getElementById('messages');
-                if (messagesDiv && currentRoom === 'public') {
-                    let msgClass = '';
-                    if (msg.isBot) msgClass = 'bot-message';
-                    else if (msg.isSystem) msgClass = 'system-message';
-                    
+                if (messagesDiv) {
                     const msgHtml = `
-                        <div class="message ${isOwn ? 'message-own' : ''} ${msgClass}">
-                            <div class="message-avatar">${msg.isBot ? '<i class="fas fa-robot"></i>' : (msg.isSystem ? '<i class="fas fa-info-circle"></i>' : msg.sender.charAt(0).toUpperCase())}</div>
+                        <div class="message ${isOwn ? 'message-own' : ''}">
+                            <div class="message-avatar">${msg.sender.charAt(0).toUpperCase()}</div>
                             <div class="message-content">
-                                <div class="message-sender">${escapeHtml(msg.sender)} ${msg.isBot ? '(Bot)' : (msg.isSystem ? '(System)' : '')}</div>
-                                <div class="message-text">${escapeHtml(msg.text).replace(/\n/g, '<br>')}</div>
+                                <div class="message-sender">${escapeHtml(msg.sender)}</div>
+                                <div class="message-text">${escapeHtml(msg.text)}</div>
                                 <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
                             </div>
                         </div>
@@ -547,180 +402,6 @@ Be friendly and concise.
                     messagesDiv.scrollTop = messagesDiv.scrollHeight;
                 }
             });
-        }
-        
-        // ========== ONLINE USERS ==========
-        function updateOnlineStatus() {
-            if (!currentUser) return;
-            const userRef = onlineUsersRef.child(currentUser.username);
-            userRef.set({
-                username: currentUser.username,
-                lastSeen: Date.now(),
-                online: true
-            });
-            userRef.onDisconnect().remove();
-        }
-        
-        function loadOnlineUsers() {
-            onlineUsersRef.on('value', (snapshot) => {
-                const users = [];
-                snapshot.forEach((child) => {
-                    const user = child.val();
-                    if (user.online && user.username !== currentUser?.username) {
-                        users.push(user);
-                    }
-                });
-                onlineUsers = users;
-                renderOnlineUsers();
-            });
-        }
-        
-        let onlineUsers = [];
-        
-        // ========== AI RESPONSE ==========
-        async function getAIResponse(userMessage) {
-            try {
-                const contextMessage = PRRX_KNOWLEDGE + `\n\nUser: ${userMessage}\n\nPRRX AI:`;
-                const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: contextMessage }] }],
-                        generationConfig: { temperature: 0.7, maxOutputTokens: 200 }
-                    })
-                });
-                const data = await response.json();
-                if (data.error) return "I'm here to help! Ask about AIMBOT, ESP, Anti-Cheat, pricing, or download.";
-                return data.candidates[0].content.parts[0].text.replace(/PRRX AI:/gi, '').trim();
-            } catch (error) {
-                return "Sorry, having trouble connecting. Please try again!";
-            }
-        }
-        
-        // ========== CHAT STATE ==========
-        let currentUser = null;
-        let currentRoom = 'public';
-        
-        // ========== PRIVATE AI CHAT ==========
-        let aiMessages = [];
-        
-        function addAIMessage(sender, text, isOwn = false) {
-            const msg = {
-                sender: sender,
-                text: text,
-                timestamp: Date.now(),
-                isOwn: isOwn,
-                isAI: !isOwn
-            };
-            aiMessages.push(msg);
-            renderAIMessages();
-        }
-        
-        function renderAIMessages() {
-            const messagesDiv = document.getElementById('messages');
-            if (!messagesDiv || currentRoom !== 'ai_assistant') return;
-            
-            messagesDiv.innerHTML = aiMessages.map(msg => `
-                <div class="message ${msg.isOwn ? 'message-own' : ''} ${msg.isAI ? 'ai-message' : ''}">
-                    <div class="message-avatar">${msg.isAI ? '<i class="fas fa-brain"></i>' : msg.sender.charAt(0).toUpperCase()}</div>
-                    <div class="message-content">
-                        <div class="message-sender">${escapeHtml(msg.sender)} ${msg.isAI ? '(AI)' : ''}</div>
-                        <div class="message-text">${escapeHtml(msg.text).replace(/\n/g, '<br>')}</div>
-                        <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
-                    </div>
-                </div>
-            `).join('');
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-        
-        function showAITypingIndicator() {
-            const messagesDiv = document.getElementById('messages');
-            if (!messagesDiv) return;
-            const typing = document.createElement('div');
-            typing.id = 'typing-indicator';
-            typing.className = 'typing-indicator';
-            typing.innerHTML = '<span></span><span></span><span></span><span style="color:#888;">AI is thinking...</span>';
-            messagesDiv.appendChild(typing);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-        
-        function removeAITypingIndicator() {
-            const typing = document.getElementById('typing-indicator');
-            if (typing) typing.remove();
-        }
-        
-        async function sendAIMessage(text) {
-            if (!text.trim() || !currentUser) return;
-            addAIMessage(currentUser.username, text, true);
-            
-            showAITypingIndicator();
-            const aiResponse = await getAIResponse(text);
-            removeAITypingIndicator();
-            addAIMessage("PRRX AI", aiResponse, false);
-        }
-        
-        // ========== SEND MESSAGE FUNCTION ==========
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            if (!message || !currentUser) return;
-            
-            if (currentRoom === 'public') {
-                sendPublicMessage(message);
-                input.value = '';
-                
-                const botResponse = getBotResponse(message);
-                if (botResponse) {
-                    setTimeout(() => sendPublicMessage(botResponse, true), 500);
-                }
-            } else if (currentRoom === 'ai_assistant') {
-                input.value = '';
-                await sendAIMessage(message);
-            }
-        }
-        
-        // ========== ROOM SWITCHING ==========
-        function joinPublicChat() {
-            currentRoom = 'public';
-            document.getElementById('roomName').textContent = '💬 Public Chat (Firebase Real-Time)';
-            document.getElementById('messages').innerHTML = '';
-            loadPublicMessages();
-            updateActiveRoomButtons();
-        }
-        
-        function joinAIChat() {
-            currentRoom = 'ai_assistant';
-            document.getElementById('roomName').textContent = '🤖 AI Assistant (Gemini)';
-            document.getElementById('messages').innerHTML = '';
-            renderAIMessages();
-            updateActiveRoomButtons();
-        }
-        
-        function updateActiveRoomButtons() {
-            const publicBtn = document.getElementById('publicRoomBtn');
-            const aiBtn = document.getElementById('aiRoomBtn');
-            if (publicBtn && aiBtn) {
-                if (currentRoom === 'public') {
-                    publicBtn.classList.add('active');
-                    aiBtn.classList.remove('active');
-                } else {
-                    aiBtn.classList.add('active');
-                    publicBtn.classList.remove('active');
-                }
-            }
-        }
-        
-        function renderOnlineUsers() {
-            const container = document.getElementById('onlineUsersList');
-            if (!container) return;
-            container.innerHTML = onlineUsers.map(user => `
-                <div class="user-item" onclick="showToast('Private chat coming soon!')">
-                    <div class="user-avatar">${user.username.charAt(0).toUpperCase()}</div>
-                    <div class="user-name">${user.username}</div>
-                    <div class="online-dot"></div>
-                </div>
-            `).join('');
-            document.getElementById('onlineCount').textContent = onlineUsers.length;
         }
         
         function escapeHtml(text) {
@@ -739,36 +420,44 @@ Be friendly and concise.
         function renderChatInterface() {
             const app = document.getElementById('app');
             app.innerHTML = `
-                <div class="chat-layout">
-                    <div class="sidebar">
-                        <h3><i class="fas fa-users"></i> Online Users (<span id="onlineCount">0</span>)</h3>
-                        <div class="online-users" id="onlineUsersList"></div>
-                        
-                        <div class="room-selector">
-                            <button class="room-btn active" id="publicRoomBtn" onclick="joinPublicChat()">
-                                <i class="fas fa-globe"></i> Public Chat (Firebase)
-                            </button>
-                            <button class="room-btn" id="aiRoomBtn" onclick="joinAIChat()">
-                                <i class="fas fa-brain"></i> AI Assistant (Gemini)
-                            </button>
-                        </div>
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3><i class="fas fa-fire"></i> PRRX Real-Time Chat</h3>
+                        <div class="user-badge"><i class="fas fa-user"></i> ${currentUser.username}</div>
                     </div>
-                    
-                    <div class="chat-main">
-                        <div class="chat-header">
-                            <h3><i class="fas fa-comments"></i> <span id="roomName">💬 Public Chat (Firebase Real-Time)</span></h3>
-                            <div class="user-badge"><i class="fas fa-user"></i> ${currentUser.username}</div>
-                        </div>
-                        <div class="chat-messages" id="messages"></div>
-                        <div class="chat-input-area">
-                            <input type="text" id="messageInput" placeholder="Type a message... Type !help for commands" onkeypress="if(event.key==='Enter') sendMessage()">
-                            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
-                        </div>
+                    <div class="chat-messages" id="messages"></div>
+                    <div class="chat-input-area">
+                        <input type="text" id="messageInput" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendMessageFromInput()">
+                        <button onclick="sendMessageFromInput()"><i class="fas fa-paper-plane"></i> Send</button>
                     </div>
                 </div>
             `;
             
-            joinPublicChat();
+            const messagesDiv = document.getElementById('messages');
+            if (messagesDiv) messagesDiv.innerHTML = '';
+            
+            loadMessages();
+        }
+        
+        function sendMessageFromInput() {
+            const input = document.getElementById('messageInput');
+            const message = input.value;
+            if (message.trim()) {
+                sendMessage(message);
+                input.value = '';
+                
+                const botResponse = getBotResponse(message);
+                if (botResponse) {
+                    setTimeout(() => {
+                        const botMessage = {
+                            sender: "PRRX Bot",
+                            text: botResponse,
+                            timestamp: Date.now()
+                        };
+                        messagesRef.push(botMessage);
+                    }, 500);
+                }
+            }
         }
         
         function showJoinScreen() {
@@ -777,8 +466,8 @@ Be friendly and concise.
                 <div class="join-screen">
                     <i class="fas fa-comments"></i>
                     <h2>PRRX Real-Time Chat</h2>
-                    <p style="color: #888; margin-bottom: 1rem;">💬 Public Chat (Firebase) | 🤖 AI Assistant (Gemini)</p>
-                    <p style="color: #2ecc71; margin-bottom: 1rem;">🔥 Messages sync across ALL users in real-time!</p>
+                    <p style="color: #888; margin-bottom: 1rem;">🔥 Powered by Firebase | Real-time messaging</p>
+                    <p style="color: #2ecc71; margin-bottom: 1rem;">Messages sync across ALL users instantly!</p>
                     <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20">
                     <button id="joinBtn">Join Chat</button>
                 </div>
@@ -791,18 +480,14 @@ Be friendly and concise.
                 
                 currentUser = { username: username };
                 
-                // Send welcome message
                 const welcomeText = getRandomWelcome();
-                sendPublicMessage(welcomeText, false, false);
+                sendMessage(welcomeText);
                 
-                // Send commands list
                 setTimeout(() => {
-                    sendPublicMessage(COMMANDS, true);
+                    sendMessage(COMMANDS);
                 }, 800);
                 
                 renderChatInterface();
-                updateOnlineStatus();
-                loadOnlineUsers();
             };
             
             document.getElementById('usernameInput').onkeypress = (e) => {
@@ -833,13 +518,11 @@ Be friendly and concise.
         // ========== INIT ==========
         showJoinScreen();
         
-        window.sendMessage = sendMessage;
-        window.joinPublicChat = joinPublicChat;
-        window.joinAIChat = joinAIChat;
+        window.sendMessageFromInput = sendMessageFromInput;
         
         console.log("%c💬 PRRX REAL-TIME CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🔥 Welcome message appears when anyone joins!", "color: #f39c12; font-size: 12px");
-        console.log("%c📡 Messages sync across ALL users instantly!", "color: #3498db; font-size: 12px");
+        console.log("%c🔥 Database URL: https://prrx-chat-default-rtdb.firebaseio.com/", "color: #3498db; font-size: 12px");
+        console.log("%c✅ Make sure Firebase Rules are set to .read = true, .write = true", "color: #f39c12; font-size: 12px");
     </script>
 </body>
 </html>
