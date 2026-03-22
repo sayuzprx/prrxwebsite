@@ -565,9 +565,9 @@
             else { document.querySelectorAll('.news-card').forEach(c => c.classList.remove('active')); card.classList.add('active'); }
         }
         
-        // ========== DOWNLOAD BUTTON (WORKING) ==========
+        // ========== DOWNLOAD BUTTON (FIXED) ==========
         document.getElementById('downloadBtn')?.addEventListener('click', function() {
-            window.open('https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX%20HEX.rar', '_blank');
+            window.open('https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX.HEX.1.rar', '_blank');
             showToast("🔒 Secure download started");
         });
         
@@ -621,7 +621,7 @@
         window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
         
         console.log("%c🔐 PRRX ULTRA SECURE ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c💾 Download button active: PRRX HEX.rar", "color: #fff; font-size: 12px");
+        console.log("%c💾 Download button active: PRRX.HEX.1.rar", "color: #fff; font-size: 12px");
     </script>
 </body>
 </html>
