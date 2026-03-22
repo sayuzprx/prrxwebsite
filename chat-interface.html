@@ -7,20 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- Ultra Security Headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://generativelanguage.googleapis.com;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
-        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-        img-src 'self' data: https:;
-        connect-src 'self' https://generativelanguage.googleapis.com;
-        frame-ancestors 'none';
-    ">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
@@ -29,7 +15,6 @@
             color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
-            cursor: none;
         }
         
         .bg-animation {
@@ -91,11 +76,6 @@
             backdrop-filter: blur(12px);
             z-index: 100;
             border-bottom: 1px solid rgba(46,204,113,0.3);
-            animation: slideDown 0.5s ease;
-        }
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
         .logo { 
             font-size: 1.5rem; 
@@ -142,15 +122,10 @@
             border-radius: 28px;
             border: 1px solid rgba(46,204,113,0.3);
             overflow: hidden;
-            animation: fadeInUp 0.6s ease;
             display: flex;
             flex-direction: column;
             height: 70vh;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3);
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
         .chat-header {
@@ -190,11 +165,11 @@
         .message {
             display: flex;
             gap: 0.8rem;
-            animation: messagePop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: fadeInUp 0.3s ease;
         }
-        @keyframes messagePop {
-            from { opacity: 0; transform: scale(0.8) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .message-avatar {
             width: 40px;
@@ -273,9 +248,8 @@
             padding: 0.8rem 1rem;
             color: white;
             outline: none;
-            transition: all 0.3s;
         }
-        .chat-input-area input:focus { border-color: #2ecc71; box-shadow: 0 0 15px rgba(46,204,113,0.3); }
+        .chat-input-area input:focus { border-color: #2ecc71; }
         .chat-input-area button {
             background: linear-gradient(135deg, #2ecc71, #27ae60);
             border: none;
@@ -284,9 +258,8 @@
             color: white;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
         }
-        .chat-input-area button:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(46,204,113,0.4); }
+        .chat-input-area button:hover { transform: scale(1.02); }
         .leave-btn { background: rgba(255,80,80,0.2) !important; border: 1px solid #ff5050 !important; color: #ff5050 !important; }
         .clear-btn { background: rgba(255,165,0,0.2) !important; border: 1px solid #ffa500 !important; color: #ffa500 !important; }
         
@@ -311,26 +284,31 @@
             z-index: 10000;
             transform: translateX(400px);
             transition: transform 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         .toast.show { transform: translateX(0); }
         
-        .anti-devtools {
+        .loading-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: #0a0a0a;
-            z-index: 20000;
-            display: none;
+            z-index: 1000;
+            display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            backdrop-filter: blur(20px);
         }
-        .anti-devtools.active { display: flex; }
-        .anti-devtools i { font-size: 4rem; color: #ff5050; margin-bottom: 1rem; }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(46,204,113,0.2);
+            border-top: 3px solid #2ecc71;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
@@ -340,7 +318,6 @@
             .navbar { padding: 0.8rem 1rem; }
             .menu { gap: 1rem; }
             .chat-header { flex-direction: column; gap: 0.5rem; text-align: center; }
-            .chat-input-area button { padding: 0.6rem 1rem; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -349,10 +326,6 @@
     <div class="bg-animation"></div>
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
-    <div class="anti-devtools" id="antiDevTools">
-        <i class="fas fa-shield-horned"></i>
-        <p>⚠️ SECURITY ALERT: Developer Tools Detected<br>Please close DevTools to continue.</p>
-    </div>
 
     <div class="navbar">
         <a href="index.html" class="logo">PRRX</a>
@@ -392,7 +365,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
         let currentUser = null;
         let messages = [];
         
-        // ========== E2E ENCRYPTION (For Messages Only) ==========
+        // ========== E2E ENCRYPTION ==========
         const ENCRYPTION_KEY = 'PRRX_CHAT_E2E_KEY_2026';
         
         function encryptData(data) {
@@ -428,13 +401,15 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        // ========== GET USER FROM SESSION (No HWID Check) ==========
+        // ========== GET USER FROM SESSION ==========
         function getUserFromSession() {
             const session = localStorage.getItem('prrx_chat_session');
             if (session) {
                 try {
                     return JSON.parse(session);
-                } catch(e) {}
+                } catch(e) {
+                    console.error("Failed to parse session:", e);
+                }
             }
             return null;
         }
@@ -490,6 +465,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
                 saveLearnedResponse(userMessage, aiResponse);
                 return aiResponse;
             } catch (error) {
+                console.error("AI Error:", error);
                 return fallbackResponse(userMessage);
             }
         }
@@ -625,7 +601,7 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
                     <div class="chat-header">
                         <h3><i class="fas fa-robot"></i> PRRX AI Assistant</h3>
                         <div class="user-info">
-                            <i class="fas fa-user-shield"></i> ${currentUser?.username}
+                            <i class="fas fa-user-shield"></i> ${currentUser?.username || 'User'}
                         </div>
                     </div>
                     <div class="chat-messages" id="messages"></div>
@@ -654,7 +630,22 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
             const end = performance.now();
             if (end - start > 100 && !devToolsOpen) {
                 devToolsOpen = true;
-                document.getElementById('antiDevTools').classList.add('active');
+                const antiDiv = document.createElement('div');
+                antiDiv.className = 'anti-devtools';
+                antiDiv.innerHTML = '<i class="fas fa-shield-horned"></i><p>⚠️ SECURITY ALERT: Developer Tools Detected<br>Please close DevTools to continue.</p>';
+                document.body.appendChild(antiDiv);
+                antiDiv.style.position = 'fixed';
+                antiDiv.style.top = '0';
+                antiDiv.style.left = '0';
+                antiDiv.style.width = '100%';
+                antiDiv.style.height = '100%';
+                antiDiv.style.background = '#0a0a0a';
+                antiDiv.style.zIndex = '20000';
+                antiDiv.style.display = 'flex';
+                antiDiv.style.justifyContent = 'center';
+                antiDiv.style.alignItems = 'center';
+                antiDiv.style.flexDirection = 'column';
+                antiDiv.style.backdropFilter = 'blur(20px)';
             }
         }, 2000);
         
@@ -681,30 +672,44 @@ RULES: Be helpful, friendly, and concise. Answer questions about PRRX panel feat
         // ========== INIT ==========
         loadLearnedResponses();
         
-        const sessionUser = getUserFromSession();
+        // Show loading indicator
+        const app = document.getElementById('app');
+        app.innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 70vh;">
+                <div class="loading-spinner"></div>
+                <p style="margin-left: 1rem; color: #2ecc71;">Loading chat...</p>
+            </div>
+        `;
         
-        if (sessionUser && sessionUser.username) {
-            currentUser = sessionUser;
-            loadMessages();
+        // Load session and start chat
+        setTimeout(() => {
+            const sessionUser = getUserFromSession();
+            console.log("Session user:", sessionUser);
             
-            if (messages.length === 0) {
-                addMessage("PRRX AI Bot", `Welcome back, ${currentUser.username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+            if (sessionUser && sessionUser.username) {
+                currentUser = sessionUser;
+                loadMessages();
+                
+                if (messages.length === 0) {
+                    addMessage("PRRX AI Bot", `Welcome back, ${currentUser.username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+                }
+                
+                renderChatInterface();
+                console.log("✅ Chat interface loaded successfully");
+            } else {
+                console.log("❌ No session found, redirecting to dashboard");
+                showToast("Session expired. Redirecting...");
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
             }
-            
-            renderChatInterface();
-        } else {
-            showToast("Session expired. Redirecting...");
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1500);
-        }
+        }, 500);
         
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
         window.leaveChat = leaveChat;
         
         console.log("%c🤖 PRRX ULTRA SECURE AI CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🔐 E2E Encrypted | Google Gemini AI | Self-Learning", "color: #3498db; font-size: 12px");
     </script>
 </body>
 </html>
