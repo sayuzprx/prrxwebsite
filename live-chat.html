@@ -3,23 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX | AI-Powered Live Chat</title>
+    <title>PRRX | Live Chat - Loading</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Ultra Security Headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://keyauth.win;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
-        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-        img-src 'self' data: https:;
-        connect-src 'self' https://generativelanguage.googleapis.com;
-        frame-ancestors 'none';
-    ">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,10 +14,12 @@
             background: #0a0a0a;
             color: #fff;
             min-height: 100vh;
-            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
         
-        /* Animated Background */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -54,7 +42,86 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Custom Cursor */
+        .loading-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            padding: 2rem;
+            background: rgba(20,20,20,0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            border: 1px solid rgba(46,204,113,0.3);
+            animation: fadeInUp 0.5s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #2ecc71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(46,204,113,0.2);
+            border-top: 3px solid #2ecc71;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 1.5rem auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .loading-text {
+            font-size: 1rem;
+            color: #2ecc71;
+            letter-spacing: 2px;
+        }
+        
+        .hwid-text {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 1rem;
+            font-family: monospace;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(46,204,113,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            animation: progress 1.5s ease-out forwards;
+        }
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        .security-badge {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.65rem;
+            color: #2ecc71;
+        }
+        
         .cursor-dot {
             width: 8px;
             height: 8px;
@@ -78,356 +145,6 @@
             backdrop-filter: blur(2px);
         }
         @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
-        
-        /* Navbar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background: rgba(10,10,10,0.95);
-            backdrop-filter: blur(12px);
-            z-index: 100;
-            border-bottom: 1px solid rgba(46,204,113,0.3);
-            animation: slideDown 0.5s ease;
-        }
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .logo { 
-            font-size: 1.5rem; 
-            font-weight: 800; 
-            background: linear-gradient(135deg, #fff, #2ecc71); 
-            -webkit-background-clip: text; 
-            background-clip: text; 
-            color: transparent; 
-            text-decoration: none;
-        }
-        .menu { display: flex; gap: 2rem; }
-        .menu a { 
-            color: #fff; 
-            text-decoration: none; 
-            font-weight: 500; 
-            transition: all 0.3s;
-            position: relative;
-        }
-        .menu a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: #2ecc71;
-            transition: width 0.3s;
-        }
-        .menu a:hover::after { width: 100%; }
-        .menu a:hover { color: #2ecc71; }
-        
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 6rem 1.5rem 2rem;
-            min-height: 100vh;
-        }
-        
-        /* Join Screen */
-        .join-screen {
-            text-align: center;
-            padding: 3rem;
-            background: rgba(20,20,20,0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            border: 1px solid rgba(46,204,113,0.2);
-            max-width: 500px;
-            margin: 0 auto;
-            animation: fadeInUp 0.5s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .join-screen i {
-            font-size: 4rem;
-            color: #2ecc71;
-            margin-bottom: 1rem;
-        }
-        .join-screen input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 50px;
-            color: white;
-            font-size: 1rem;
-            margin: 1rem 0;
-            outline: none;
-            text-align: center;
-        }
-        .join-screen input:focus {
-            border-color: #2ecc71;
-            box-shadow: 0 0 15px rgba(46,204,113,0.3);
-        }
-        .join-screen button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            color: white;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-        }
-        .join-screen button:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(46,204,113,0.4);
-        }
-        
-        /* Chat Container */
-        .chat-container {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            background: rgba(20,20,20,0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            padding: 1.5rem;
-            border: 1px solid rgba(46,204,113,0.2);
-            min-height: 70vh;
-            animation: fadeInUp 0.6s ease;
-        }
-        
-        .user-sidebar {
-            width: 300px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 20px;
-            padding: 1.2rem;
-            border: 1px solid rgba(46,204,113,0.2);
-        }
-        .user-sidebar h3 {
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(46,204,113,0.3);
-        }
-        .user-sidebar h3 i { color: #2ecc71; margin-right: 0.5rem; }
-        .search-box {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .search-box input {
-            flex: 1;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 30px;
-            padding: 0.6rem 1rem;
-            color: white;
-            outline: none;
-        }
-        .search-box input:focus { border-color: #2ecc71; }
-        .search-box button {
-            background: rgba(46,204,113,0.2);
-            border: 1px solid #2ecc71;
-            border-radius: 30px;
-            padding: 0.6rem 1rem;
-            color: #2ecc71;
-            cursor: pointer;
-        }
-        .search-box button:hover { background: #2ecc71; color: #0a0a0a; }
-        .user-list {
-            max-height: 450px;
-            overflow-y: auto;
-        }
-        .user-item {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.7rem;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 0.3rem;
-        }
-        .user-item:hover { background: rgba(46,204,113,0.15); transform: translateX(5px); }
-        .user-item.online { border-left: 3px solid #2ecc71; }
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        .user-name { font-size: 0.85rem; font-weight: 500; }
-        .online-count {
-            font-size: 0.7rem;
-            color: #888;
-            margin-top: 1rem;
-            padding-top: 0.5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .chat-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: rgba(0,0,0,0.3);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        .chat-header {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(46,204,113,0.2);
-            background: rgba(0,0,0,0.3);
-        }
-        .chat-header h3 { font-size: 1rem; }
-        .chat-header h3 i { color: #2ecc71; margin-right: 0.5rem; }
-        .chat-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            max-height: 500px;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        .message {
-            display: flex;
-            gap: 0.8rem;
-            animation: messagePop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-        @keyframes messagePop {
-            from { opacity: 0; transform: scale(0.8) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-        .message-content {
-            flex: 1;
-            background: rgba(255,255,255,0.05);
-            padding: 0.7rem 1rem;
-            border-radius: 18px;
-            max-width: 70%;
-        }
-        .message-own { justify-content: flex-end; }
-        .message-own .message-content {
-            background: rgba(46,204,113,0.15);
-            border: 1px solid rgba(46,204,113,0.3);
-        }
-        .message-sender {
-            font-size: 0.7rem;
-            color: #2ecc71;
-            margin-bottom: 0.2rem;
-        }
-        .message-text { font-size: 0.85rem; word-wrap: break-word; line-height: 1.4; }
-        .message-time {
-            font-size: 0.55rem;
-            color: #666;
-            margin-top: 0.2rem;
-            text-align: right;
-        }
-        .bot-message .message-avatar {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-        }
-        .bot-message .message-sender { color: #3498db; }
-        
-        .typing-indicator {
-            display: flex;
-            gap: 0.3rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.05);
-            border-radius: 20px;
-            width: fit-content;
-        }
-        .typing-indicator span {
-            width: 8px;
-            height: 8px;
-            background: #2ecc71;
-            border-radius: 50%;
-            animation: typing 1s infinite;
-        }
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-            30% { transform: translateY(-5px); opacity: 1; }
-        }
-        
-        .chat-input-area {
-            display: flex;
-            gap: 0.5rem;
-            padding: 1rem;
-            border-top: 1px solid rgba(46,204,113,0.2);
-            background: rgba(0,0,0,0.3);
-        }
-        .chat-input-area input {
-            flex: 1;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 30px;
-            padding: 0.8rem 1rem;
-            color: white;
-            outline: none;
-        }
-        .chat-input-area input:focus { border-color: #2ecc71; }
-        .chat-input-area button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            border-radius: 30px;
-            padding: 0.8rem 1.2rem;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .chat-input-area button:hover { transform: scale(1.02); }
-        .leave-btn { background: rgba(255,80,80,0.2) !important; border: 1px solid #ff5050 !important; color: #ff5050 !important; }
-        .clear-btn { background: rgba(255,165,0,0.2) !important; border: 1px solid #ffa500 !important; color: #ffa500 !important; }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #2ecc71;
-            color: #0a0a0a;
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            z-index: 10000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-        .toast.show { transform: translateX(0); }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #2ecc71; border-radius: 10px; }
-        
-        @media (max-width: 768px) {
-            .navbar { padding: 0.8rem 1rem; }
-            .menu { gap: 1rem; }
-            .user-sidebar { width: 100%; }
-        }
     </style>
 </head>
 <body>
@@ -436,49 +153,23 @@
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
 
-    <div class="navbar">
-        <a href="index.html" class="logo">PRRX</a>
-        <div class="menu">
-            <a href="index.html">HOME</a>
-            <a href="features.html">FEATURES</a>
-            <a href="live-chat.html">CHAT</a>
-            <a href="dashboard.html">DASHBOARD</a>
+    <div class="loading-container">
+        <div class="logo">PRRX</div>
+        <div class="spinner"></div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        <div class="loading-text">Verifying Access...</div>
+        <div class="hwid-text" id="hwidDisplay">Loading HWID...</div>
+        <div class="security-badge">
+            <span><i class="fas fa-shield-alt"></i> HWID Protected</span>
+            <span><i class="fas fa-lock"></i> Secure Channel</span>
         </div>
     </div>
 
-    <div class="container" id="app"></div>
-    <div id="toast" class="toast"></div>
-
     <script>
-        // ========== GOOGLE GEMINI AI CONFIGURATION ==========
-        const GEMINI_API_KEY = "AIzaSyB3YDwE7KKnOVB43rtpePFZLBpljv0ld-k";
-        const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
-        
-        // ========== PRRX PANEL KNOWLEDGE ==========
-        const PRRX_KNOWLEDGE = `
-You are PRRX Bot, the official AI assistant for PRRX Gaming Panel.
-
-PRRX PANEL INFORMATION:
-- PRRX is Sri Lanka's #1 Free Fire Gaming Panel
-- Features: AIM ASSISTANCE (AIMBOT +++, AIMBOT HEAD, AIMBOT EXTERNAL, AIMBOT DRAG, FIX DRAG MOOD, MOUSE SETTINGS)
-- VISUAL ENHANCEMENT: CHAMS MENU with ESP, CHAMS MENU V1 with Female Fix, 3D CHAMS MENU, BLUE CHAMS with 3D Fix, RED CHAMS with PANEL 3DBOX
-- ANTI-CHEAT PROTECTIONS: ANTI CHEATES, ANTI REPORT, ANTI REPORT V1, OPTIMAIZ, FPS ++, FPS BOOST
-- Main Menu: Key Bind, Settings Menu, Your PC Inform, Real Chat {Live}, Payment Method, Report Menu, About
-- Payment Plans: 300 LKR (1 Week), 600 LKR (3 Weeks), 850 LKR (1 Month), 1500 LKR (6 Months), 2299 LKR (1 Year), 2499 LKR (1 Year+)
-- Download: PRRX.HEX.1.rar from GitHub Releases
-- WhatsApp Group: https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx
-
-RULES:
-1. Be helpful, friendly, and concise
-2. Answer questions about PRRX panel features, pricing, downloads, and support
-3. Keep responses under 3 sentences when possible
-4. Always be positive and encouraging
-`;
-
-        let conversationHistory = [];
-        
-        // ========== ULTRA SECURE E2E ENCRYPTION ==========
-        const ENCRYPTION_KEY = 'PRRX_CHAT_E2E_KEY_2026_ULTRA_SECURE';
+        // ========== SAME ENCRYPTION AS DASHBOARD ==========
+        const ENCRYPTION_KEY = 'PRRX_HWID_KEY_2026_SECURE';
         
         function encryptData(data) {
             let encrypted = '';
@@ -513,342 +204,80 @@ RULES:
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        // ========== AI SELF-LEARNING ==========
-        let aiLearningMemory = [];
-        
-        function loadLearnedResponses() {
-            const learned = SecureStorage.get('ai_learned');
-            if (learned) aiLearningMemory = learned;
-        }
-        
-        function saveLearnedResponse(question, answer) {
-            const exists = aiLearningMemory.find(item => item.question.toLowerCase() === question.toLowerCase());
-            if (!exists) {
-                aiLearningMemory.push({ question: question, answer: answer, learnedAt: new Date().toISOString() });
-                SecureStorage.set('ai_learned', aiLearningMemory);
+        // ========== SAME HWID GENERATION AS DASHBOARD ==========
+        function generateHWID() {
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                screen.colorDepth,
+                new Date().getTimezoneOffset(),
+                navigator.hardwareConcurrency || 4,
+                navigator.deviceMemory || 4,
+                navigator.platform,
+                navigator.maxTouchPoints || 0,
+                window.screen.pixelDepth
+            ];
+            let hash = 0;
+            const str = components.join('|');
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
             }
+            return Math.abs(hash).toString(16).toUpperCase();
         }
         
-        function getLearnedResponse(question) {
-            const learned = aiLearningMemory.find(item => 
-                question.toLowerCase().includes(item.question.toLowerCase()) || 
-                item.question.toLowerCase().includes(question.toLowerCase())
-            );
-            return learned ? learned.answer : null;
-        }
+        const CURRENT_HWID = generateHWID();
+        document.getElementById('hwidDisplay').innerHTML = `<i class="fas fa-microchip"></i> HWID: ${CURRENT_HWID.substring(0, 16)}...`;
         
-        async function getAIResponse(userMessage, username) {
-            const learnedResponse = getLearnedResponse(userMessage);
-            if (learnedResponse) return `🤖 ${learnedResponse}`;
-            
-            try {
-                const recentHistory = conversationHistory.slice(-5);
-                let contextMessage = PRRX_KNOWLEDGE + `\n\nCurrent user: ${username}\n\nPrevious conversation:\n`;
-                recentHistory.forEach(msg => { contextMessage += `${msg.sender}: ${msg.message}\n`; });
-                contextMessage += `\nUser: ${userMessage}\n\nPRRX Bot:`;
-                
-                const response = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: contextMessage }] }],
-                        generationConfig: { temperature: 0.7, maxOutputTokens: 300 }
-                    })
-                });
-                
-                const data = await response.json();
-                if (data.error) return fallbackResponse(userMessage);
-                
-                let aiResponse = data.candidates[0].content.parts[0].text;
-                aiResponse = aiResponse.replace(/PRRX Bot:/gi, '').trim();
-                saveLearnedResponse(userMessage, aiResponse);
-                return aiResponse;
-            } catch (error) {
-                return fallbackResponse(userMessage);
-            }
-        }
-        
-        function fallbackResponse(message) {
-            const lowerMsg = message.toLowerCase();
-            if (lowerMsg.includes('aimbot')) return "🎯 AIMBOT: Go to Settings Menu > AIM ASSISTANCE. Toggle AIMBOT +++ for max accuracy!";
-            if (lowerMsg.includes('esp')) return "👁️ Visual Enhancement: Use CHAMS MENU for player highlighting and ESP for location tracking!";
-            if (lowerMsg.includes('price')) return "💰 PRRX Plans: 1 Week - 300 LKR | 1 Month - 850 LKR | 1 Year - 2299 LKR";
-            if (lowerMsg.includes('download')) return "📥 Download: https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX.HEX.1.rar";
-            if (lowerMsg.includes('help')) return "📋 I can help with: AIMBOT, ESP, Anti-Cheat, Prices, Download. Just ask!";
-            return "I'm here to help! Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or download.";
-        }
-        
-        // ========== CHAT SYSTEM ==========
-        let currentUser = null;
-        let messages = [];
-        let onlineUsers = [];
-        let searchTerm = '';
-        
-        function loadMessages() {
-            const saved = SecureStorage.get('chat_messages');
-            messages = saved ? saved : [];
-            saveMessages();
-            return messages;
-        }
-        
-        function saveMessages() {
-            SecureStorage.set('chat_messages', messages);
-        }
-        
-        function addMessage(sender, message, isOwn = false, isBot = false) {
-            const newMsg = {
-                id: Date.now(),
-                sender: sender,
-                message: message,
-                time: new Date().toLocaleTimeString(),
-                isOwn: isOwn,
-                isBot: isBot
-            };
-            messages.push(newMsg);
-            saveMessages();
-            if (!isBot) {
-                conversationHistory.push({ sender: sender, message: message });
-                if (conversationHistory.length > 20) conversationHistory.shift();
-            }
-            return newMsg;
-        }
-        
-        function updateOnlineUsers() {
-            const savedUsers = SecureStorage.get('chat_users');
-            onlineUsers = savedUsers ? savedUsers.filter(u => u.online) : [];
-            let filtered = onlineUsers;
-            if (searchTerm) {
-                filtered = onlineUsers.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()));
-            }
-            renderUserList(filtered);
-            const countSpan = document.getElementById('onlineCount');
-            if (countSpan) countSpan.textContent = onlineUsers.length;
-        }
-        
-        function renderUserList(users) {
-            const userListDiv = document.getElementById('userList');
-            if (!userListDiv) return;
-            if (users.length === 0) {
-                userListDiv.innerHTML = '<div style="text-align:center; padding:1rem; color:#666;">No users online</div>';
-                return;
-            }
-            userListDiv.innerHTML = users.map(user => `
-                <div class="user-item online" onclick="startPrivateChat('${user.username}')">
-                    <div class="user-avatar">${user.username.charAt(0).toUpperCase()}</div>
-                    <div class="user-name">${user.username} ${user.username === currentUser?.username ? '(You)' : ''}</div>
-                </div>
-            `).join('');
-        }
-        
-        function renderMessages() {
-            const messagesDiv = document.getElementById('messages');
-            if (!messagesDiv) return;
-            messagesDiv.innerHTML = messages.map(msg => `
-                <div class="message ${msg.isOwn ? 'message-own' : ''} ${msg.isBot ? 'bot-message' : ''}">
-                    <div class="message-avatar">${msg.isBot ? '<i class="fas fa-robot"></i>' : msg.sender.charAt(0).toUpperCase()}</div>
-                    <div class="message-content">
-                        <div class="message-sender">${msg.sender} ${msg.isBot ? '(AI Bot)' : ''}</div>
-                        <div class="message-text">${escapeHtml(msg.message).replace(/\n/g, '<br>')}</div>
-                        <div class="message-time">${msg.time}</div>
-                    </div>
-                </div>
-            `).join('');
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-        
-        function showTypingIndicator() {
-            const messagesDiv = document.getElementById('messages');
-            if (!messagesDiv) return;
-            const typingDiv = document.createElement('div');
-            typingDiv.id = 'typing-indicator';
-            typingDiv.className = 'typing-indicator';
-            typingDiv.innerHTML = '<span></span><span></span><span></span><span style="color:#888; margin-left:5px;">AI is thinking...</span>';
-            messagesDiv.appendChild(typingDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-        
-        function removeTypingIndicator() {
-            const typing = document.getElementById('typing-indicator');
-            if (typing) typing.remove();
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            if (!message || !currentUser) return;
-            addMessage(currentUser.username, message, true, false);
-            input.value = '';
-            renderMessages();
-            showTypingIndicator();
-            try {
-                const aiResponse = await getAIResponse(message, currentUser.username);
-                removeTypingIndicator();
-                addMessage("PRRX AI Bot", aiResponse, false, true);
-                renderMessages();
-            } catch (error) {
-                removeTypingIndicator();
-                addMessage("PRRX AI Bot", "Sorry, I'm having trouble. Please try again!", false, true);
-                renderMessages();
-            }
-        }
-        
-        function clearChat() {
-            if (confirm("Clear all messages?")) {
-                messages = [];
-                addMessage("System", "Chat cleared by " + currentUser.username, false, false);
-                addMessage("PRRX AI Bot", "Chat cleared! I'm ready to help you.", false, true);
-                saveMessages();
-                renderMessages();
-                showToast("Chat cleared");
-            }
-        }
-        
-        function searchUsers() {
-            searchTerm = document.getElementById('searchInput')?.value || '';
-            updateOnlineUsers();
-        }
-        
-        function startPrivateChat(username) {
-            showToast(`Starting private chat with ${username}... (Coming soon!)`);
-        }
-        
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-        
-        function leaveChat() {
-            if (currentUser) {
-                onlineUsers = onlineUsers.filter(u => u.username !== currentUser.username);
-                SecureStorage.set('chat_users', onlineUsers);
-            }
-            currentUser = null;
-            showToast("Left chat");
-            showJoinScreen();
-        }
-        
-        window.joinChat = function() {
-            const usernameInput = document.getElementById('usernameInput');
-            const username = usernameInput ? usernameInput.value.trim() : '';
-            
-            if (!username) {
-                showToast("❌ Please enter a username");
-                return;
-            }
-            if (username.length < 2) {
-                showToast("❌ Username must be at least 2 characters");
-                return;
+        // ========== CHECK LOGIN STATUS ==========
+        function isUserLoggedIn() {
+            // Check SecureStorage session (same as dashboard)
+            const session = SecureStorage.get('session');
+            if (session && session.hwid === CURRENT_HWID) {
+                return { loggedIn: true, user: session };
             }
             
-            currentUser = { username: username };
-            
-            let users = SecureStorage.get('chat_users') || [];
-            if (!users.find(u => u.username === username)) {
-                users.push({ username: username, online: true });
-                SecureStorage.set('chat_users', users);
+            // Check dashboard session in localStorage
+            const dashSession = localStorage.getItem('prrx_dashboard_session');
+            if (dashSession) {
+                try {
+                    const parsed = JSON.parse(dashSession);
+                    if (parsed.hwid === CURRENT_HWID) {
+                        return { loggedIn: true, user: parsed };
+                    }
+                } catch(e) {}
             }
             
-            loadMessages();
+            // Check users database for HWID match
+            const users = SecureStorage.get('users');
+            if (users) {
+                for (const [username, userData] of Object.entries(users)) {
+                    if (userData.hwid === CURRENT_HWID) {
+                        return { loggedIn: true, user: { username: username, hwid: CURRENT_HWID } };
+                    }
+                }
+            }
             
-            if (messages.length === 0) {
-                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+            return { loggedIn: false, user: null };
+        }
+        
+        // ========== REDIRECT AFTER CHECK ==========
+        setTimeout(() => {
+            const loginStatus = isUserLoggedIn();
+            console.log("🔐 HWID:", CURRENT_HWID);
+            console.log("👤 Logged In:", loginStatus.loggedIn);
+            
+            if (loginStatus.loggedIn && loginStatus.user) {
+                // Save session for chat access
+                localStorage.setItem('prrx_chat_session', JSON.stringify(loginStatus.user));
+                console.log("✅ Logged in - Redirecting to chat...");
+                window.location.href = 'chat-interface.html';
             } else {
-                addMessage("System", `${username} joined the chat`, false, false);
+                console.log("❌ Not logged in - Redirecting to dashboard...");
+                window.location.href = 'dashboard.html';
             }
-            
-            renderChatInterface();
-            setInterval(() => updateOnlineUsers(), 5000);
-        };
-        
-        function renderChatInterface() {
-            const app = document.getElementById('app');
-            if (!app) return;
-            
-            app.innerHTML = `
-                <div class="chat-container">
-                    <div class="user-sidebar">
-                        <h3><i class="fas fa-users"></i> Online Users</h3>
-                        <div class="search-box">
-                            <input type="text" id="searchInput" placeholder="Search users..." onkeyup="searchUsers()">
-                            <button onclick="searchUsers()"><i class="fas fa-search"></i></button>
-                        </div>
-                        <div class="user-list" id="userList"></div>
-                        <div class="online-count"><i class="fas fa-circle" style="color:#2ecc71; font-size:0.6rem;"></i> <span id="onlineCount">0</span> users online</div>
-                    </div>
-                    
-                    <div class="chat-main">
-                        <div class="chat-header">
-                            <h3><i class="fas fa-robot"></i> AI-Powered Chat - Welcome ${currentUser?.username}!</h3>
-                        </div>
-                        <div class="chat-messages" id="messages"></div>
-                        <div class="chat-input-area">
-                            <input type="text" id="messageInput" placeholder="Ask me anything about PRRX Panel..." onkeypress="if(event.key==='Enter') sendMessage()">
-                            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i> Send</button>
-                            <button onclick="leaveChat()" class="leave-btn"><i class="fas fa-sign-out-alt"></i> Leave</button>
-                            <button onclick="clearChat()" class="clear-btn"><i class="fas fa-trash"></i> Clear</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            renderMessages();
-            updateOnlineUsers();
-        }
-        
-        function showJoinScreen() {
-            const app = document.getElementById('app');
-            if (!app) return;
-            
-            app.innerHTML = `
-                <div class="join-screen">
-                    <i class="fas fa-robot"></i>
-                    <h2>PRRX AI-Powered Chat</h2>
-                    <p style="color: #888; margin-bottom: 1rem;">🤖 Powered by Google Gemini AI | E2E Encrypted | Self-Learning</p>
-                    <p style="color: #2ecc71; margin-bottom: 0.5rem; font-size: 0.8rem;">🔐 Ultra Secure | No Login Required</p>
-                    <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20" autocomplete="off">
-                    <button id="joinBtn" onclick="joinChat()">Join Chat</button>
-                    <p style="color: #666; font-size: 0.7rem; margin-top: 1rem;">Messages are E2E encrypted | Be respectful | AI Assistant Active</p>
-                </div>
-            `;
-            
-            const usernameInput = document.getElementById('usernameInput');
-            if (usernameInput) {
-                usernameInput.onkeypress = function(e) {
-                    if (e.key === 'Enter') window.joinChat();
-                };
-            }
-        }
-        
-        // ========== ULTRA SECURITY ==========
-        // Anti-Debugging
-        setInterval(() => {
-            const start = performance.now();
-            debugger;
-            if (performance.now() - start > 100) {
-                document.body.style.opacity = '0.5';
-                setTimeout(() => { document.body.style.opacity = '1'; }, 100);
-            }
-        }, 3000);
-        
-        // Block DevTools shortcuts
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-                showToast("🔒 Security: DevTools blocked");
-                return false;
-            }
-        });
-        
-        // Block right-click
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
+        }, 2000);
         
         // ========== CURSOR ==========
         if (window.innerWidth > 768) {
@@ -860,19 +289,7 @@ RULES:
             });
         }
         
-        // ========== INIT ==========
-        loadLearnedResponses();
-        showJoinScreen();
-        
-        console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🔐 E2E Encrypted | Google Gemini AI | Self-Learning | No Login Required", "color: #3498db; font-size: 12px");
-        
-        // Make functions globally accessible
-        window.sendMessage = sendMessage;
-        window.clearChat = clearChat;
-        window.searchUsers = searchUsers;
-        window.startPrivateChat = startPrivateChat;
-        window.leaveChat = leaveChat;
+        console.log("%c🔐 PRRX CHAT LOADING SCREEN", "color: #2ecc71; font-size: 14px");
     </script>
 </body>
 </html>
