@@ -17,7 +17,6 @@
             overflow-x: hidden;
         }
         
-        /* Animated Background */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -40,7 +39,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Custom Cursor */
         .cursor-dot {
             width: 8px;
             height: 8px;
@@ -65,7 +63,6 @@
         }
         @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
         
-        /* Navbar */
         .navbar {
             position: fixed;
             top: 0;
@@ -115,7 +112,6 @@
         .menu a:hover::after { width: 100%; }
         .menu a:hover { color: #2ecc71; }
         
-        /* Main Container */
         .container {
             position: relative;
             z-index: 2;
@@ -125,7 +121,6 @@
             min-height: 100vh;
         }
         
-        /* Chat Container */
         .chat-container {
             display: flex;
             gap: 1.5rem;
@@ -143,7 +138,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* User Sidebar */
         .user-sidebar {
             width: 300px;
             background: rgba(0,0,0,0.4);
@@ -224,7 +218,6 @@
             border-top: 1px solid rgba(255,255,255,0.1);
         }
         
-        /* Main Chat */
         .chat-main {
             flex: 1;
             display: flex;
@@ -354,7 +347,6 @@
         .leave-btn { background: rgba(255,80,80,0.2) !important; border: 1px solid #ff5050 !important; color: #ff5050 !important; }
         .clear-btn { background: rgba(255,165,0,0.2) !important; border: 1px solid #ffa500 !important; color: #ffa500 !important; }
         
-        /* Join Screen */
         .join-screen {
             text-align: center;
             padding: 3rem;
@@ -458,7 +450,6 @@ RULES:
 2. Answer questions about PRRX panel features, pricing, downloads, and support
 3. Keep responses under 3 sentences when possible
 4. Always be positive and encouraging
-5. If user says "help", list available commands
 `;
 
         let conversationHistory = [];
@@ -522,38 +513,61 @@ RULES:
         
         const CURRENT_HWID = generateHWID();
         
-        // ========== CHECK IF USER IS LOGGED IN FROM DASHBOARD ==========
+        // ========== GET LOGGED IN USER FROM DASHBOARD ==========
         function getLoggedInUser() {
-            // Check both possible storage locations
+            // Try all possible session locations
             let session = null;
             
-            // Try to get session from SecureStorage (from login.html)
+            // 1. Check SecureStorage 'session' (from login.html)
             session = SecureStorage.get('session');
             if (session && session.hwid === CURRENT_HWID) {
-                console.log("Found session in SecureStorage:", session);
-                return { username: session.username, hwid: session.hwid };
+                console.log("✅ Found session in SecureStorage");
+                return { username: session.username, hwid: session.hwid, email: session.email };
             }
             
-            // Try to get from regular localStorage (fallback)
-            const regularSession = localStorage.getItem('prrx_session');
-            if (regularSession) {
+            // 2. Check dashboard session
+            const dashSession = localStorage.getItem('prrx_dashboard_session');
+            if (dashSession) {
                 try {
-                    const parsed = JSON.parse(regularSession);
+                    const parsed = JSON.parse(dashSession);
                     if (parsed.hwid === CURRENT_HWID) {
-                        console.log("Found session in localStorage:", parsed);
+                        console.log("✅ Found dashboard session");
                         return { username: parsed.username, hwid: parsed.hwid };
                     }
                 } catch(e) {}
             }
             
-            // Try to get from keyauth session
+            // 3. Check regular localStorage
+            const regularSession = localStorage.getItem('prrx_session');
+            if (regularSession) {
+                try {
+                    const parsed = JSON.parse(regularSession);
+                    if (parsed.hwid === CURRENT_HWID) {
+                        console.log("✅ Found regular session");
+                        return { username: parsed.username, hwid: parsed.hwid };
+                    }
+                } catch(e) {}
+            }
+            
+            // 4. Check KeyAuth session
             const keyauthSession = SecureStorage.get('keyauth_session');
             if (keyauthSession && keyauthSession.hwid === CURRENT_HWID) {
-                console.log("Found KeyAuth session:", keyauthSession);
+                console.log("✅ Found KeyAuth session");
                 return { username: keyauthSession.username, hwid: keyauthSession.hwid };
             }
             
-            console.log("No session found for HWID:", CURRENT_HWID);
+            // 5. Check users database for HWID match
+            const users = SecureStorage.get('users');
+            if (users) {
+                for (const [username, userData] of Object.entries(users)) {
+                    if (userData.hwid === CURRENT_HWID) {
+                        console.log("✅ Found user by HWID match");
+                        return { username: username, hwid: CURRENT_HWID, email: userData.email };
+                    }
+                }
+            }
+            
+            console.log("❌ No session found for HWID:", CURRENT_HWID);
             return null;
         }
         
@@ -634,10 +648,12 @@ RULES:
                 return "🎯 AIMBOT: Go to Settings Menu > AIM ASSISTANCE. Toggle AIMBOT +++ for max accuracy!";
             } else if (lowerMsg.includes('esp')) {
                 return "👁️ Visual Enhancement: Use CHAMS MENU for player highlighting and ESP for location tracking!";
-            } else if (lowerMsg.includes('price')) {
+            } else if (lowerMsg.includes('price') || lowerMsg.includes('cost')) {
                 return "💰 PRRX Plans: 1 Week - 300 LKR | 1 Month - 850 LKR | 1 Year - 2299 LKR";
             } else if (lowerMsg.includes('download')) {
                 return "📥 Download: https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX.HEX.1.rar";
+            } else if (lowerMsg.includes('help')) {
+                return "📋 I can help with: AIMBOT, ESP, Anti-Cheat, Prices, Download. Just ask!";
             } else {
                 return "I'm here to help! Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or download.";
             }
@@ -802,7 +818,7 @@ RULES:
         }
         
         function startPrivateChat(username) {
-            showToast(`Starting private chat with ${username}...`);
+            showToast(`Starting private chat with ${username}... (Coming soon!)`);
         }
         
         function showToast(msg) {
@@ -837,7 +853,7 @@ RULES:
                     
                     <div class="chat-main">
                         <div class="chat-header">
-                            <h3><i class="fas fa-robot"></i> AI-Powered Chat - Gemini AI</h3>
+                            <h3><i class="fas fa-robot"></i> AI-Powered Chat</h3>
                         </div>
                         <div class="chat-messages" id="messages"></div>
                         <div class="chat-input-area">
@@ -860,13 +876,15 @@ RULES:
                     <i class="fas fa-robot"></i>
                     <h2>PRRX AI-Powered Live Chat</h2>
                     <p style="color: #888; margin: 1rem 0;">🤖 Powered by Google Gemini AI | Self-Learning</p>
-                    <p style="color: #2ecc71; margin: 0.5rem 0;">You need to be logged into your dashboard to join the chat</p>
+                    <div style="background: rgba(46,204,113,0.1); padding: 1rem; border-radius: 16px; margin: 1rem 0;">
+                        <i class="fas fa-shield-alt" style="color: #2ecc71;"></i>
+                        <p style="color: #2ecc71; margin-top: 0.5rem;">You need to be logged into your dashboard to join the chat</p>
+                        <p style="color: #ffaa00; font-size: 0.7rem; margin-top: 0.5rem;">HWID: ${CURRENT_HWID.substring(0, 20)}...</p>
+                    </div>
                     <div>
                         <button onclick="window.location.href='dashboard.html'"><i class="fas fa-sign-in-alt"></i> Go to Dashboard</button>
                         <button onclick="window.location.href='login.html'" style="background:transparent; border:1px solid #2ecc71;"><i class="fas fa-key"></i> Login to Account</button>
                     </div>
-                    <p style="color: #666; font-size: 0.7rem; margin-top: 1.5rem;">HWID: ${CURRENT_HWID.substring(0, 16)}...</p>
-                    <p style="color: #ffaa00; font-size: 0.7rem; margin-top: 0.5rem;">⚠️ If you're logged in but can't access, please login again at <a href="login.html" style="color:#2ecc71;">login.html</a></p>
                 </div>
             `;
         }
@@ -905,8 +923,8 @@ RULES:
         loadLearnedResponses();
         
         const loggedInUser = getLoggedInUser();
-        console.log("Current HWID:", CURRENT_HWID);
-        console.log("Logged in user:", loggedInUser);
+        console.log("🔐 HWID:", CURRENT_HWID);
+        console.log("👤 Logged in user:", loggedInUser);
         
         if (loggedInUser) {
             currentUser = loggedInUser;
@@ -920,7 +938,7 @@ RULES:
             loadMessages();
             
             if (messages.length === 0) {
-                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${currentUser.username}! 👋\n\nI'm your AI assistant powered by Google Gemini. Ask me about AIMBOT, ESP, Anti-Cheat, or pricing!`, false, true);
+                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${currentUser.username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
             }
             
             renderChatInterface();
@@ -936,7 +954,6 @@ RULES:
         window.leaveChat = leaveChat;
         
         console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🔐 HWID: " + CURRENT_HWID, "color: #3498db; font-size: 11px");
     </script>
 </body>
 </html>
