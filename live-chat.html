@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a0a;
@@ -78,7 +78,6 @@
             border-radius: 32px;
             border: 1px solid rgba(46,204,113,0.3);
             animation: fadeInUp 0.5s ease;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
@@ -93,11 +92,6 @@
             background-clip: text;
             color: transparent;
             margin-bottom: 1rem;
-            animation: pulseGlow 2s ease infinite;
-        }
-        @keyframes pulseGlow {
-            0%, 100% { text-shadow: 0 0 0px rgba(46,204,113,0); }
-            50% { text-shadow: 0 0 15px rgba(46,204,113,0.5); }
         }
         
         .spinner {
@@ -105,9 +99,8 @@
             height: 60px;
             border: 3px solid rgba(46,204,113,0.2);
             border-top: 3px solid #2ecc71;
-            border-right: 3px solid #27ae60;
             border-radius: 50%;
-            animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            animation: spin 0.8s linear infinite;
             margin: 1.5rem auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -135,7 +128,6 @@
             font-size: 1rem;
             color: #2ecc71;
             letter-spacing: 2px;
-            font-weight: 500;
         }
         
         .hwid-box {
@@ -146,7 +138,6 @@
             font-size: 0.65rem;
             font-family: monospace;
             color: #888;
-            border: 1px solid rgba(46,204,113,0.2);
         }
         
         .security-badge {
@@ -178,12 +169,11 @@
         </div>
         <div class="loading-text">Verifying Secure Access...</div>
         <div class="hwid-box" id="hwidDisplay">
-            <i class="fas fa-microchip"></i> Loading HWID...
+            <i class="fas fa-microchip"></i> Loading...
         </div>
         <div class="security-badge">
-            <span><i class="fas fa-shield-alt"></i> E2E Encrypted</span>
-            <span><i class="fas fa-fingerprint"></i> HWID Protected</span>
-            <span><i class="fas fa-lock"></i> Secure Channel</span>
+            <span><i class="fas fa-shield-alt"></i> Secure</span>
+            <span><i class="fas fa-fingerprint"></i> HWID</span>
         </div>
     </div>
 
@@ -248,25 +238,14 @@
         }
         
         const CURRENT_HWID = generateHWID();
-        document.getElementById('hwidDisplay').innerHTML = `<i class="fas fa-microchip"></i> Device HWID: ${CURRENT_HWID.substring(0, 20)}...`;
+        document.getElementById('hwidDisplay').innerHTML = `<i class="fas fa-microchip"></i> HWID: ${CURRENT_HWID.substring(0, 20)}...`;
         
-        // ========== CHECK LOGIN STATUS ==========
-        function isUserLoggedIn() {
+        // ========== GET LOGGED IN USER ==========
+        function getLoggedInUser() {
             // Check SecureStorage session
             const session = SecureStorage.get('session');
             if (session && session.hwid === CURRENT_HWID) {
-                return { loggedIn: true, user: session };
-            }
-            
-            // Check dashboard session
-            const dashSession = localStorage.getItem('prrx_dashboard_session');
-            if (dashSession) {
-                try {
-                    const parsed = JSON.parse(dashSession);
-                    if (parsed.hwid === CURRENT_HWID) {
-                        return { loggedIn: true, user: parsed };
-                    }
-                } catch(e) {}
+                return session.username;
             }
             
             // Check users database
@@ -274,46 +253,30 @@
             if (users) {
                 for (const [username, userData] of Object.entries(users)) {
                     if (userData.hwid === CURRENT_HWID) {
-                        return { loggedIn: true, user: { username: username, hwid: CURRENT_HWID } };
+                        return username;
                     }
                 }
             }
             
-            return { loggedIn: false, user: null };
+            return null;
         }
         
-        // ========== ANTI-DEBUGGING ==========
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-                return false;
-            }
-        });
-        
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
-        
-        // ========== REDIRECT AFTER CHECK ==========
+        // ========== REDIRECT ==========
         setTimeout(() => {
-            const loginStatus = isUserLoggedIn();
-            console.log("%c🔐 PRRX SECURE LOADING", "color: #2ecc71; font-size: 14px");
-            console.log(`%cHWID: ${CURRENT_HWID}`, "color: #3498db; font-size: 11px");
-            console.log(`%cLogged In: ${loginStatus.loggedIn}`, "color: ${loginStatus.loggedIn ? '#2ecc71' : '#ff5050'}; font-size: 11px");
+            const username = getLoggedInUser();
+            console.log("🔐 HWID:", CURRENT_HWID);
+            console.log("👤 Username:", username);
             
-            if (loginStatus.loggedIn && loginStatus.user) {
+            if (username) {
                 // Store session for chat
-                const sessionData = {
-                    username: loginStatus.user.username,
-                    hwid: CURRENT_HWID,
-                    loginTime: new Date().toISOString()
-                };
-                localStorage.setItem('prrx_chat_session', JSON.stringify(sessionData));
-                console.log("✅ Session saved for chat:", sessionData);
+                localStorage.setItem('prrx_chat_user', username);
+                console.log("✅ Redirecting to chat with user:", username);
                 window.location.href = 'chat-interface.html';
             } else {
                 console.log("❌ Not logged in, redirecting to dashboard");
                 window.location.href = 'dashboard.html';
             }
-        }, 2200);
+        }, 2000);
         
         // ========== CURSOR ==========
         if (window.innerWidth > 768) {
@@ -324,6 +287,14 @@
                 co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
             });
         }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
     </script>
 </body>
 </html>
