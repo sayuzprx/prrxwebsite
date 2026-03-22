@@ -18,7 +18,7 @@
         script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-        img-src 'self' data: https:;
+        img-src 'self' data: https://raw.githubusercontent.com;
         connect-src 'self';
         frame-ancestors 'none';
         base-uri 'self';
@@ -150,8 +150,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 80vh;
-            margin: 2rem 0;
+            min-height: 70vh;
+            margin: 1rem 0;
         }
         
         /* Panel Image - Assembles piece by piece */
@@ -211,7 +211,7 @@
             display: flex;
             justify-content: space-between;
             gap: 2rem;
-            margin: 3rem 0;
+            margin: 2rem 0;
             flex-wrap: wrap;
         }
         
@@ -223,8 +223,8 @@
         .topic-item {
             background: rgba(255,255,255,0.03);
             border-left: 3px solid #fff;
-            padding: 1rem 1.2rem;
-            margin-bottom: 1rem;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 0.8rem;
             border-radius: 0 12px 12px 0;
             transition: all 0.3s ease;
             opacity: 0;
@@ -255,14 +255,14 @@
         }
         
         .topic-item h3 {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.2rem;
             color: #fff;
         }
         
         .topic-item p {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #888;
         }
         
@@ -270,6 +270,83 @@
             margin-right: 0.5rem;
             color: #2ecc71;
         }
+        
+        /* WhatsApp Widget */
+        .whatsapp-widget {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 1.2rem;
+            max-width: 380px;
+            margin: 2rem auto;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .whatsapp-widget:hover { transform: translateY(-5px); border-color: #2ecc71; box-shadow: 0 15px 35px rgba(46, 204, 113, 0.15); }
+        .widget-header { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem; }
+        .widget-header i { font-size: 2rem; color: #2ecc71; }
+        .widget-header h3 { font-size: 1.2rem; font-weight: 700; }
+        .widget-header p { font-size: 0.7rem; color: #888; margin-top: 0.2rem; }
+        .online-status { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.8rem; font-size: 0.75rem; color: #b0c4de; }
+        .online-dot { width: 8px; height: 8px; background-color: #2ecc71; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.2); } }
+        .member-stats { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem; font-size: 0.7rem; color: #888; }
+        .member-stats span i { margin-right: 0.3rem; color: #2ecc71; }
+        .whatsapp-btn { display: inline-block; background: linear-gradient(135deg, #2ecc71, #27ae60); padding: 0.7rem 1.2rem; border-radius: 50px; color: white; text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: all 0.3s; width: 100%; text-align: center; }
+        .whatsapp-btn:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(46, 204, 113, 0.4); }
+        
+        /* News & Updates Section */
+        .news-section {
+            margin: 3rem 0;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .section-header h2 {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #fff, #2ecc71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .section-header p { color: #666; font-size: 0.8rem; margin-top: 0.3rem; }
+        
+        .news-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .news-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            padding: 1rem 1.2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .news-card:hover { transform: translateX(5px); border-color: rgba(46,204,113,0.3); background: rgba(255,255,255,0.05); }
+        .news-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
+        .news-badge {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+        .news-badge.update { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+        .news-badge.announcement { background: linear-gradient(90deg, #f39c12, #e67e22); }
+        .news-badge.patch { background: linear-gradient(90deg, #3498db, #2980b9); }
+        .news-date { font-size: 0.6rem; color: #666; }
+        .news-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; color: #fff; }
+        .news-preview { font-size: 0.75rem; color: #888; }
+        .news-expanded { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; margin-top: 0; }
+        .news-card.active .news-expanded { max-height: 200px; margin-top: 0.8rem; }
+        .news-expanded-content { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.8rem; font-size: 0.75rem; color: #aaa; line-height: 1.5; }
+        .news-expanded-content ul { margin-left: 1.2rem; margin-top: 0.3rem; }
+        .news-expanded-content li { margin: 0.2rem 0; }
         
         /* Navbar */
         .navbar {
@@ -291,28 +368,29 @@
         /* CTA Section */
         .cta-section {
             text-align: center;
-            margin: 3rem 0;
-            padding: 2rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
             background: rgba(255,255,255,0.03);
             border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .cta-button {
             background: linear-gradient(90deg, #2ecc71, #27ae60);
-            padding: 0.8rem 2rem;
+            padding: 0.7rem 1.8rem;
             border-radius: 50px;
             font-weight: bold;
             border: none;
             color: white;
             cursor: pointer;
             transition: transform 0.2s;
+            margin-top: 0.5rem;
         }
         .cta-button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
         
         footer {
             text-align: center;
-            padding: 2rem;
-            font-size: 0.7rem;
+            padding: 1.5rem;
+            font-size: 0.65rem;
             color: #666;
             border-top: 1px solid rgba(255,255,255,0.05);
         }
@@ -323,9 +401,10 @@
             right: 20px;
             background: rgba(46,204,113,0.95);
             color: #fff;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 40px;
             font-weight: 600;
+            font-size: 0.8rem;
             z-index: 10000;
             transform: translateX(400px);
             transition: transform 0.3s ease;
@@ -338,6 +417,7 @@
             .topics-container { flex-direction: column; }
             .topic-item { transform: translateX(0); }
             .right-topics .topic-item { transform: translateX(0); }
+            .panel-container { min-height: 50vh; }
         }
     </style>
 </head>
@@ -377,10 +457,11 @@
                 <div class="pieces-overlay" id="piecesOverlay">
                     <!-- 16 pieces will be generated by JS -->
                 </div>
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%231a1a2e'/%3E%3Ctext x='400' y='180' font-size='32' fill='%232ecc71' text-anchor='middle' font-weight='bold'%3EPRRX PANEL%3C/text%3E%3Ctext x='400' y='240' font-size='20' fill='%23ffffff' text-anchor='middle'%3EMain Menu%3C/text%3E%3Ctext x='400' y='300' font-size='14' fill='%23888' text-anchor='middle'%3Ekey Bind • Settings Menu • Your Pc Inform%3C/text%3E%3Ctext x='400' y='330' font-size='14' fill='%23888' text-anchor='middle'%3EReal Chat • Payment Method • Report Menu%3C/text%3E%3Ctext x='400' y='400' font-size='16' fill='%232ecc71' text-anchor='middle'%3EAIM ASSISTANCE%3C/text%3E%3Ctext x='400' y='430' font-size='12' fill='%23888' text-anchor='middle'%3EAIMBOT +++ • HEAD • EXTERNAL • DRAG%3C/text%3E%3Ctext x='400' y='470' font-size='16' fill='%232ecc71' text-anchor='middle'%3EVISUAL ENHANCEMENT%3C/text%3E%3Ctext x='400' y='500' font-size='12' fill='%23888' text-anchor='middle'%3ECHAMS MENU • ESP • Female Fix • 3D CHAMS%3C/text%3E%3C/svg%3E" 
+                <img src="https://github.com/sayuzprx/prrxwebsite/raw/main/panel-menu.png" 
                      alt="PRRX Panel Main Menu" 
                      class="panel-img" 
-                     id="panelImg">
+                     id="panelImg"
+                     onerror="this.src='https://placehold.co/900x600/1a1a2e/2ecc71?text=PRRX+Panel+Loading...'">
             </div>
         </div>
 
@@ -424,9 +505,40 @@
             </div>
         </div>
 
+        <!-- WhatsApp Widget -->
+        <div class="whatsapp-widget">
+            <div class="widget-header">
+                <i class="fab fa-whatsapp"></i>
+                <div>
+                    <h3>𝗣𝗥𝗥𝗫 • 𝗦𝗧𝗢𝗥𝗘 • 𝗫𝗧𝗥𝗘𝗔𝗠</h3>
+                    <p>Get instant help & updates</p>
+                </div>
+            </div>
+            <div class="online-status">
+                <div class="online-dot"></div>
+                <span>Active Now • Quick Support</span>
+            </div>
+            <div class="member-stats">
+                <span><i class="fas fa-users"></i> 892 Members</span>
+                <span><i class="fas fa-comment-dots"></i> 24/7 Support</span>
+            </div>
+            <a href="https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx" target="_blank" class="whatsapp-btn" id="whatsappJoinBtn">
+                <i class="fab fa-whatsapp"></i> Join WhatsApp Group
+            </a>
+        </div>
+
+        <!-- News & Updates Section -->
+        <div class="news-section">
+            <div class="section-header">
+                <h2><i class="fas fa-newspaper"></i> News & Updates</h2>
+                <p>Latest announcements, patch notes, and feature updates</p>
+            </div>
+            <div class="news-grid" id="newsGrid"></div>
+        </div>
+
         <!-- CTA Section -->
         <div class="cta-section">
-            <h2 style="margin-bottom: 1rem;">Ready to dominate?</h2>
+            <h3 style="margin-bottom: 0.5rem;">Ready to dominate?</h3>
             <button class="cta-button" id="downloadBtn"><i class="fas fa-download"></i> GET PRRX PREMIUM</button>
         </div>
         
@@ -441,11 +553,11 @@
         // ========== LOADING SCREEN ==========
         let loadingProgress = 0;
         const percentageElement = document.getElementById('loadingPercentage');
-        const interval = setInterval(() => {
+        const loadInterval = setInterval(() => {
             loadingProgress += Math.random() * 15;
             if (loadingProgress >= 100) {
                 loadingProgress = 100;
-                clearInterval(interval);
+                clearInterval(loadInterval);
             }
             if (percentageElement) percentageElement.textContent = Math.floor(loadingProgress) + '%';
         }, 100);
@@ -465,22 +577,21 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 3 + 1;
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
                 this.opacity = Math.random() * 0.5 + 0.2;
             }
             
             update() {
-                // Mouse interaction - particles move away from cursor
                 const dx = this.x - mouseX;
                 const dy = this.y - mouseY;
                 const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 100) {
+                if (distance < 120) {
                     const angle = Math.atan2(dy, dx);
-                    const force = (100 - distance) / 100;
-                    this.x += Math.cos(angle) * force * 2;
-                    this.y += Math.sin(angle) * force * 2;
+                    const force = (120 - distance) / 120;
+                    this.x += Math.cos(angle) * force * 1.5;
+                    this.y += Math.sin(angle) * force * 1.5;
                 }
                 
                 this.x += this.speedX;
@@ -502,7 +613,7 @@
         
         function initParticles() {
             particles = [];
-            for (let i = 0; i < 200; i++) {
+            for (let i = 0; i < 180; i++) {
                 particles.push(new Particle());
             }
         }
@@ -534,7 +645,7 @@
             pieces.forEach((piece, index) => {
                 setTimeout(() => {
                     piece.classList.add('fade-out');
-                }, index * 80);
+                }, index * 70);
             });
             
             setTimeout(() => {
@@ -543,18 +654,73 @@
                     const overlay = document.getElementById('piecesOverlay');
                     overlay.style.display = 'none';
                 }, 500);
-            }, 1300);
+            }, 1200);
         }
         
         // ========== TOPICS APPEAR SEQUENCE ==========
         function animateTopics() {
             const topics = document.querySelectorAll('.topic-item');
             topics.forEach(topic => {
-                const delay = parseInt(topic.getAttribute('data-delay')) * 150;
+                const delay = parseInt(topic.getAttribute('data-delay')) * 120;
                 setTimeout(() => {
                     topic.classList.add('visible');
-                }, delay + 1800);
+                }, delay + 1600);
             });
+        }
+        
+        // ========== NEWS DATA ==========
+        const newsData = [
+            {
+                type: "update",
+                date: "March 22, 2026",
+                title: "PRRX v3.2 Released!",
+                preview: "New features: AIMBOT EXTERNAL AI, Enhanced ESP, Performance optimizations.",
+                expanded: "<strong>What's New:</strong><ul><li>AIMBOT EXTERNAL AI - AI-powered aim assistance</li><li>Enhanced ESP with 3D location tracking</li><li>Improved FPS Boost (+15% performance)</li><li>Fixed Mouse Drag issues</li></ul>"
+            },
+            {
+                type: "announcement",
+                date: "March 20, 2026",
+                title: "Server Maintenance Completed",
+                preview: "Singapore server upgraded. All systems operational with improved stability.",
+                expanded: "The Singapore server has been upgraded.<ul><li>30% faster response times</li><li>Improved connection stability</li><li>Reduced latency (avg 45ms → 32ms)</li></ul>"
+            },
+            {
+                type: "patch",
+                date: "March 18, 2026",
+                title: "Hotfix v3.1.2 - Anti-Cheat Update",
+                preview: "Critical anti-cheat update released. Please update to latest version.",
+                expanded: "<strong>Hotfix Details:</strong><ul><li>Updated detection signatures</li><li>Fixed false positive issues</li><li>Improved HWID protection</li></ul>"
+            }
+        ];
+        
+        function renderNews() {
+            const grid = document.getElementById('newsGrid');
+            if (!grid) return;
+            grid.innerHTML = newsData.map((item, index) => `
+                <div class="news-card" onclick="toggleNews(${index})">
+                    <div class="news-header">
+                        <span class="news-badge ${item.type}">
+                            ${item.type === 'update' ? '<i class="fas fa-download"></i> Update' : item.type === 'announcement' ? '<i class="fas fa-bullhorn"></i> Announcement' : '<i class="fas fa-bug"></i> Patch Note'}
+                        </span>
+                        <span class="news-date"><i class="far fa-calendar-alt"></i> ${item.date}</span>
+                    </div>
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-preview">${item.preview}</div>
+                    <div class="news-expanded" id="news-expanded-${index}">
+                        <div class="news-expanded-content">${item.expanded}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        window.toggleNews = function(index) {
+            const card = document.querySelectorAll('.news-card')[index];
+            if (card.classList.contains('active')) {
+                card.classList.remove('active');
+            } else {
+                document.querySelectorAll('.news-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+            }
         }
         
         // ========== SHOW MAIN CONTENT ==========
@@ -571,7 +737,22 @@
             const end = performance.now();
             if (end - start > 100 && !devToolsOpen) {
                 devToolsOpen = true;
-                document.getElementById('antiDevTools')?.classList.add('active');
+                const antiDiv = document.createElement('div');
+                antiDiv.className = 'anti-devtools';
+                antiDiv.innerHTML = '<i class="fas fa-shield-horned"></i><p>⚠️ Security Alert: Developer Tools Detected<br>Please close DevTools to continue.</p>';
+                document.body.appendChild(antiDiv);
+                antiDiv.style.position = 'fixed';
+                antiDiv.style.top = '0';
+                antiDiv.style.left = '0';
+                antiDiv.style.width = '100%';
+                antiDiv.style.height = '100%';
+                antiDiv.style.background = '#0a0a0f';
+                antiDiv.style.zIndex = '20000';
+                antiDiv.style.display = 'flex';
+                antiDiv.style.justifyContent = 'center';
+                antiDiv.style.alignItems = 'center';
+                antiDiv.style.flexDirection = 'column';
+                antiDiv.style.backdropFilter = 'blur(20px)';
             }
         }, 2000);
         
@@ -608,6 +789,8 @@
         // ========== NAVIGATION ==========
         document.getElementById('navHome')?.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
+            document.getElementById('navHome')?.classList.add('active');
         });
         document.getElementById('navFeatures')?.addEventListener('click', () => {
             window.location.href = 'features.html';
@@ -619,6 +802,9 @@
             window.open('https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX%20HEX.rar', '_blank');
             showToast("🔒 Secure download started");
         });
+        document.getElementById('whatsappJoinBtn')?.addEventListener('click', () => {
+            showToast("💬 Opening WhatsApp group...");
+        });
         
         // ========== INITIALIZATION ==========
         window.addEventListener('load', () => {
@@ -626,6 +812,7 @@
             initParticles();
             animateParticles();
             createPieces();
+            renderNews();
             
             setTimeout(() => {
                 const loadingScreen = document.getElementById('loadingScreen');
@@ -639,7 +826,8 @@
         window.addEventListener('resize', resizeCanvas);
         
         console.log("%c🔐 PRRX ULTRA SECURE ACTIVE", "color: #2ecc71; font-size: 14px;");
-        console.log("%c✨ Panel assembly animation | White particles | Topics from left & right", "color: #fff; font-size: 12px;");
+        console.log("%c✨ Panel assembly animation | White particles follow mouse | Topics from left & right", "color: #fff; font-size: 12px");
+        console.log("%c💬 WhatsApp widget integrated | News & Updates system active", "color: #2ecc71; font-size: 12px");
     </script>
 </body>
 </html>
