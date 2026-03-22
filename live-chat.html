@@ -3,12 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX | Live Chat - Loading</title>
+    <title>PRRX | Secure Loading</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
+    <!-- Ultra Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: https:;
+        connect-src 'self';
+        frame-ancestors 'none';
+    ">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
             font-family: 'Inter', sans-serif;
             background: #0a0a0a;
@@ -18,6 +32,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            cursor: none;
         }
         
         .bg-animation {
@@ -40,86 +55,6 @@
         @keyframes rotateBg {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
-        }
-        
-        .loading-container {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            padding: 2rem;
-            background: rgba(20,20,20,0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 32px;
-            border: 1px solid rgba(46,204,113,0.3);
-            animation: fadeInUp 0.5s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .logo {
-            font-size: 2.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #2ecc71);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 1rem;
-        }
-        
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(46,204,113,0.2);
-            border-top: 3px solid #2ecc71;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 1.5rem auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .loading-text {
-            font-size: 1rem;
-            color: #2ecc71;
-            letter-spacing: 2px;
-        }
-        
-        .hwid-text {
-            font-size: 0.7rem;
-            color: #666;
-            margin-top: 1rem;
-            font-family: monospace;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            height: 3px;
-            background: rgba(46,204,113,0.2);
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
-            animation: progress 1.5s ease-out forwards;
-        }
-        @keyframes progress {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-        
-        .security-badge {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-            font-size: 0.65rem;
-            color: #2ecc71;
         }
         
         .cursor-dot {
@@ -145,6 +80,123 @@
             backdrop-filter: blur(2px);
         }
         @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
+        
+        .loading-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            padding: 2.5rem;
+            background: rgba(20,20,20,0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            border: 1px solid rgba(46,204,113,0.3);
+            animation: fadeInUp 0.5s ease;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #2ecc71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            animation: pulseGlow 2s ease infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { text-shadow: 0 0 0px rgba(46,204,113,0); }
+            50% { text-shadow: 0 0 15px rgba(46,204,113,0.5); }
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(46,204,113,0.2);
+            border-top: 3px solid #2ecc71;
+            border-right: 3px solid #27ae60;
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            margin: 1.5rem auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .progress-bar {
+            width: 100%;
+            height: 3px;
+            background: rgba(46,204,113,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            animation: progressFill 1.8s ease-out forwards;
+        }
+        @keyframes progressFill {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        
+        .loading-text {
+            font-size: 1rem;
+            color: #2ecc71;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+        
+        .hwid-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin: 1rem 0;
+            font-size: 0.65rem;
+            font-family: monospace;
+            color: #888;
+            border: 1px solid rgba(46,204,113,0.2);
+        }
+        
+        .security-badge {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            font-size: 0.65rem;
+            color: #2ecc71;
+        }
+        
+        .anti-devtools {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            z-index: 20000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(20px);
+        }
+        .anti-devtools.active { display: flex; }
+        .anti-devtools i { font-size: 4rem; color: #ff5050; margin-bottom: 1rem; animation: shake 0.5s ease infinite; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .anti-devtools p { color: #ff5050; font-size: 1.2rem; text-align: center; }
+        
+        @media (max-width: 768px) {
+            .loading-container { padding: 1.5rem; }
+            .logo { font-size: 2rem; }
+            .security-badge { flex-direction: column; gap: 0.3rem; }
+        }
     </style>
 </head>
 <body>
@@ -152,6 +204,10 @@
     <div class="bg-animation"></div>
     <div class="cursor-dot"></div>
     <div class="cursor-outline"></div>
+    <div class="anti-devtools" id="antiDevTools">
+        <i class="fas fa-shield-horned"></i>
+        <p>⚠️ SECURITY ALERT: Developer Tools Detected<br>Please close DevTools to continue.</p>
+    </div>
 
     <div class="loading-container">
         <div class="logo">PRRX</div>
@@ -159,16 +215,19 @@
         <div class="progress-bar">
             <div class="progress-fill"></div>
         </div>
-        <div class="loading-text">Verifying Access...</div>
-        <div class="hwid-text" id="hwidDisplay">Loading HWID...</div>
+        <div class="loading-text">Verifying Secure Access...</div>
+        <div class="hwid-box" id="hwidDisplay">
+            <i class="fas fa-microchip"></i> Loading HWID...
+        </div>
         <div class="security-badge">
-            <span><i class="fas fa-shield-alt"></i> HWID Protected</span>
+            <span><i class="fas fa-shield-alt"></i> E2E Encrypted</span>
+            <span><i class="fas fa-fingerprint"></i> HWID Protected</span>
             <span><i class="fas fa-lock"></i> Secure Channel</span>
         </div>
     </div>
 
     <script>
-        // ========== SAME ENCRYPTION AS DASHBOARD ==========
+        // ========== ULTRA SECURE ENCRYPTION (Same as Dashboard) ==========
         const ENCRYPTION_KEY = 'PRRX_HWID_KEY_2026_SECURE';
         
         function encryptData(data) {
@@ -204,7 +263,7 @@
             remove: (key) => localStorage.removeItem(`secure_${key}`)
         };
         
-        // ========== SAME HWID GENERATION AS DASHBOARD ==========
+        // ========== HWID GENERATION (Same as Dashboard) ==========
         function generateHWID() {
             const components = [
                 navigator.userAgent,
@@ -228,17 +287,17 @@
         }
         
         const CURRENT_HWID = generateHWID();
-        document.getElementById('hwidDisplay').innerHTML = `<i class="fas fa-microchip"></i> HWID: ${CURRENT_HWID.substring(0, 16)}...`;
+        document.getElementById('hwidDisplay').innerHTML = `<i class="fas fa-microchip"></i> Device HWID: ${CURRENT_HWID.substring(0, 20)}...`;
         
         // ========== CHECK LOGIN STATUS ==========
         function isUserLoggedIn() {
-            // Check SecureStorage session (same as dashboard)
+            // Check SecureStorage session
             const session = SecureStorage.get('session');
             if (session && session.hwid === CURRENT_HWID) {
                 return { loggedIn: true, user: session };
             }
             
-            // Check dashboard session in localStorage
+            // Check dashboard session
             const dashSession = localStorage.getItem('prrx_dashboard_session');
             if (dashSession) {
                 try {
@@ -249,7 +308,7 @@
                 } catch(e) {}
             }
             
-            // Check users database for HWID match
+            // Check users database
             const users = SecureStorage.get('users');
             if (users) {
                 for (const [username, userData] of Object.entries(users)) {
@@ -262,22 +321,42 @@
             return { loggedIn: false, user: null };
         }
         
-        // ========== REDIRECT AFTER CHECK ==========
-        setTimeout(() => {
-            const loginStatus = isUserLoggedIn();
-            console.log("🔐 HWID:", CURRENT_HWID);
-            console.log("👤 Logged In:", loginStatus.loggedIn);
-            
-            if (loginStatus.loggedIn && loginStatus.user) {
-                // Save session for chat access
-                localStorage.setItem('prrx_chat_session', JSON.stringify(loginStatus.user));
-                console.log("✅ Logged in - Redirecting to chat...");
-                window.location.href = 'chat-interface.html';
-            } else {
-                console.log("❌ Not logged in - Redirecting to dashboard...");
-                window.location.href = 'dashboard.html';
+        // ========== ANTI-DEBUGGING ==========
+        let devToolsOpen = false;
+        setInterval(() => {
+            const start = performance.now();
+            debugger;
+            const end = performance.now();
+            if (end - start > 100 && !devToolsOpen) {
+                devToolsOpen = true;
+                document.getElementById('antiDevTools').classList.add('active');
             }
         }, 2000);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        document.addEventListener('contextmenu', (e) => { e.preventDefault(); return false; });
+        
+        // ========== REDIRECT AFTER SECURE CHECK ==========
+        setTimeout(() => {
+            const loginStatus = isUserLoggedIn();
+            console.log("%c🔐 PRRX SECURE LOADING", "color: #2ecc71; font-size: 14px");
+            console.log(`%cHWID: ${CURRENT_HWID}`, "color: #3498db; font-size: 11px");
+            console.log(`%cLogged In: ${loginStatus.loggedIn}`, "color: ${loginStatus.loggedIn ? '#2ecc71' : '#ff5050'}; font-size: 11px");
+            
+            if (loginStatus.loggedIn && loginStatus.user) {
+                // Store session for chat
+                localStorage.setItem('prrx_chat_session', JSON.stringify(loginStatus.user));
+                window.location.href = 'chat-interface.html';
+            } else {
+                window.location.href = 'dashboard.html';
+            }
+        }, 2200);
         
         // ========== CURSOR ==========
         if (window.innerWidth > 768) {
@@ -288,8 +367,6 @@
                 co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
             });
         }
-        
-        console.log("%c🔐 PRRX CHAT LOADING SCREEN", "color: #2ecc71; font-size: 14px");
     </script>
 </body>
 </html>
