@@ -347,6 +347,38 @@
         .leave-btn { background: rgba(255,80,80,0.2) !important; border: 1px solid #ff5050 !important; color: #ff5050 !important; }
         .clear-btn { background: rgba(255,165,0,0.2) !important; border: 1px solid #ffa500 !important; color: #ffa500 !important; }
         
+        /* Redirect Screen */
+        .redirect-screen {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 28px;
+            border: 1px solid rgba(46,204,113,0.2);
+            animation: fadeInUp 0.5s ease;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .redirect-screen i {
+            font-size: 4rem;
+            color: #2ecc71;
+            margin-bottom: 1rem;
+            animation: float 3s ease infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .redirect-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(46,204,113,0.2);
+            border-top: 3px solid #2ecc71;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 1rem auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         .toast {
             position: fixed;
             bottom: 20px;
@@ -362,22 +394,6 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
         .toast.show { transform: translateX(0); }
-        
-        /* Loading Spinner */
-        .loading-spinner {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(46,204,113,0.2);
-            border-top: 3px solid #2ecc71;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            z-index: 1000;
-        }
-        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
         
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
@@ -407,9 +423,7 @@
         </div>
     </div>
 
-    <div class="container" id="app">
-        <div class="loading-spinner"></div>
-    </div>
+    <div class="container" id="app"></div>
     <div id="toast" class="toast"></div>
 
     <script>
@@ -501,28 +515,25 @@ RULES:
         
         const CURRENT_HWID = generateHWID();
         
-        // ========== GET USER FROM DASHBOARD - DIRECT AUTO LOGIN ==========
-        function getUserFromDashboard() {
-            // Check SecureStorage session (same as dashboard)
+        // ========== CHECK IF USER IS LOGGED IN ==========
+        function isUserLoggedIn() {
+            // Check SecureStorage session
             const session = SecureStorage.get('session');
             if (session && session.hwid === CURRENT_HWID) {
-                console.log("✅ Auto-login: Found user via SecureStorage");
-                return { username: session.username, hwid: session.hwid };
+                return { loggedIn: true, user: session };
             }
             
-            // Check users database for HWID match
+            // Check users database
             const users = SecureStorage.get('users');
             if (users) {
                 for (const [username, userData] of Object.entries(users)) {
                     if (userData.hwid === CURRENT_HWID) {
-                        console.log("✅ Auto-login: Found user via HWID match");
-                        return { username: username, hwid: CURRENT_HWID };
+                        return { loggedIn: true, user: { username: username, hwid: CURRENT_HWID } };
                     }
                 }
             }
             
-            console.log("❌ No logged in user found");
-            return null;
+            return { loggedIn: false, user: null };
         }
         
         // ========== AI RESPONSE ==========
@@ -789,7 +800,7 @@ RULES:
             }
             currentUser = null;
             showToast("Left chat");
-            // After leaving, redirect to dashboard
+            // Redirect to dashboard
             setTimeout(() => {
                 window.location.href = 'dashboard.html';
             }, 1000);
@@ -827,34 +838,21 @@ RULES:
             updateOnlineUsers();
         }
         
-        // ========== AUTO DETECT AND DIRECT TO CHAT ==========
-        function autoLoginAndStartChat() {
-            const loggedInUser = getUserFromDashboard();
+        function showRedirectScreen() {
+            document.getElementById('app').innerHTML = `
+                <div class="redirect-screen">
+                    <i class="fas fa-shield-alt"></i>
+                    <h2>Access Denied</h2>
+                    <p style="color: #888; margin: 1rem 0;">You need to be logged into your dashboard to access Live Chat</p>
+                    <div class="redirect-spinner"></div>
+                    <p style="color: #2ecc71; margin-top: 1rem;">Redirecting to Dashboard...</p>
+                </div>
+            `;
             
-            if (loggedInUser) {
-                currentUser = loggedInUser;
-                
-                let users = SecureStorage.get('chat_users') || [];
-                if (!users.find(u => u.username === currentUser.username)) {
-                    users.push({ username: currentUser.username, online: true, hwid: currentUser.hwid });
-                    SecureStorage.set('chat_users', users);
-                }
-                
-                loadMessages();
-                
-                if (messages.length === 0) {
-                    addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${currentUser.username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
-                }
-                
-                renderChatInterface();
-                setInterval(() => updateOnlineUsers(), 5000);
-            } else {
-                // No user logged in - redirect to dashboard
-                showToast("🔐 Please login to access Live Chat");
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            }
+            // Redirect after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
         }
         
         // ========== ANTI-DEBUGGING ==========
@@ -887,9 +885,33 @@ RULES:
             });
         }
         
-        // ========== INIT - AUTO DIRECT ==========
+        // ========== INIT - CHECK LOGIN STATUS ==========
         loadLearnedResponses();
-        autoLoginAndStartChat();
+        
+        const loginStatus = isUserLoggedIn();
+        console.log("🔐 HWID:", CURRENT_HWID);
+        console.log("👤 Login Status:", loginStatus);
+        
+        if (loginStatus.loggedIn) {
+            currentUser = loginStatus.user;
+            
+            let users = SecureStorage.get('chat_users') || [];
+            if (!users.find(u => u.username === currentUser.username)) {
+                users.push({ username: currentUser.username, online: true, hwid: currentUser.hwid });
+                SecureStorage.set('chat_users', users);
+            }
+            
+            loadMessages();
+            
+            if (messages.length === 0) {
+                addMessage("PRRX AI Bot", `Welcome to PRRX Live Chat, ${currentUser.username}! 👋\n\nI'm your AI assistant. Ask me about AIMBOT, ESP, Anti-Cheat, pricing, or anything about PRRX Panel!`, false, true);
+            }
+            
+            renderChatInterface();
+            setInterval(() => updateOnlineUsers(), 5000);
+        } else {
+            showRedirectScreen();
+        }
         
         window.sendMessage = sendMessage;
         window.clearChat = clearChat;
@@ -898,7 +920,7 @@ RULES:
         window.leaveChat = leaveChat;
         
         console.log("%c🤖 PRRX AI-POWERED LIVE CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c🔐 Auto-Login Active - Direct to Chat", "color: #3498db; font-size: 12px");
+        console.log("%c🔐 Only logged-in users can access chat", "color: #3498db; font-size: 12px");
     </script>
 </body>
 </html>
