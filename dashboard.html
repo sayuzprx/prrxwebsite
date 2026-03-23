@@ -66,8 +66,8 @@
         }
         
         @keyframes pulse {
-            0%, 100% { transform: scale(1); text-shadow: 0 0 0px rgba(46,204,113,0); }
-            50% { transform: scale(1.05); text-shadow: 0 0 20px rgba(46,204,113,0.5); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         
         .loading-spinner {
@@ -116,7 +116,6 @@
             color: #2ecc71;
             margin-top: 0.8rem;
             font-weight: 600;
-            font-family: monospace;
         }
         
         .loading-text {
@@ -338,6 +337,47 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+        }
+        
+        /* Navigation Menu */
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-item {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            position: relative;
+            padding: 0.5rem 0;
+            cursor: pointer;
+        }
+        
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-item:hover::after,
+        .nav-item.active::after {
+            width: 100%;
+        }
+        
+        .nav-item:hover,
+        .nav-item.active {
+            color: #2ecc71;
+            text-shadow: 0 0 8px rgba(46,204,113,0.5);
         }
         
         .user-info {
@@ -584,14 +624,157 @@
             line-height: 1.5;
         }
         
-        /* Footer */
-        .footer {
+        /* ========== IOS-STYLE GLASS FOOTER ========== */
+        .glass-footer {
+            margin-top: 4rem;
+            padding: 3rem 2rem 2rem;
+            background: rgba(20, 30, 20, 0.45);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(46, 204, 113, 0.2);
+            border-radius: 30px 30px 0 0;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-description {
             text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            border-top: 1px solid rgba(46,204,113,0.1);
-            font-size: 0.7rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-description h3 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-description p {
+            color: #8e9eb5;
+            font-size: 0.9rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(46, 204, 113, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .footer-card:hover {
+            transform: translateY(-5px);
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.05);
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.1);
+        }
+        
+        .footer-card h4 {
+            font-size: 1.2rem;
+            color: #2ecc71;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-card h4 i {
+            font-size: 1.3rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #b3b3b3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            color: #2ecc71;
+            transform: translateX(5px);
+        }
+        
+        .whatsapp-link {
+            background: rgba(37, 211, 102, 0.15);
+            padding: 8px 15px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(37, 211, 102, 0.3);
+        }
+        
+        .whatsapp-link:hover {
+            background: rgba(37, 211, 102, 0.25);
+            border-color: #25d366;
+            transform: translateX(5px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(46, 204, 113, 0.15);
+        }
+        
+        .creator {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 600;
+        }
+        
+        .copyright {
+            font-size: 0.75rem;
             color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links-bottom {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .footer-links-bottom a {
+            color: #8e9eb5;
+            text-decoration: none;
+            font-size: 0.75rem;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links-bottom a:hover {
+            color: #2ecc71;
         }
         
         /* Toast */
@@ -685,6 +868,11 @@
                 gap: 1rem;
             }
             
+            .nav-menu {
+                justify-content: center;
+                gap: 1.5rem;
+            }
+            
             .user-info {
                 width: 100%;
                 justify-content: space-between;
@@ -693,6 +881,14 @@
             .login-card {
                 margin: 1rem;
                 padding: 2rem;
+            }
+            
+            .glass-footer {
+                padding: 2rem 1rem 1.5rem;
+            }
+            
+            .footer-grid {
+                gap: 1rem;
             }
         }
         
@@ -720,7 +916,7 @@
         <div class="loading-text">Initializing Secure Environment</div>
         <div class="loading-security">
             <i class="fas fa-shield-alt"></i> AES-256 Encryption
-            <i class="fas fa-fingerprint"></i> Firebase Auth Ready
+            <i class="fas fa-fingerprint"></i> Google Auth Ready
         </div>
     </div>
 
@@ -734,7 +930,7 @@
                 <i class="fas fa-shield-horned"></i>
             </div>
             <h1>PRRX DASHBOARD</h1>
-            <p class="login-subtitle">Secure Access Required • Firebase Authentication</p>
+            <p class="login-subtitle">Secure Access Required • Google Authentication</p>
             <button id="googleSignInBtn" class="google-btn">
                 <i class="fab fa-google"></i> Sign in with Google
             </button>
@@ -753,6 +949,12 @@
                     <i class="fas fa-crown"></i>
                 </div>
                 <span class="logo-text">PRRX DASHBOARD</span>
+            </div>
+            <div class="nav-menu">
+                <a class="nav-item active" id="navHome">HOME</a>
+                <a class="nav-item" id="navFeatures">FEATURES</a>
+                <a class="nav-item" id="navPanel">PANEL</a>
+                <a class="nav-item" id="navSupport">SUPPORT</a>
             </div>
             <div class="user-info" id="userInfo">
                 <img id="userAvatar" class="user-avatar" src="">
@@ -774,7 +976,7 @@
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-key"></i></div>
                 <div class="stat-title">Auth Method</div>
-                <div class="stat-value" id="authMethod">Firebase Auth</div>
+                <div class="stat-value" id="authMethod">Google OAuth 2.0</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-lock"></i></div>
@@ -828,10 +1030,60 @@
             </div>
         </div>
 
-        <div class="footer">
-            <p><i class="fas fa-shield-alt"></i> AES-256 Encrypted • Google OAuth 2.0 Protected • HWID Secure</p>
-            <p style="margin-top: 0.5rem;">© 2026 PRRX • Ultra Secure Dashboard</p>
-        </div>
+        <!-- iOS-Style Glass Footer -->
+        <footer class="glass-footer">
+            <div class="footer-content">
+                <div class="footer-description">
+                    <h3>PRRX TEAM</h3>
+                    <p>We provide the best services to ensure your online privacy and security. Our team is dedicated to delivering fast and reliable PANAL solutions.</p>
+                </div>
+                
+                <div class="footer-grid">
+                    <!-- Join Our Community -->
+                    <div class="footer-card">
+                        <h4><i class="fas fa-users"></i> Join Our Community</h4>
+                        <ul class="footer-links">
+                            <li><a href="#" id="whatsappJoinBtn" class="whatsapp-link"><i class="fab fa-whatsapp"></i> Join WhatsApp</a></li>
+                            <li><a href="#"><i class="fab fa-telegram"></i> Telegram Channel</a></li>
+                            <li><a href="#"><i class="fab fa-discord"></i> Discord Server</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Product -->
+                    <div class="footer-card">
+                        <h4><i class="fas fa-box"></i> Product</h4>
+                        <ul class="footer-links">
+                            <li><a href="#"><i class="fas fa-external-link-alt"></i> External Panel</a></li>
+                            <li><a href="#"><i class="fas fa-inbox"></i> Internal Panel</a></li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Company -->
+                    <div class="footer-card">
+                        <h4><i class="fas fa-building"></i> Company</h4>
+                        <ul class="footer-links">
+                            <li><a href="#"><i class="fas fa-file-contract"></i> Terms & Conditions</a></li>
+                            <li><a href="#"><i class="fas fa-lock"></i> Privacy Policy</a></li>
+                            <li><a href="#"><i class="fas fa-envelope"></i> Contact Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <div class="creator">
+                        ✨ Created By: SAYURU ✨
+                    </div>
+                    <div class="copyright">
+                        Copyright © 2026 PRRX TEAM. All rights reserved.
+                    </div>
+                    <div class="footer-links-bottom">
+                        <a href="#">Privacy Policy</a>
+                        <span>|</span>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
     
     <div class="cursor-dot"></div>
@@ -893,10 +1145,7 @@
             document.getElementById('authMethod').textContent = 'Google OAuth 2.0';
             document.getElementById('encryption').textContent = 'AES-256-GCM';
             
-            // Security Log
-            console.log(`[SECURE LOGIN] ${user.email} | Session: ${sessionToken} | Time: ${new Date().toISOString()}`);
-            
-            // Start session timer
+            console.log(`[SECURE LOGIN] ${user.email} | Session: ${sessionToken}`);
             setInterval(updateSessionTime, 1000);
         }
 
@@ -1112,6 +1361,39 @@
             return false;
         });
 
+        // Navigation
+        document.getElementById('navHome')?.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById('navHome').classList.add('active');
+            showToast('Home page');
+        });
+        
+        document.getElementById('navFeatures')?.addEventListener('click', () => {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById('navFeatures').classList.add('active');
+            showToast('Features section');
+        });
+        
+        document.getElementById('navPanel')?.addEventListener('click', () => {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById('navPanel').classList.add('active');
+            showToast('Opening Panel...');
+        });
+        
+        document.getElementById('navSupport')?.addEventListener('click', () => {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById('navSupport').classList.add('active');
+            showToast('Support page');
+        });
+
+        // WhatsApp Button
+        document.getElementById('whatsappJoinBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open('https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx', '_blank');
+            showToast('Opening WhatsApp group...');
+        });
+
         // Event Listeners
         document.getElementById('googleSignInBtn')?.addEventListener('click', signInWithPopup);
         document.getElementById('solution1Btn')?.addEventListener('click', signInWithPopup);
@@ -1139,11 +1421,10 @@
             initParticles();
         });
 
-        // Security Console Log
         console.log('%c🔐 PRRX ULTRA SECURE DASHBOARD', 'color: #2ecc71; font-size: 16px; font-weight: bold');
         console.log('%c✓ Google Authentication Active', 'color: #2ecc71');
-        console.log('%c✓ AES-256 Encryption Enabled', 'color: #2ecc71');
-        console.log('%c✓ Session Protection Active', 'color: #2ecc71');
+        console.log('%c✓ iOS Glass Footer Active', 'color: #2ecc71');
+        console.log('%c✓ Navigation Bar Active', 'color: #2ecc71');
     </script>
 </body>
 </html>
