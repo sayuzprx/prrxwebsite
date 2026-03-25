@@ -160,6 +160,7 @@
             opacity: 1;
             filter: blur(0);
             border: 1px solid rgba(255,215,0,0.3);
+            background: rgba(255,215,0,0.1);
         }
 
         .premium-feature-card .feature-icon {
@@ -178,15 +179,20 @@
             margin-top: 0.25rem;
         }
 
-        /* Key Display */
-        .key-display {
+        /* User Display */
+        .user-display {
             background: rgba(0,0,0,0.5);
             border-radius: 12px;
             padding: 1rem;
             margin-top: 1rem;
-            font-family: monospace;
             text-align: center;
             border: 1px solid rgba(0,255,136,0.3);
+        }
+
+        .user-display .premium-user {
+            color: #ffd700;
+            font-size: 1rem;
+            font-weight: 600;
         }
 
         .logout-premium {
@@ -197,7 +203,8 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
-            margin-left: 1rem;
+            margin-top: 1rem;
+            width: 100%;
         }
 
         .logout-premium:hover {
@@ -292,6 +299,72 @@
                 align-items: flex-start;
             }
         }
+
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .login-modal {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            border: 1px solid rgba(0,255,136,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-modal h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-modal p {
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        .google-login-btn-dashboard {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px;
+            background: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .google-login-btn-dashboard:hover {
+            transform: scale(1.02);
+        }
+
+        .dashboard-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
     </style>
 </head>
 <body>
@@ -351,7 +424,7 @@
                 <button id="logoutBtn" class="logout-btn-dashboard">Logout</button>
             </div>
 
-            <!-- Premium Login Box -->
+            <!-- Premium Login Box - Username & Password Only -->
             <div class="premium-login-section" id="premiumSection">
                 <div class="premium-header">
                     <div>
@@ -368,12 +441,12 @@
                 <!-- Premium Login Form (Visible when not logged in) -->
                 <div id="premiumLoginForm" class="premium-login-form">
                     <div class="form-group">
-                        <label>🔑 Premium License Key</label>
-                        <input type="text" id="licenseKey" class="form-input" placeholder="Enter your PRRX Premium Key">
+                        <label>👤 Username</label>
+                        <input type="text" id="premiumUser" class="form-input" placeholder="Enter your premium username">
                     </div>
                     <div class="form-group">
-                        <label>👤 Username</label>
-                        <input type="text" id="premiumUser" class="form-input" placeholder="Enter your username">
+                        <label>🔑 Password</label>
+                        <input type="password" id="premiumPass" class="form-input" placeholder="Enter your password">
                     </div>
                     <button id="premiumLoginBtn" class="premium-login-btn">
                         Activate Premium →
@@ -383,9 +456,10 @@
 
                 <!-- Premium Active Display (Visible when logged in) -->
                 <div id="premiumActiveDisplay" style="display: none;">
-                    <div class="key-display">
+                    <div class="user-display">
                         <span>🎖️ Premium Activated</span><br>
-                        <span id="activeKey" style="color: #ffd700; font-size: 0.875rem;"></span>
+                        <span class="premium-user" id="activeUsername"></span>
+                        <div style="font-size: 0.75rem; color: #888; margin-top: 0.5rem;">✨ All premium features unlocked</div>
                     </div>
                     <div class="premium-features-grid">
                         <div class="premium-feature-card" data-feature="aimbot">
@@ -409,7 +483,7 @@
                             <div class="feature-desc">Anti-Ban Protection</div>
                         </div>
                     </div>
-                    <button id="logoutPremiumBtn" class="logout-premium" style="margin-top: 1rem; width: 100%;">
+                    <button id="logoutPremiumBtn" class="logout-premium">
                         Deactivate Premium
                     </button>
                 </div>
@@ -511,69 +585,83 @@
         
         // Premium System Variables
         let isPremiumActive = false;
-        let currentLicenseKey = '';
+        let currentUser = '';
         
-        // Premium Keys Database (In production, this should be on your server)
-        // You can add/remove keys here
-        const PREMIUM_KEYS = {
-            'PRRX-PREMIUM-2024': {
-                username: 'premium_user',
+        // Premium Accounts Database (Username & Password)
+        // You can add/remove accounts here
+        const PREMIUM_ACCOUNTS = {
+            'admin': {
+                password: 'admin123',
+                tier: 'admin',
                 expires: '2025-12-31',
                 features: ['aimbot', 'esp', 'chams', 'security']
             },
-            'PRRX-GOLD-001': {
-                username: 'gold_member',
+            'premium_user': {
+                password: 'premium123',
+                tier: 'gold',
                 expires: '2025-06-30',
                 features: ['aimbot', 'esp', 'chams']
             },
-            'PRRX-TEST-123': {
-                username: 'tester',
+            'vip_member': {
+                password: 'vip2024',
+                tier: 'vip',
                 expires: '2024-12-31',
                 features: ['aimbot', 'esp']
+            },
+            'test_user': {
+                password: 'test123',
+                tier: 'test',
+                expires: '2025-03-31',
+                features: ['aimbot']
+            },
+            'prrx_elite': {
+                password: 'elite2024',
+                tier: 'elite',
+                expires: '2025-12-31',
+                features: ['aimbot', 'esp', 'chams', 'security']
             }
         };
         
-        // Function to check premium key
-        function validatePremiumKey(key, username) {
-            const keyData = PREMIUM_KEYS[key];
-            if (keyData && keyData.username === username) {
+        // Function to validate premium login (username & password)
+        function validatePremiumLogin(username, password) {
+            const account = PREMIUM_ACCOUNTS[username];
+            if (account && account.password === password) {
                 // Check if not expired
                 const today = new Date();
-                const expiryDate = new Date(keyData.expires);
+                const expiryDate = new Date(account.expires);
                 if (expiryDate > today) {
-                    return { valid: true, data: keyData };
+                    return { valid: true, data: account, username: username };
                 } else {
-                    return { valid: false, error: 'License key expired' };
+                    return { valid: false, error: 'Your premium subscription has expired. Please renew.' };
                 }
             }
-            return { valid: false, error: 'Invalid license key or username' };
+            return { valid: false, error: 'Invalid username or password' };
         }
         
         // Save premium session
-        function savePremiumSession(key, userData) {
-            localStorage.setItem('premium_key', key);
-            localStorage.setItem('premium_username', userData.username);
+        function savePremiumSession(username, userData) {
+            localStorage.setItem('premium_username', username);
+            localStorage.setItem('premium_password', userData.password);
+            localStorage.setItem('premium_tier', userData.tier);
             localStorage.setItem('premium_expires', userData.expires);
             isPremiumActive = true;
-            currentLicenseKey = key;
+            currentUser = username;
         }
         
         // Load premium session
         function loadPremiumSession() {
-            const savedKey = localStorage.getItem('premium_key');
             const savedUsername = localStorage.getItem('premium_username');
-            if (savedKey && savedUsername) {
-                const validation = validatePremiumKey(savedKey, savedUsername);
+            const savedPassword = localStorage.getItem('premium_password');
+            if (savedUsername && savedPassword) {
+                const validation = validatePremiumLogin(savedUsername, savedPassword);
                 if (validation.valid) {
                     isPremiumActive = true;
-                    currentLicenseKey = savedKey;
-                    updatePremiumUI(true, savedKey, validation.data);
+                    currentUser = savedUsername;
+                    updatePremiumUI(true, savedUsername, validation.data);
                     return true;
                 } else {
                     // Clear invalid session
-                    localStorage.removeItem('premium_key');
-                    localStorage.removeItem('premium_username');
-                    localStorage.removeItem('premium_expires');
+                    clearPremiumSession();
                 }
             }
             return false;
@@ -581,16 +669,17 @@
         
         // Clear premium session
         function clearPremiumSession() {
-            localStorage.removeItem('premium_key');
             localStorage.removeItem('premium_username');
+            localStorage.removeItem('premium_password');
+            localStorage.removeItem('premium_tier');
             localStorage.removeItem('premium_expires');
             isPremiumActive = false;
-            currentLicenseKey = '';
+            currentUser = '';
             updatePremiumUI(false);
         }
         
         // Update Premium UI
-        function updatePremiumUI(active, key = '', data = null) {
+        function updatePremiumUI(active, username = '', data = null) {
             const premiumLoginForm = document.getElementById('premiumLoginForm');
             const premiumActiveDisplay = document.getElementById('premiumActiveDisplay');
             const premiumStatus = document.getElementById('premiumStatus');
@@ -600,7 +689,7 @@
                 premiumActiveDisplay.style.display = 'block';
                 premiumStatus.className = 'premium-status active';
                 premiumStatus.innerHTML = '👑 Premium Active';
-                document.getElementById('activeKey').textContent = `Key: ${key}`;
+                document.getElementById('activeUsername').textContent = `@${username} (${data?.tier || 'Premium'} Tier)`;
                 
                 // Unlock premium features in stats
                 document.querySelectorAll('.premium-feature-card').forEach(card => {
@@ -610,6 +699,9 @@
                 // Update dashboard stats with premium benefits
                 document.getElementById('accuracy').textContent = '98.7%';
                 document.getElementById('responseTime').textContent = '12ms';
+                
+                // Add premium activity log
+                addPremiumActivityLog(username);
                 
             } else {
                 premiumLoginForm.style.display = 'block';
@@ -628,21 +720,33 @@
             }
         }
         
+        // Add premium activity log
+        function addPremiumActivityLog(username) {
+            const activityList = document.getElementById('activityList');
+            const newActivity = document.createElement('div');
+            newActivity.className = 'activity-item';
+            newActivity.innerHTML = `
+                <strong>Premium</strong> ${username} activated premium features
+                <small>just now</small>
+            `;
+            activityList.insertBefore(newActivity, activityList.firstChild);
+        }
+        
         // Premium Login Handler
         document.getElementById('premiumLoginBtn')?.addEventListener('click', () => {
-            const licenseKey = document.getElementById('licenseKey').value.trim();
             const username = document.getElementById('premiumUser').value.trim();
+            const password = document.getElementById('premiumPass').value;
             const errorDiv = document.getElementById('premiumError');
             
-            if (!licenseKey || !username) {
-                errorDiv.textContent = 'Please enter both license key and username';
+            if (!username || !password) {
+                errorDiv.textContent = 'Please enter both username and password';
                 return;
             }
             
-            const validation = validatePremiumKey(licenseKey, username);
+            const validation = validatePremiumLogin(username, password);
             
             if (validation.valid) {
-                savePremiumSession(licenseKey, validation.data);
+                savePremiumSession(username, validation.data);
                 errorDiv.textContent = '';
                 errorDiv.style.color = '#00ff88';
                 errorDiv.textContent = '✓ Premium activated successfully!';
