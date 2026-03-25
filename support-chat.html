@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PRRX | Support Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a, #0f0f0f);
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #00ff88;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+
+        .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Main Container */
+        .support-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 2rem 2rem;
+        }
+
+        /* Create Ticket Form */
+        .create-ticket-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .create-ticket-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #00ff88;
+        }
+
+        .create-ticket-card p {
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #888;
+            font-size: 0.875rem;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .create-ticket-btn {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 40px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .create-ticket-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* Chat Area */
+        .chat-area {
+            background: rgba(255,255,255,0.03);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: none;
+        }
+
+        .chat-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            font-size: 1.1rem;
+        }
+
+        .ticket-status {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+        }
+
+        .ticket-status.resolved {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.6rem 0.85rem;
+            border-radius: 16px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .message-user {
+            background: rgba(255,255,255,0.08);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-admin {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #000;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-sender {
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            opacity: 0.7;
+        }
+
+        .message-text {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message-time {
+            font-size: 0.55rem;
+            opacity: 0.5;
+            margin-top: 0.2rem;
+            text-align: right;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 0.25rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 5px;
+            height: 5px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 30px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .chat-input-area button {
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            border-radius: 30px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .close-ticket-btn {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .message {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>PRRX</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">HOME</a>
+                <a href="features.html" class="nav-link">FEATURES</a>
+                <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
+                <a href="dashboard.html" class="nav-link">DASHBOARD</a>
+                <a href="support-chat.html" class="nav-link active">SUPPORT</a>
+            </div>
+            <div class="user-menu" id="userMenu" style="display: none;">
+                <div id="navUserAvatar" class="user-avatar-small">?</div>
+                <span id="navUserName"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="support-container">
+        <div id="nameModal" class="name-modal" style="display: flex;">
+            <div class="name-modal-content">
+                <div class="name-modal-icon">🎧</div>
+                <h2>Get Support</h2>
+                <p>Enter your name to start a support ticket</p>
+                <input type="text" id="userNameInput" class="name-input" placeholder="Your name" maxlength="30">
+                <button id="startSupportBtn" class="enter-chat-btn">Continue →</button>
+            </div>
+        </div>
+
+        <div id="supportContent" style="display: none;">
+            <button id="backToFormBtn" class="back-btn">← Back to Create Ticket</button>
+
+            <!-- Create Ticket Form -->
+            <div id="ticketForm" class="create-ticket-card">
+                <h2>📝 Create Support Ticket</h2>
+                <p>Describe your issue and our support team will assist you</p>
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input type="text" id="ticketSubject" class="form-input" placeholder="Brief description of your issue">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="ticketMessage" class="form-textarea" placeholder="Please describe your problem in detail..."></textarea>
+                </div>
+                <button id="createTicketBtn" class="create-ticket-btn">Create Ticket →</button>
+            </div>
+
+            <!-- Chat Area -->
+            <div id="chatArea" class="chat-area">
+                <div class="chat-header">
+                    <div>
+                        <h3 id="chatTitle">Support Chat</h3>
+                        <span id="ticketStatusBadge" class="ticket-status">Open</span>
+                    </div>
+                    <button id="closeTicketBtn" class="close-ticket-btn">Close Ticket</button>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div style="text-align: center; color: #888; padding: 1rem;">Loading messages...</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="messageInput" placeholder="Type your message...">
+                    <button id="sendBtn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .name-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .name-modal-content {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid rgba(0,255,136,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+        .name-modal-icon { font-size: 4rem; margin-bottom: 1rem; }
+        .name-modal-content h2 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .name-modal-content p { color: #888; margin-bottom: 1.5rem; }
+        .name-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        .enter-chat-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 12px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+        }
+    </style>
+
+    <script type="module">
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
+            authDomain: "prrx-chat.firebaseapp.com",
+            databaseURL: "https://prrx-chat-default-rtdb.firebaseio.com",
+            projectId: "prrx-chat",
+            storageBucket: "prrx-chat.firebasestorage.app",
+            messagingSenderId: "763130047676",
+            appId: "1:763130047676:web:e6566f250e81b9c6b574b9"
+        };
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getDatabase, ref, push, onChildAdded, serverTimestamp, set, get, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let currentTicketId = null;
+        let userId = Math.random().toString(36).substr(2, 9);
+        let messageListener = null;
+
+        const nameModal = document.getElementById('nameModal');
+        const supportContent = document.getElementById('supportContent');
+        const userNameInput = document.getElementById('userNameInput');
+        const startSupportBtn = document.getElementById('startSupportBtn');
+        const backToFormBtn = document.getElementById('backToFormBtn');
+        const ticketForm = document.getElementById('ticketForm');
+        const chatArea = document.getElementById('chatArea');
+        const createTicketBtn = document.getElementById('createTicketBtn');
+        const ticketSubject = document.getElementById('ticketSubject');
+        const ticketMessage = document.getElementById('ticketMessage');
+        const sendBtn = document.getElementById('sendBtn');
+        const messageInput = document.getElementById('messageInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const closeTicketBtn = document.getElementById('closeTicketBtn');
+        const chatTitle = document.getElementById('chatTitle');
+        const ticketStatusBadge = document.getElementById('ticketStatusBadge');
+
+        startSupportBtn.addEventListener('click', () => {
+            const name = userNameInput.value.trim();
+            if (name.length < 2) {
+                alert('Please enter a valid name');
+                return;
+            }
+            currentUser = { name: name, id: userId };
+            localStorage.setItem('support_user', name);
+            nameModal.style.display = 'none';
+            supportContent.style.display = 'block';
+        });
+
+        backToFormBtn.addEventListener('click', () => {
+            if (currentTicketId) {
+                if (messageListener) messageListener();
+                currentTicketId = null;
+            }
+            ticketForm.style.display = 'block';
+            chatArea.style.display = 'none';
+        });
+
+        createTicketBtn.addEventListener('click', async () => {
+            const subject = ticketSubject.value.trim();
+            const message = ticketMessage.value.trim();
+            
+            if (!subject || !message) {
+                alert('Please fill in both subject and message');
+                return;
+            }
+
+            const ticketRef = ref(db, 'support-tickets');
+            const newTicketRef = push(ticketRef);
+            currentTicketId = newTicketRef.key;
+
+            await set(newTicketRef, {
+                userId: userId,
+                userName: currentUser.name,
+                subject: subject,
+                status: 'open',
+                createdAt: serverTimestamp(),
+                lastActivity: serverTimestamp()
+            });
+
+            const messagesRef = ref(db, `support-messages/${currentTicketId}`);
+            await push(messagesRef, {
+                text: message,
+                senderId: userId,
+                senderName: currentUser.name,
+                senderRole: 'user',
+                timestamp: serverTimestamp(),
+                read: false
+            });
+
+            ticketForm.style.display = 'none';
+            chatArea.style.display = 'flex';
+            chatTitle.textContent = `Ticket: ${subject.substring(0, 30)}`;
+            loadMessages();
+        });
+
+        function loadMessages() {
+            if (messageListener) messageListener();
+            
+            chatMessages.innerHTML = '';
+            const messagesRef = ref(db, `support-messages/${currentTicketId}`);
+            
+            messageListener = onChildAdded(messagesRef, (snapshot) => {
+                const msg = snapshot.val();
+                const isAdmin = msg.senderRole === 'admin';
+                addMessageToUI(msg.text, msg.senderName, isAdmin, msg.timestamp);
+            });
+        }
+
+        sendBtn.addEventListener('click', async () => {
+            const text = messageInput.value.trim();
+            if (!text || !currentTicketId) return;
+            
+            const messagesRef = ref(db, `support-messages/${currentTicketId}`);
+            await push(messagesRef, {
+                text: text,
+                senderId: userId,
+                senderName: currentUser.name,
+                senderRole: 'user',
+                timestamp: serverTimestamp(),
+                read: false
+            });
+            
+            await update(ref(db, `support-tickets/${currentTicketId}`), {
+                lastActivity: serverTimestamp()
+            });
+            
+            messageInput.value = '';
+        });
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendBtn.click();
+        });
+
+        closeTicketBtn.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to close this ticket?')) {
+                await update(ref(db, `support-tickets/${currentTicketId}`), {
+                    status: 'closed'
+                });
+                ticketStatusBadge.textContent = 'Closed';
+                ticketStatusBadge.classList.add('resolved');
+                alert('Ticket closed. You can create a new ticket if needed.');
+            }
+        });
+
+        function addMessageToUI(text, sender, isAdmin, timestamp) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isAdmin ? 'message-admin' : 'message-user'}`;
+            const time = timestamp?.toDate ? timestamp.toDate().toLocaleTimeString() : new Date().toLocaleTimeString();
+            messageDiv.innerHTML = `
+                <div class="message-sender">${escapeHtml(sender)}</div>
+                <div class="message-text">${escapeHtml(text)}</div>
+                <div class="message-time">${time}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        const savedName = localStorage.getItem('support_user');
+        if (savedName) {
+            currentUser = { name: savedName, id: userId };
+            nameModal.style.display = 'none';
+            supportContent.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
