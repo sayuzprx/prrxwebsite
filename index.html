@@ -281,7 +281,7 @@
             transform: scale(0.98);
         }
 
-        /* Download Modal */
+        /* Download Modal - Updated with two options */
         .download-modal {
             position: fixed;
             top: 0;
@@ -308,7 +308,7 @@
             background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
             border-radius: 24px;
             padding: 2.5rem;
-            max-width: 450px;
+            max-width: 500px;
             width: 90%;
             text-align: center;
             border: 1px solid rgba(0,255,136,0.3);
@@ -338,29 +338,49 @@
             line-height: 1.6;
         }
 
-        .file-info {
-            background: rgba(0,255,136,0.1);
-            padding: 1rem;
-            border-radius: 12px;
+        .download-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
             margin-bottom: 1.5rem;
-            font-family: monospace;
+        }
+
+        .download-option {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 16px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .download-option:hover {
+            background: rgba(0,255,136,0.1);
+            border-color: #00ff88;
+            transform: translateY(-3px);
+        }
+
+        .download-option-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .download-option-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .download-option-desc {
+            font-size: 0.7rem;
+            color: #888;
         }
 
         .modal-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
-        }
-
-        .confirm-download {
-            background: linear-gradient(135deg, #00ff88, #00cc66);
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 40px;
-            color: #000;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s;
         }
 
         .cancel-download {
@@ -372,6 +392,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            width: 100%;
         }
 
         .cancel-download:hover {
@@ -456,6 +477,11 @@
         .news-badge.patch {
             background: rgba(136,0,255,0.2);
             color: #8800ff;
+        }
+
+        .news-badge.coming-soon {
+            background: rgba(255,215,0,0.2);
+            color: #ffd700;
         }
 
         .news-image {
@@ -722,6 +748,9 @@
             .section-header h2 {
                 font-size: 2rem;
             }
+            .download-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -738,19 +767,27 @@
         </div>
     </div>
 
-    <!-- Download Modal -->
+    <!-- Download Modal - Updated with two options -->
     <div class="download-modal" id="downloadModal">
         <div class="modal-content">
             <div class="modal-icon">📦</div>
             <h3>Download PRRX HEX</h3>
-            <p>Are you ready to download the latest version of PRRX HEX Premium?</p>
-            <div class="file-info">
-                📁 PRRX HEX.rar<br>
-                💾 Premium Gaming Panel<br>
-                🔒 Secure Download
+            <p>Choose your preferred version to download</p>
+            
+            <div class="download-options">
+                <div class="download-option" data-version="external">
+                    <div class="download-option-icon">🚀</div>
+                    <div class="download-option-title">PRRX EXTERNAL</div>
+                    <div class="download-option-desc">External Panel • Low Memory • Fast Response</div>
+                </div>
+                <div class="download-option" data-version="internal">
+                    <div class="download-option-icon">⚡</div>
+                    <div class="download-option-title">PRRX INTERNAL</div>
+                    <div class="download-option-desc">Internal Panel • Advanced Features • High Performance</div>
+                </div>
             </div>
+            
             <div class="modal-buttons">
-                <button class="confirm-download" id="confirmDownload">Download Now</button>
                 <button class="cancel-download" id="cancelDownload">Cancel</button>
             </div>
         </div>
@@ -868,14 +905,20 @@
     <script>
         // Wait for page to load
         (function() {
-            // ============ DOWNLOAD FUNCTIONALITY ============
-            // Your GitHub RAR file URL
-            const DOWNLOAD_URL = 'https://github.com/sayuzprx/prrxwebsite/raw/refs/heads/main/PRRX%20HEX.rar';
+            // ============ DOWNLOAD FUNCTIONALITY WITH TWO OPTIONS ============
+            // Your GitHub RAR file URLs
+            const DOWNLOAD_URLS = {
+                external: 'https://github.com/sayuzprx/prrxwebsite/raw/refs/heads/main/PRRX%20HEX%20EXTERNAL.rar',
+                internal: 'https://github.com/sayuzprx/prrxwebsite/raw/refs/heads/main/PRRX%20HEX%20INTERNAL.rar'
+            };
+            
+            let selectedVersion = null;
             
             function openDownloadModal() {
                 const modal = document.getElementById('downloadModal');
                 if (modal) {
                     modal.classList.add('active');
+                    selectedVersion = null;
                 }
             }
             
@@ -886,25 +929,37 @@
                 }
             }
             
-            function startDownload() {
-                // Create a temporary anchor element
+            function startDownload(version) {
+                const url = DOWNLOAD_URLS[version];
+                if (!url) {
+                    alert('Download URL not found for this version');
+                    return;
+                }
+                
                 const link = document.createElement('a');
-                link.href = DOWNLOAD_URL;
-                link.download = 'PRRX_HEX.rar';
+                link.href = url;
+                link.download = `PRRX_HEX_${version.toUpperCase()}.rar`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 
                 // Show success message
                 setTimeout(() => {
-                    alert('✅ Download started!\n\nIf it doesn\'t start automatically, please check your download folder.\n\nFile: PRRX HEX.rar');
+                    alert(`✅ Download started for PRRX ${version.toUpperCase()}!\n\nIf it doesn't start automatically, please check your download folder.`);
                 }, 100);
                 closeDownloadModal();
             }
             
+            // Add event listeners to download options
+            document.querySelectorAll('.download-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const version = option.dataset.version;
+                    startDownload(version);
+                });
+            });
+            
             // Add event listeners to download buttons
             document.getElementById('mainDownloadBtn')?.addEventListener('click', openDownloadModal);
-            document.getElementById('confirmDownload')?.addEventListener('click', startDownload);
             document.getElementById('cancelDownload')?.addEventListener('click', closeDownloadModal);
             
             // Close modal when clicking outside
@@ -961,7 +1016,7 @@
             
             updateLoading();
             
-            // ============ NEWS DATA ============
+            // ============ NEWS DATA WITH COMING SOON CARD ============
             const newsData = [
                 {
                     type: 'update',
@@ -1016,6 +1071,16 @@
                     description: 'Reduced memory usage by 30%, improved frame rates, and optimized rendering for smoother gameplay on all devices.',
                     stats: { views: '1.5k', likes: '234' },
                     fullArticle: '#'
+                },
+                {
+                    type: 'coming-soon',
+                    icon: '✨',
+                    date: 'Coming Soon',
+                    title: 'PRRX v4.0 - The Next Generation',
+                    description: 'A revolutionary update is on the horizon! New UI, Enhanced Features, Better Performance, and much more. Stay tuned for the biggest update yet!',
+                    stats: { views: '0', likes: '0' },
+                    fullArticle: '#',
+                    comingSoon: true
                 }
             ];
             
@@ -1026,8 +1091,8 @@
                 
                 newsContainer.innerHTML = newsData.map(news => `
                     <div class="news-card">
-                        <div class="news-badge ${news.type}">
-                            ${news.type === 'update' ? '🚀 UPDATE' : news.type === 'patch' ? '🔒 PATCH' : '🎉 EVENT'}
+                        <div class="news-badge ${news.type === 'coming-soon' ? 'coming-soon' : news.type}">
+                            ${news.type === 'update' ? '🚀 UPDATE' : news.type === 'patch' ? '🔒 PATCH' : news.type === 'event' ? '🎉 EVENT' : '✨ COMING SOON'}
                         </div>
                         <div class="news-image">
                             ${news.icon}
@@ -1040,7 +1105,7 @@
                             <p class="news-description">${news.description}</p>
                             <div class="news-footer">
                                 <a href="${news.fullArticle}" class="read-more">
-                                    Read More →
+                                    ${news.comingSoon ? 'Notify Me →' : 'Read More →'}
                                 </a>
                                 <div class="news-stats">
                                     <span>👁️ ${news.stats.views}</span>
