@@ -2,852 +2,193 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX Official | Real-Time Chat - No History</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* ========== CUSTOM LOADING SCREEN ========== */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 100%);
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-        .loading-screen.hidden { opacity: 0; visibility: hidden; }
-        
-        .loading-logo {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, #2ecc71, #27ae60);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: loadingShimmer 1.5s ease infinite, logoPulse 1.2s ease infinite;
-            margin-bottom: 2rem;
-        }
-        @keyframes loadingShimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-        
-        .loading-spinner {
-            width: 70px;
-            height: 70px;
-            border: 4px solid rgba(46,204,113,0.15);
-            border-top: 4px solid #2ecc71;
-            border-right: 4px solid #27ae60;
-            border-radius: 50%;
-            animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            margin-bottom: 2rem;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .loading-progress-container { width: 250px; margin: 1rem 0; }
-        .loading-progress { width: 100%; height: 3px; background: rgba(46,204,113,0.2); border-radius: 4px; overflow: hidden; }
-        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #2ecc71, #27ae60); animation: progressFill 1.4s ease-out forwards; }
-        @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
-        .loading-percentage { font-size: 0.8rem; color: #2ecc71; margin-top: 0.5rem; font-weight: 600; }
-        .loading-text { font-size: 0.85rem; color: #888; letter-spacing: 2px; margin-top: 1rem; }
-        .loading-dots span { display: inline-block; animation: dotBlink 1.4s infinite; }
-        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dotBlink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
-        
-        .loading-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        .loading-particle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: radial-gradient(circle, #2ecc71, #27ae60);
-            border-radius: 50%;
-            opacity: 0;
-            animation: floatParticle 2.5s ease-out forwards;
-        }
-        @keyframes floatParticle {
-            0% { opacity: 0; transform: translateY(0) scale(0); }
-            15% { opacity: 0.8; transform: translateY(-20px) scale(1); }
-            100% { opacity: 0; transform: translateY(-120px) scale(0); }
-        }
-        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #2ecc71; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
-        
-        /* Background Animation */
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .bg-animation::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 50% 50%, rgba(46,204,113,0.05) 0%, transparent 50%);
-            animation: rotateBg 20s linear infinite;
-        }
-        @keyframes rotateBg {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Particle Canvas */
-        #particleCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        /* Main Content */
-        .content {
-            position: relative;
-            z-index: 2;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-        .content.visible { opacity: 1; }
-        
-        /* Navbar */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            border-bottom: 1px solid rgba(46,204,113,0.2);
-        }
-        .logo { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #fff, #2ecc71); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
-        .menu { display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; }
-        .menu a { color: #fff; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; position: relative; padding: 0.5rem 0; cursor: pointer; }
-        .menu a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; background: linear-gradient(90deg, #2ecc71, #27ae60); transition: width 0.3s ease; }
-        .menu a:hover::after, .menu a.active::after { width: 100%; }
-        .menu a:hover, .menu a.active { color: #2ecc71; text-shadow: 0 0 8px rgba(46,204,113,0.5); }
-        
-        /* Join Screen */
-        .join-screen {
-            text-align: center;
-            padding: 2.5rem;
-            background: rgba(20,20,20,0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            max-width: 450px;
-            margin: 0 auto;
-            animation: fadeInUp 0.5s ease;
-            border: 1px solid rgba(46,204,113,0.3);
-        }
-        .join-screen i { font-size: 4rem; color: #2ecc71; margin-bottom: 1rem; animation: floatIcon 3s ease infinite; }
-        @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .join-screen input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 50px;
-            color: white;
-            margin: 1rem 0;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        .join-screen input:focus { border-color: #2ecc71; box-shadow: 0 0 15px rgba(46,204,113,0.3); outline: none; }
-        .join-screen button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            color: white;
-            font-weight: bold;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .join-screen button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
-        
-        /* Chat Container */
-        .chat-container {
-            background: rgba(20,20,20,0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            border: 1px solid rgba(46,204,113,0.3);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 70vh;
-            animation: fadeInUp 0.5s ease;
-        }
-        
-        .chat-header {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(46,204,113,0.2);
-            background: rgba(0,0,0,0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .chat-header h3 { font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-        .chat-header h3 i { color: #2ecc71; animation: pulse 2s ease infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-        .online-count-badge {
-            background: rgba(46,204,113,0.2);
-            border: 1px solid #2ecc71;
-            padding: 0.3rem 1rem;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .online-dot { width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; animation: onlinePulse 1.5s infinite; }
-        @keyframes onlinePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .user-badge { font-size: 0.8rem; color: #2ecc71; background: rgba(46,204,113,0.15); padding: 0.3rem 1rem; border-radius: 20px; border: 1px solid rgba(46,204,113,0.3); }
-        
-        .chat-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-        
-        .message {
-            display: flex;
-            gap: 0.8rem;
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        .message-avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
-            box-shadow: 0 0 10px rgba(46,204,113,0.3);
-        }
-        .message-content {
-            flex: 1;
-            background: rgba(255,255,255,0.05);
-            padding: 0.6rem 1rem;
-            border-radius: 18px;
-            max-width: 70%;
-            transition: all 0.3s;
-            border: 1px solid rgba(46,204,113,0.1);
-        }
-        .message:hover .message-content { background: rgba(255,255,255,0.08); border-color: rgba(46,204,113,0.3); }
-        .message-own { justify-content: flex-end; }
-        .message-own .message-content { background: rgba(46,204,113,0.15); border: 1px solid rgba(46,204,113,0.3); }
-        .message-sender { font-size: 0.7rem; color: #2ecc71; margin-bottom: 0.2rem; }
-        .message-text { font-size: 0.85rem; word-wrap: break-word; line-height: 1.4; }
-        .message-time { font-size: 0.55rem; color: #666; margin-top: 0.2rem; text-align: right; }
-        .bot-message .message-avatar { background: linear-gradient(135deg, #f39c12, #e67e22); }
-        .bot-message .message-sender { color: #f39c12; }
-        
-        .chat-input-area {
-            display: flex;
-            gap: 0.5rem;
-            padding: 1rem;
-            border-top: 1px solid rgba(46,204,113,0.2);
-            background: rgba(0,0,0,0.3);
-        }
-        .chat-input-area input {
-            flex: 1;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            border-radius: 30px;
-            padding: 0.8rem 1rem;
-            color: white;
-            outline: none;
-            transition: all 0.3s;
-        }
-        .chat-input-area input:focus { border-color: #2ecc71; box-shadow: 0 0 15px rgba(46,204,113,0.3); }
-        .chat-input-area button {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            border: none;
-            border-radius: 30px;
-            padding: 0.8rem 1.2rem;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .chat-input-area button:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(46,204,113,0.4); }
-        
-        /* Custom Cursor */
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #2ecc71;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.05s ease;
-            box-shadow: 0 0 10px #2ecc71;
-        }
-        .cursor-outline {
-            width: 40px;
-            height: 40px;
-            border: 2px solid rgba(46,204,113,0.6);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            transition: transform 0.15s ease, width 0.2s, height 0.2s;
-            backdrop-filter: blur(2px);
-        }
-        @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #2ecc71;
-            color: #0a0a0a;
-            padding: 10px 20px;
-            border-radius: 40px;
-            z-index: 10000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-        .toast.show { transform: translateX(0); }
-        
-        .anti-devtools {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            z-index: 20000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            backdrop-filter: blur(20px);
-        }
-        .anti-devtools.active { display: flex; }
-        .anti-devtools i { font-size: 4rem; color: #ff5050; margin-bottom: 1rem; }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @media (max-width: 768px) {
-            .content { padding: 1rem; }
-            .navbar { flex-direction: column; gap: 1rem; }
-            .chat-header { flex-direction: column; text-align: center; }
-            .message-content { max-width: 85%; }
-        }
-        
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: #2ecc71; border-radius: 10px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRRX | Live Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- ========== LOADING SCREEN ========== -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-particles" id="loadingParticles"></div>
-        <div class="loading-logo">PRRX</div>
-        <div class="loading-spinner"></div>
-        <div class="loading-progress-container">
-            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
-            <div class="loading-percentage" id="loadingPercentage">0%</div>
-        </div>
-        <div class="loading-text">
-            Loading PRRX Chat
-            <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
-        </div>
-        <div class="loading-security">
-            <i class="fas fa-shield-alt"></i> Firebase Real-Time
-            <i class="fas fa-robot"></i> Bot Assistant
-            <i class="fas fa-history"></i> No Message History
-        </div>
-    </div>
-
-    <div class="bg-animation"></div>
-    <canvas id="particleCanvas"></canvas>
-    
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-    <div class="anti-devtools" id="antiDevTools">
-        <i class="fas fa-shield-horned"></i>
-        <p>⚠️ Security Alert: Developer Tools Detected<br>Please close DevTools to continue.</p>
-    </div>
-
-    <div class="content" id="mainContent">
-        <div class="navbar">
-            <a href="index.html" class="logo">PRRX</a>
-            <div class="menu">
-                <a href="index.html">HOME</a>
-                <a href="features.html">FEATURES</a>
-                <a href="live-chat.html" class="active">LIVE CHAT</a>
-                <a href="dashboard.html">DASHBOARD</a>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>PRRX</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">HOME</a>
+                <a href="features.html" class="nav-link">FEATURES</a>
+                <a href="live-chat.html" class="nav-link active">LIVE CHAT</a>
+                <a href="dashboard.html" class="nav-link">DASHBOARD</a>
             </div>
         </div>
+    </nav>
 
-        <div id="app"></div>
-    </div>
-    
-    <div id="toast" class="toast"></div>
-
-    <script>
-        // ========== LOADING SCREEN PROGRESS ==========
-        let loadingProgress = 0;
-        const percentageElement = document.getElementById('loadingPercentage');
-        
-        function updateLoadingProgress() {
-            const interval = setInterval(() => {
-                loadingProgress += Math.random() * 12;
-                if (loadingProgress >= 100) {
-                    loadingProgress = 100;
-                    clearInterval(interval);
-                }
-                if (percentageElement) percentageElement.textContent = Math.floor(loadingProgress) + '%';
-            }, 100);
-        }
-        
-        function createLoadingParticles() {
-            const container = document.getElementById('loadingParticles');
-            if (!container) return;
-            for (let i = 0; i < 80; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'loading-particle';
-                particle.style.left = Math.random() * window.innerWidth + 'px';
-                particle.style.top = window.innerHeight + Math.random() * 150 + 'px';
-                particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
-                particle.style.animationDelay = Math.random() * 2 + 's';
-                particle.style.animationDuration = 1.5 + Math.random() * 1.5 + 's';
-                container.appendChild(particle);
-            }
-        }
-        
-        updateLoadingProgress();
-        createLoadingParticles();
-        
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loadingScreen = document.getElementById('loadingScreen');
-                loadingScreen.classList.add('hidden');
-                document.getElementById('mainContent').classList.add('visible');
-                setTimeout(() => {
-                    if (loadingScreen) loadingScreen.style.display = 'none';
-                }, 600);
-            }, 1800);
-        });
-        
-        // ========== PARTICLE SYSTEM ==========
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let mouseX = 0, mouseY = 0;
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.3;
-                this.speedY = (Math.random() - 0.5) * 0.3;
-                this.opacity = Math.random() * 0.5 + 0.2;
-                this.color = `rgba(46, 204, 113, ${this.opacity})`;
-            }
-            update() {
-                const dx = this.x - mouseX;
-                const dy = this.y - mouseY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 120) {
-                    const angle = Math.atan2(dy, dx);
-                    const force = (120 - dist) / 120;
-                    this.x += Math.cos(angle) * force * 1.5;
-                    this.y += Math.sin(angle) * force * 1.5;
-                }
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.y < 0) this.y = canvas.height;
-                if (this.y > canvas.height) this.y = 0;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-        }
-        
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < 180; i++) particles.push(new Particle());
-        }
-        
-        function animateParticles() {
-            if (!ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateParticles);
-        }
-        
-        // ========== MOUSE TRACKING ==========
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            const cd = document.querySelector('.cursor-dot');
-            const co = document.querySelector('.cursor-outline');
-            if (cd && co) {
-                cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-                co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
-            }
-        });
-        
-        // ========== FIREBASE CONFIGURATION ==========
-        const firebaseConfig = {
-            apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
-            authDomain: "prrx-chat.firebaseapp.com",
-            projectId: "prrx-chat",
-            storageBucket: "prrx-chat.firebasestorage.app",
-            messagingSenderId: "763130047676",
-            appId: "1:763130047676:web:e6566f250e81b9c6b574b9",
-            measurementId: "G-SQ0GGFJ704",
-            databaseURL: "https://prrx-chat-default-rtdb.firebaseio.com"
-        };
-        
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const messagesRef = database.ref('messages');
-        const onlineUsersRef = database.ref('online_users');
-        
-        // ========== NO HISTORY FOR NEW USERS ==========
-        let currentUser = null;
-        let userJoinTime = null;
-        let isListening = false;
-        let onlineUsersCount = 0;
-        
-        // ========== BOT COMMANDS ==========
-        const COMMANDS = `📋 **Available Commands:**
-• !help - Show this menu
-• !aimbot - AIMBOT guide
-• !esp - Visual Enhancement guide
-• !price - Pricing information
-• !download - Download link
-• !tip - Random tip`;
-        
-        function getBotResponse(message) {
-            const m = message.toLowerCase();
-            if (m.includes('hi') || m.includes('hello') || m.includes('hey')) {
-                return "Hello! 👋 Need help? Type `!help` for commands!";
-            }
-            if (m.includes('!help') || m.includes('help')) {
-                return COMMANDS;
-            }
-            if (m.includes('!aimbot') || m.includes('aimbot')) {
-                return "🎯 **AIMBOT:** Go to Settings Menu > AIM ASSISTANCE. Toggle AIMBOT +++ for max accuracy!";
-            }
-            if (m.includes('!esp') || m.includes('esp')) {
-                return "👁️ **Visual Enhancement:** Use CHAMS MENU for player highlighting and ESP for location tracking!";
-            }
-            if (m.includes('!price') || m.includes('price')) {
-                return "💰 **PRRX Plans:** 1 Week - 300 LKR | 1 Month - 850 LKR | 1 Year - 2299 LKR";
-            }
-            if (m.includes('!download') || m.includes('download')) {
-                return "📥 **Download:** https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX.HEX.1.rar";
-            }
-            if (m.includes('!tip') || m.includes('tip')) {
-                return "💡 **Tip:** Use Key Bind to quickly toggle features in-game! Press F2 for AIMBOT!";
-            }
-            return null;
-        }
-        
-        // ========== WELCOME MESSAGE ==========
-        function getWelcomeMessage(username) {
-            return `🎉 Welcome ${username}! 👋\n\nYou're in a fresh session. Only messages sent after you joined will appear. Type !help for commands.`;
-        }
-        
-        // ========== DISPLAY MESSAGE ==========
-        function displayMessage(msg) {
-            const messagesDiv = document.getElementById('messages');
-            if (!messagesDiv) return;
-            
-            const isOwn = currentUser && msg.sender === currentUser.username && !msg.isBot;
-            const msgHtml = `
-                <div class="message ${isOwn ? 'message-own' : ''} ${msg.isBot ? 'bot-message' : ''}">
-                    <div class="message-avatar">${msg.isBot ? '<i class="fas fa-robot"></i>' : msg.sender.charAt(0).toUpperCase()}</div>
-                    <div class="message-content">
-                        <div class="message-sender">${escapeHtml(msg.sender)} ${msg.isBot ? '(Bot)' : ''}</div>
-                        <div class="message-text">${escapeHtml(msg.text).replace(/\n/g, '<br>')}</div>
-                        <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+    <main class="chat-page">
+        <div class="chat-container">
+            <div class="chat-sidebar">
+                <div class="chat-user-info" id="chatUserInfo">
+                    <div class="user-avatar-placeholder">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="user-details">
+                        <h4>Guest User</h4>
+                        <p>Login to chat</p>
                     </div>
                 </div>
-            `;
-            messagesDiv.insertAdjacentHTML('beforeend', msgHtml);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-        
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-        
-        // ========== SEND MESSAGE ==========
-        function sendMessage(text, isBot = false) {
-            if (!text.trim() || !currentUser) return;
-            
-            const message = {
-                sender: isBot ? "PRRX Bot" : currentUser.username,
-                text: text.trim(),
-                timestamp: Date.now(),
-                isBot: isBot
-            };
-            messagesRef.push(message);
-        }
-        
-        // ========== LOAD MESSAGES AFTER JOIN (NO HISTORY) ==========
-        function loadMessagesAfterJoin() {
-            if (!currentUser || !userJoinTime) return;
-            
-            const messagesDiv = document.getElementById('messages');
-            if (messagesDiv) messagesDiv.innerHTML = '';
-            
-            messagesRef
-                .orderByChild('timestamp')
-                .startAt(userJoinTime)
-                .once('value', (snapshot) => {
-                    const messages = [];
-                    snapshot.forEach(child => {
-                        messages.push({ key: child.key, ...child.val() });
-                    });
-                    messages.sort((a, b) => a.timestamp - b.timestamp);
-                    messages.forEach(msg => {
-                        if (msg.timestamp >= userJoinTime) displayMessage(msg);
-                    });
-                });
-        }
-        
-        // ========== LISTEN FOR NEW MESSAGES ==========
-        function listenForNewMessages() {
-            if (isListening) return;
-            isListening = true;
-            
-            messagesRef
-                .orderByChild('timestamp')
-                .startAt(userJoinTime)
-                .on('child_added', (snapshot) => {
-                    const msg = snapshot.val();
-                    if (msg.timestamp >= userJoinTime) {
-                        displayMessage(msg);
-                    }
-                });
-        }
-        
-        // ========== ONLINE USERS ==========
-        function updateOnlineStatus() {
-            if (!currentUser) return;
-            const userRef = onlineUsersRef.child(currentUser.username);
-            userRef.set({
-                username: currentUser.username,
-                lastSeen: Date.now(),
-                online: true
-            });
-            userRef.onDisconnect().remove();
-        }
-        
-        function loadOnlineUsers() {
-            onlineUsersRef.on('value', (snapshot) => {
-                let count = 0;
-                snapshot.forEach(() => { count++; });
-                onlineUsersCount = count;
-                const onlineCountSpan = document.getElementById('onlineCount');
-                if (onlineCountSpan) onlineCountSpan.textContent = onlineUsersCount;
-            });
-        }
-        
-        // ========== RENDER CHAT INTERFACE ==========
-        function renderChatInterface() {
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                <div class="chat-container">
-                    <div class="chat-header">
-                        <h3><i class="fas fa-fire"></i> PRRX Real-Time Chat</h3>
-                        <div class="online-count-badge">
-                            <div class="online-dot"></div>
-                            <span><span id="onlineCount">0</span> users online</span>
+                <div class="chat-rooms">
+                    <h3>Chat Rooms</h3>
+                    <div class="room-list">
+                        <div class="room-item active">
+                            <span>💬</span>
+                            <span>General Chat</span>
+                            <span class="room-badge">12</span>
                         </div>
-                        <div class="user-badge"><i class="fas fa-user"></i> ${currentUser.username}</div>
-                    </div>
-                    <div class="chat-messages" id="messages"></div>
-                    <div class="chat-input-area">
-                        <input type="text" id="messageInput" placeholder="Type a message... Type !help for commands" onkeypress="if(event.key==='Enter') sendMessageFromInput()">
-                        <button onclick="sendMessageFromInput()"><i class="fas fa-paper-plane"></i> Send</button>
+                        <div class="room-item">
+                            <span>🎮</span>
+                            <span>Free Fire Talk</span>
+                            <span class="room-badge">8</span>
+                        </div>
+                        <div class="room-item">
+                            <span>⚡</span>
+                            <span>PRRX Support</span>
+                            <span class="room-badge">5</span>
+                        </div>
                     </div>
                 </div>
-            `;
+            </div>
             
-            loadMessagesAfterJoin();
-            listenForNewMessages();
-            loadOnlineUsers();
-        }
-        
-        function sendMessageFromInput() {
-            const input = document.getElementById('messageInput');
-            const message = input.value;
-            if (message.trim()) {
-                sendMessage(message);
-                input.value = '';
+            <div class="chat-main">
+                <div class="chat-header">
+                    <h3>General Chat</h3>
+                    <span class="online-status">● 24 online</span>
+                </div>
                 
-                const botResponse = getBotResponse(message);
-                if (botResponse) {
-                    setTimeout(() => {
-                        sendMessage(botResponse, true);
-                    }, 500);
-                }
-            }
-        }
-        
-        // ========== JOIN CHAT (SET JOIN TIME) ==========
-        function joinChat(username) {
-            currentUser = { username: username };
-            userJoinTime = Date.now();
-            
-            const welcomeText = getWelcomeMessage(username);
-            sendMessage(welcomeText, true);
-            
-            setTimeout(() => {
-                sendMessage(COMMANDS, true);
-            }, 800);
-            
-            renderChatInterface();
-            updateOnlineStatus();
-        }
-        
-        // ========== JOIN SCREEN ==========
-        function showJoinScreen() {
-            const app = document.getElementById('app');
-            app.innerHTML = `
-                <div class="join-screen">
-                    <i class="fas fa-comments"></i>
-                    <h2>PRRX Real-Time Chat</h2>
-                    <p style="color: #888; margin-bottom: 1rem;">🔥 Powered by Firebase | No message history</p>
-                    <p style="color: #2ecc71; margin-bottom: 1rem;">✨ New users see ONLY messages sent after they join</p>
-                    <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20">
-                    <button id="joinBtn">Join Chat</button>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <p>Welcome to PRRX Live Chat!</p>
+                        <p>Please login with Google to join the conversation.</p>
+                    </div>
                 </div>
-            `;
+                
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Type your message..." disabled>
+                    <button id="sendBtn" disabled>Send</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { auth, onAuthStateChanged } from './firebase-config.js';
+        import { getDatabase, ref, push, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+        
+        const db = getDatabase();
+        let currentUser = null;
+        
+        // Check auth
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const chatUserInfo = document.getElementById('chatUserInfo');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
             
-            document.getElementById('joinBtn').onclick = () => {
-                const username = document.getElementById('usernameInput').value.trim();
-                if (!username) { showToast("Please enter a username"); return; }
-                if (username.length < 2) { showToast("Username must be at least 2 characters"); return; }
-                joinChat(username);
-            };
+            if (user) {
+                chatUserInfo.innerHTML = `
+                    <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" class="user-avatar">
+                    <div class="user-details">
+                        <h4>${user.displayName || user.email}</h4>
+                        <p>Online</p>
+                    </div>
+                `;
+                chatInput.disabled = false;
+                sendBtn.disabled = false;
+                
+                // Load messages
+                loadMessages();
+            } else {
+                chatUserInfo.innerHTML = `
+                    <div class="user-avatar-placeholder">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="user-details">
+                        <h4>Guest User</h4>
+                        <p><a href="dashboard.html" style="color: #00ff88;">Login to chat</a></p>
+                    </div>
+                `;
+                chatInput.disabled = true;
+                sendBtn.disabled = true;
+            }
             
-            document.getElementById('usernameInput').onkeypress = (e) => {
-                if (e.key === 'Enter') document.getElementById('joinBtn').click();
-            };
+            // Update navbar
+            const navContainer = document.querySelector('.nav-container');
+            const existingAuth = document.querySelector('.nav-auth');
+            if (existingAuth) existingAuth.remove();
+            
+            const authDiv = document.createElement('div');
+            authDiv.className = 'nav-auth';
+            
+            if (user) {
+                authDiv.innerHTML = `
+                    <div class="user-menu">
+                        <img src="${user.photoURL}" class="user-avatar-small">
+                        <span>${user.displayName}</span>
+                    </div>
+                `;
+            } else {
+                authDiv.innerHTML = `<button class="login-nav-btn" onclick="window.location.href='dashboard.html'">Login</button>`;
+            }
+            navContainer.appendChild(authDiv);
+        });
+        
+        function loadMessages() {
+            const messagesRef = ref(db, 'chats/general');
+            const chatMessages = document.getElementById('chatMessages');
+            
+            onChildAdded(messagesRef, (snapshot) => {
+                const message = snapshot.val();
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${message.uid === currentUser?.uid ? 'message-own' : 'message-other'}`;
+                messageDiv.innerHTML = `
+                    <div class="message-sender">${message.name}</div>
+                    <div class="message-text">${message.text}</div>
+                    <div class="message-time">${new Date(message.timestamp).toLocaleTimeString()}</div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
         }
         
-        // ========== ANTI-DEBUGGING ==========
-        let devToolsOpen = false;
-        setInterval(() => {
-            const start = performance.now();
-            debugger;
-            const end = performance.now();
-            if (end - start > 100 && !devToolsOpen) {
-                devToolsOpen = true;
-                document.getElementById('antiDevTools').classList.add('active');
-            }
-        }, 2000);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-                showToast("🔒 DevTools blocked");
-                return false;
+        document.getElementById('sendBtn')?.addEventListener('click', () => {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (text && currentUser) {
+                const messagesRef = ref(db, 'chats/general');
+                push(messagesRef, {
+                    text: text,
+                    name: currentUser.displayName || currentUser.email,
+                    uid: currentUser.uid,
+                    photoURL: currentUser.photoURL,
+                    timestamp: serverTimestamp()
+                });
+                input.value = '';
             }
         });
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
         
-        // ========== INIT ==========
-        resizeCanvas();
-        initParticles();
-        animateParticles();
-        
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            initParticles();
+        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('sendBtn').click();
+            }
         });
-        
-        showJoinScreen();
-        
-        window.sendMessageFromInput = sendMessageFromInput;
-        
-        console.log("%c💬 PRRX REAL-TIME CHAT ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c✨ NO HISTORY: New users see only messages sent after they join", "color: #f39c12; font-size: 12px");
-        console.log("%c🎨 Loading Screen | Particle System | Custom Cursor | Anti-DevTools", "color: #3498db; font-size: 12px");
-        console.log("%c🔥 Firebase Real-Time | Bot Commands | Online Counter", "color: #2ecc71; font-size: 12px");
     </script>
 </body>
 </html>
