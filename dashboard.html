@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PRRX | Premium Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- KeyAuth JS SDK -->
-    <script src="https://keyauth.com/api/sdk.js"></script>
     <style>
         * {
             margin: 0;
@@ -138,15 +135,10 @@
             font-weight: 600;
             cursor: pointer;
             margin-top: 1rem;
-            transition: transform 0.2s;
-        }
-
-        .google-login-btn-dashboard:hover {
-            transform: scale(1.02);
         }
 
         .dashboard-content {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
             padding-top: 100px;
@@ -201,7 +193,7 @@
             cursor: pointer;
         }
 
-        /* Premium Login Box - KeyAuth */
+        /* Premium Login Box */
         .premium-login-section {
             background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,204,102,0.05));
             border-radius: 20px;
@@ -456,7 +448,7 @@
             color: #888;
         }
 
-        /* Stats Cards */
+        /* Stats Cards - Simple */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -566,7 +558,7 @@
                     <img id="navUserAvatar" class="user-avatar-small">
                     <span id="navUserName"></span>
                 </div>
-                <button class="login-nav-btn" id="navLoginBtn">Login</button>
+                <button class="login-nav-btn" id="navLoginBtn" onclick="window.location.href='index.html'">Login</button>
             </div>
         </div>
     </nav>
@@ -602,7 +594,7 @@
                 <button id="logoutBtn" class="logout-btn-dashboard">Logout</button>
             </div>
 
-            <!-- PREMIUM LOGIN BOX - KeyAuth -->
+            <!-- PREMIUM LOGIN BOX -->
             <div class="premium-login-section" id="premiumSection">
                 <div class="premium-header">
                     <div>
@@ -614,27 +606,22 @@
 
                 <div id="premiumLoginForm" class="premium-login-form">
                     <div class="form-group">
-                        <label>👤 KeyAuth Username</label>
-                        <input type="text" id="premiumUser" class="form-input" placeholder="Enter your KeyAuth username">
+                        <label>👤 Username</label>
+                        <input type="text" id="premiumUser" class="form-input" placeholder="Enter your premium username">
                     </div>
                     <div class="form-group">
-                        <label>🔑 KeyAuth Password</label>
-                        <input type="password" id="premiumPass" class="form-input" placeholder="Enter your KeyAuth password">
+                        <label>🔑 Password</label>
+                        <input type="password" id="premiumPass" class="form-input" placeholder="Enter your password">
                     </div>
-                    <div class="form-group">
-                        <label>🔐 License Key (Optional)</label>
-                        <input type="text" id="licenseKey" class="form-input" placeholder="Enter your license key if you have one">
-                    </div>
-                    <button id="premiumLoginBtn" class="premium-login-btn">Login with KeyAuth →</button>
+                    <button id="premiumLoginBtn" class="premium-login-btn">Activate Premium →</button>
                     <div id="premiumError" style="color: #ff4444; font-size: 0.75rem; margin-top: 0.5rem;"></div>
-                    <div id="premiumSuccess" style="color: #00ff88; font-size: 0.75rem; margin-top: 0.5rem; display: none;"></div>
                 </div>
 
                 <div id="premiumActiveDisplay" style="display: none;">
                     <div class="user-display">
                         <span>🎖️ Premium Activated</span><br>
                         <span class="premium-user" id="activeUsername"></span>
-                        <div style="font-size: 0.75rem; color: #888; margin-top: 0.5rem;" id="subscriptionInfo"></div>
+                        <div style="font-size: 0.75rem; color: #888; margin-top: 0.5rem;">✨ All premium features unlocked</div>
                     </div>
                     <div class="premium-features-grid">
                         <div class="premium-feature-card" data-feature="aimbot">
@@ -708,7 +695,7 @@
                 </div>
             </div>
 
-            <!-- Stats Cards -->
+            <!-- Simple Stats Cards (No Charts) -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
@@ -769,20 +756,22 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
         import { getDatabase, ref, onChildAdded, push, serverTimestamp, get, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         const db = getDatabase(app);
 
-        console.log("Firebase initialized");
+        // Premium Accounts
+        const PREMIUM_ACCOUNTS = {
+            'admin': { password: 'admin123', tier: 'admin', expires: '2025-12-31' },
+            'premium_user': { password: 'premium123', tier: 'gold', expires: '2025-06-30' },
+            'vip_member': { password: 'vip2024', tier: 'vip', expires: '2024-12-31' },
+            'test_user': { password: 'test123', tier: 'test', expires: '2025-03-31' },
+            'prrx_elite': { password: 'elite2024', tier: 'elite', expires: '2025-12-31' }
+        };
 
-        // ============ KEYAUTH INITIALIZATION ============
-        const KeyAuthApp = new KeyAuth({
-            name: "PRRX WEBSITE",
-            ownerid: "7P1GTjNd76",
-            version: "1.0",
-        });
+        // Admin Credentials
+        const ADMIN_CREDENTIALS = { username: "prrx_admin", password: "admin123" };
 
         let isPremiumActive = false;
         let currentPremiumUser = '';
@@ -790,33 +779,27 @@
         let selectedTicketId = null;
         let messagesListener = null;
 
-        // Admin Credentials
-        const ADMIN_CREDENTIALS = { username: "prrx_admin", password: "admin123" };
-
         // DOM Elements
         const loginOverlay = document.getElementById('loginOverlay');
         const dashboardContent = document.getElementById('dashboardContent');
         const googleLoginBtn = document.getElementById('googleLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
-        const navLoginBtn = document.getElementById('navLoginBtn');
 
         // Premium Elements
         const premiumLoginForm = document.getElementById('premiumLoginForm');
         const premiumActiveDisplay = document.getElementById('premiumActiveDisplay');
         const premiumStatus = document.getElementById('premiumStatus');
-        const premiumLoginBtnElem = document.getElementById('premiumLoginBtn');
+        const premiumLoginBtn = document.getElementById('premiumLoginBtn');
         const premiumUser = document.getElementById('premiumUser');
         const premiumPass = document.getElementById('premiumPass');
-        const licenseKey = document.getElementById('licenseKey');
         const premiumError = document.getElementById('premiumError');
-        const premiumSuccess = document.getElementById('premiumSuccess');
         const logoutPremiumBtn = document.getElementById('logoutPremiumBtn');
 
         // Admin Elements
         const adminLoginForm = document.getElementById('adminLoginForm');
         const adminPanel = document.getElementById('adminPanel');
         const adminStatus = document.getElementById('adminStatus');
-        const adminLoginBtnElem = document.getElementById('adminLoginBtn');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
         const adminUsername = document.getElementById('adminUsername');
         const adminPassword = document.getElementById('adminPassword');
         const adminError = document.getElementById('adminError');
@@ -828,177 +811,54 @@
         const closeChatBtn = document.getElementById('closeChatBtn');
         const chatWithUserName = document.getElementById('chatWithUserName');
 
-        // ============ GOOGLE LOGIN ============
-        async function handleGoogleLogin() {
-            try {
-                console.log("Attempting Google login...");
-                const result = await signInWithPopup(auth, provider);
-                console.log("Google login successful:", result.user);
-                // The onAuthStateChanged will handle UI update
-            } catch (error) {
-                console.error("Google login error:", error);
-                if (error.code === 'auth/popup-blocked') {
-                    alert("Popup was blocked. Please allow popups for this site and try again.");
-                } else if (error.code === 'auth/network-request-failed') {
-                    alert("Network error. Please check your internet connection.");
-                } else {
-                    alert("Login failed: " + error.message);
-                }
+        // Premium Functions
+        function validatePremiumLogin(username, password) {
+            const account = PREMIUM_ACCOUNTS[username];
+            if (account && account.password === password) {
+                const today = new Date();
+                const expiryDate = new Date(account.expires);
+                if (expiryDate > today) return { valid: true, data: account, username: username };
+                return { valid: false, error: 'Your premium subscription has expired' };
             }
+            return { valid: false, error: 'Invalid username or password' };
         }
 
-        googleLoginBtn.addEventListener('click', handleGoogleLogin);
-        
-        navLoginBtn.addEventListener('click', () => {
-            document.getElementById('googleLoginBtn').click();
-        });
-
-        // ============ AUTH STATE LISTENER ============
-        onAuthStateChanged(auth, (user) => {
-            console.log("Auth state changed:", user ? "Logged in" : "Logged out");
-            if (user) {
-                loginOverlay.style.display = 'none';
-                dashboardContent.style.display = 'block';
-                loadUserData(user);
-                updateNavbarAuth(user);
-                loadPremiumSession();
-                setInterval(() => loadTickets(), 5000);
-            } else {
-                loginOverlay.style.display = 'flex';
-                dashboardContent.style.display = 'none';
-                updateNavbarAuth(null);
-            }
-        });
-
-        function loadUserData(user) {
-            document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
-            document.getElementById('userEmail').textContent = user.email;
-            document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || user.email}&background=00ff88&color=000`;
+        function savePremiumSession(username, userData) {
+            localStorage.setItem('premium_username', username);
+            isPremiumActive = true;
+            currentPremiumUser = username;
+            updatePremiumUI(true, username, userData);
         }
-
-        function updateNavbarAuth(user) {
-            const userMenu = document.getElementById('userMenu');
-            const navLoginBtnElem = document.getElementById('navLoginBtn');
-            if (user) {
-                userMenu.style.display = 'flex';
-                navLoginBtnElem.style.display = 'none';
-                document.getElementById('navUserAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`;
-                document.getElementById('navUserName').textContent = user.displayName?.split(' ')[0] || user.email.split('@')[0];
-            } else {
-                userMenu.style.display = 'none';
-                navLoginBtnElem.style.display = 'block';
-            }
-        }
-
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-                clearPremiumSession();
-                console.log("Logged out");
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
-        });
-
-        // ============ KEYAUTH PREMIUM LOGIN ============
-        async function keyauthLogin(username, password, key = null) {
-            return new Promise((resolve, reject) => {
-                KeyAuthApp.on("init", () => {
-                    console.log("KeyAuth initialized");
-                });
-
-                KeyAuthApp.on("login", (data) => {
-                    console.log("KeyAuth login successful:", data);
-                    resolve(data);
-                });
-
-                KeyAuthApp.on("error", (error) => {
-                    console.error("KeyAuth error:", error);
-                    reject(error);
-                });
-
-                KeyAuthApp.init();
-                
-                if (key && key.length > 0) {
-                    KeyAuthApp.license(key);
-                } else if (username && password) {
-                    KeyAuthApp.login(username, password);
-                } else {
-                    reject(new Error("Please enter username/password OR license key"));
-                }
-                
-                setTimeout(() => {
-                    reject(new Error("Login timeout"));
-                }, 10000);
-            });
-        }
-
-        premiumLoginBtnElem.addEventListener('click', async () => {
-            const username = premiumUser.value.trim();
-            const password = premiumPass.value;
-            const key = licenseKey.value.trim();
-            
-            if ((!username || !password) && !key) {
-                premiumError.textContent = 'Please enter username/password OR license key';
-                return;
-            }
-            
-            premiumError.textContent = '';
-            premiumSuccess.style.display = 'none';
-            premiumLoginBtnElem.disabled = true;
-            premiumLoginBtnElem.textContent = 'Verifying...';
-            
-            try {
-                const result = await keyauthLogin(username, password, key);
-                isPremiumActive = true;
-                currentPremiumUser = username || result.username || 'Premium User';
-                
-                localStorage.setItem('keyauth_user', currentPremiumUser);
-                localStorage.setItem('keyauth_token', result.token || 'active');
-                
-                updatePremiumUI(true, currentPremiumUser);
-                premiumSuccess.style.display = 'block';
-                premiumSuccess.textContent = '✓ Premium activated successfully!';
-                
-                setTimeout(() => {
-                    premiumSuccess.style.display = 'none';
-                }, 3000);
-            } catch (error) {
-                console.error('KeyAuth Error:', error);
-                premiumError.textContent = error.message || 'Login failed. Check your credentials.';
-            } finally {
-                premiumLoginBtnElem.disabled = false;
-                premiumLoginBtnElem.textContent = 'Login with KeyAuth →';
-            }
-        });
 
         function loadPremiumSession() {
-            const savedUser = localStorage.getItem('keyauth_user');
-            if (savedUser) {
-                isPremiumActive = true;
-                currentPremiumUser = savedUser;
-                updatePremiumUI(true, savedUser);
-                return true;
+            const savedUsername = localStorage.getItem('premium_username');
+            if (savedUsername && PREMIUM_ACCOUNTS[savedUsername]) {
+                const account = PREMIUM_ACCOUNTS[savedUsername];
+                const validation = validatePremiumLogin(savedUsername, account.password);
+                if (validation.valid) {
+                    isPremiumActive = true;
+                    currentPremiumUser = savedUsername;
+                    updatePremiumUI(true, savedUsername, validation.data);
+                    return true;
+                } else clearPremiumSession();
             }
             return false;
         }
 
         function clearPremiumSession() {
-            localStorage.removeItem('keyauth_user');
-            localStorage.removeItem('keyauth_token');
+            localStorage.removeItem('premium_username');
             isPremiumActive = false;
             currentPremiumUser = '';
             updatePremiumUI(false);
         }
 
-        function updatePremiumUI(active, username = '') {
+        function updatePremiumUI(active, username = '', data = null) {
             if (active) {
                 premiumLoginForm.style.display = 'none';
                 premiumActiveDisplay.style.display = 'block';
                 premiumStatus.className = 'premium-status active';
                 premiumStatus.innerHTML = '👑 Premium Active';
-                document.getElementById('activeUsername').textContent = `@${username}`;
-                document.getElementById('subscriptionInfo').innerHTML = '✨ KeyAuth Premium Activated';
+                document.getElementById('activeUsername').textContent = `@${username} (${data?.tier || 'Premium'} Tier)`;
                 document.querySelectorAll('.premium-feature-card').forEach(card => card.classList.add('active'));
                 document.getElementById('accuracy').textContent = '98.7%';
             } else {
@@ -1011,12 +871,27 @@
             }
         }
 
-        logoutPremiumBtn.addEventListener('click', () => {
-            clearPremiumSession();
+        premiumLoginBtn.addEventListener('click', () => {
+            const username = premiumUser.value.trim();
+            const password = premiumPass.value;
+            if (!username || !password) {
+                premiumError.textContent = 'Please enter both username and password';
+                return;
+            }
+            const validation = validatePremiumLogin(username, password);
+            if (validation.valid) {
+                savePremiumSession(username, validation.data);
+                premiumError.textContent = '';
+                premiumError.style.color = '#00ff88';
+                premiumError.textContent = '✓ Premium activated successfully!';
+                setTimeout(() => { premiumError.textContent = ''; }, 3000);
+            } else premiumError.textContent = validation.error;
         });
 
-        // ============ ADMIN FUNCTIONS ============
-        adminLoginBtnElem.addEventListener('click', () => {
+        logoutPremiumBtn.addEventListener('click', () => clearPremiumSession());
+
+        // Admin Functions
+        adminLoginBtn.addEventListener('click', () => {
             const username = adminUsername.value.trim();
             const password = adminPassword.value;
             if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
@@ -1026,9 +901,7 @@
                 adminStatus.className = 'admin-status active';
                 adminStatus.innerHTML = '👑 Admin Logged In';
                 loadTickets();
-            } else {
-                adminError.textContent = 'Invalid username or password';
-            }
+            } else adminError.textContent = 'Invalid username or password';
         });
 
         function loadTickets() {
@@ -1037,9 +910,7 @@
                 const tickets = [];
                 snapshot.forEach((childSnapshot) => {
                     const ticket = childSnapshot.val();
-                    if (ticket.status === 'open') {
-                        tickets.push({ id: childSnapshot.key, ...ticket });
-                    }
+                    if (ticket.status === 'open') tickets.push({ id: childSnapshot.key, ...ticket });
                 });
                 updateTicketsList(tickets);
                 document.getElementById('openTickets').textContent = tickets.length;
@@ -1111,6 +982,51 @@
 
         adminReplyInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendReplyBtn.click(); });
 
+        // Google Auth
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginOverlay.style.display = 'none';
+                dashboardContent.style.display = 'block';
+                loadUserData(user);
+                updateNavbarAuth(user);
+                loadPremiumSession();
+                setInterval(() => loadTickets(), 5000);
+            } else {
+                loginOverlay.style.display = 'flex';
+                dashboardContent.style.display = 'none';
+                updateNavbarAuth(null);
+            }
+        });
+
+        googleLoginBtn.addEventListener('click', async () => {
+            try { await signInWithPopup(auth, provider); } catch (error) { alert('Login failed: ' + error.message); }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            try { await signOut(auth); clearPremiumSession(); } catch (error) { console.error('Logout error:', error); }
+        });
+
+        function loadUserData(user) {
+            document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
+            document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || user.email}&background=00ff88&color=000`;
+        }
+
+        function updateNavbarAuth(user) {
+            const navAuth = document.getElementById('navAuth');
+            const userMenu = document.getElementById('userMenu');
+            const navLoginBtn = document.getElementById('navLoginBtn');
+            if (user) {
+                userMenu.style.display = 'flex';
+                navLoginBtn.style.display = 'none';
+                document.getElementById('navUserAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`;
+                document.getElementById('navUserName').textContent = user.displayName?.split(' ')[0] || user.email.split('@')[0];
+            } else {
+                userMenu.style.display = 'none';
+                navLoginBtn.style.display = 'block';
+            }
+        }
+
         // Simulate real-time updates
         setInterval(() => {
             const activeChats = document.getElementById('activeChats');
@@ -1119,13 +1035,14 @@
                 const change = Math.floor(Math.random() * 50) - 20;
                 activeChats.textContent = Math.max(0, current + change).toLocaleString();
             }
+            const totalUsers = document.getElementById('totalUsers');
+            if (totalUsers) {
+                const current = parseInt(totalUsers.textContent.replace(',', ''));
+                totalUsers.textContent = (current + Math.floor(Math.random() * 10)).toLocaleString();
+            }
         }, 15000);
 
-        function escapeHtml(text) { 
-            const div = document.createElement('div'); 
-            div.textContent = text; 
-            return div.innerHTML; 
-        }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     </script>
 </body>
 </html>
