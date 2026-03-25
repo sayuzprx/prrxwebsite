@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        // Get the current URL
+        let path = window.location.pathname;
+        
+        // If the URL doesn't have .html, add it
+        if (!path.endsWith('.html') && !path.endsWith('/')) {
+            window.location.href = path + '.html';
+        }
+    </script>
+</head>
+<body>
+    Redirecting...
+</body>
+</html>
