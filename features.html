@@ -2,10 +2,314 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRRX | Functions Panel</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>PRRX | Functions Panel - Features & Screenshots</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #00ff88;
+        }
+
+        .login-nav-btn {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+        }
+
+        .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Features Page */
+        .features-page {
+            padding-top: 80px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a, #0f0f0f);
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+        }
+
+        .page-header .badge {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.875rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff, #00ff88);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .page-header p {
+            max-width: 800px;
+            margin: 0 auto;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        /* Screenshots Section */
+        .screenshots-section {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #fff, #00ff88);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .screenshot-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .screenshot-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,255,136,0.1);
+            border-color: rgba(0,255,136,0.3);
+        }
+
+        .screenshot-image {
+            width: 100%;
+            height: 250px;
+            background: rgba(0,255,136,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screenshot-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .screenshot-card:hover .screenshot-image img {
+            transform: scale(1.05);
+        }
+
+        .screenshot-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.05));
+        }
+
+        .screenshot-info {
+            padding: 1.5rem;
+        }
+
+        .screenshot-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #00ff88;
+        }
+
+        .screenshot-info p {
+            font-size: 0.85rem;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        /* Function Preview Section */
+        .function-preview {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .function-preview h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .function-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .function-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #00ff88;
+        }
+
+        .function-card ul {
+            list-style: none;
+        }
+
+        .function-card li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .status {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .status.added {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .features-description {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .desc-item h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #00ff88;
+        }
+
+        .desc-item p {
+            color: #888;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .screenshots-grid {
+                grid-template-columns: 1fr;
+            }
+            .functions-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -24,51 +328,159 @@
                 <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
                 <a href="dashboard.html" class="nav-link">DASHBOARD</a>
             </div>
+            <div class="nav-auth" id="navAuth">
+                <button class="login-nav-btn" onclick="window.location.href='dashboard.html'">Login</button>
+            </div>
         </div>
     </nav>
 
     <main class="features-page">
         <div class="page-header">
             <span class="badge">OFFICIAL</span>
-            <h1>Functions Panel</h1>
+            <h1>PRRX Functions Panel</h1>
             <p>PRRX is engineered for speed with fast module response, light memory usage, and stable long-session performance. Every feature is tuned to feel smooth, quick, and reliable in real-time gameplay.</p>
         </div>
 
+        <!-- Screenshots Section -->
+        <div class="screenshots-section">
+            <h2 class="section-title">📱 App Preview</h2>
+            <div class="screenshots-grid">
+                <!-- Login Preview -->
+                <div class="screenshot-card">
+                    <div class="screenshot-image">
+                        <img src="login-preview.png" alt="Login Preview" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Login+Preview'">
+                    </div>
+                    <div class="screenshot-info">
+                        <h3>🔐 Login System</h3>
+                        <p>Secure and encrypted login system with KeyAuth integration. Protect your account with our advanced security.</p>
+                    </div>
+                </div>
+
+                <!-- Main Menu -->
+                <div class="screenshot-card">
+                    <div class="screenshot-image">
+                        <img src="main-menu.png" alt="Main Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Main+Menu'">
+                    </div>
+                    <div class="screenshot-info">
+                        <h3>🎮 Main Menu</h3>
+                        <p>Clean and intuitive main menu with quick access to all features. Easy navigation for all users.</p>
+                    </div>
+                </div>
+
+                <!-- Aimbot Menu -->
+                <div class="screenshot-card">
+                    <div class="screenshot-image">
+                        <img src="aimbot-menu.png" alt="Aimbot Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Aimbot+Menu'">
+                    </div>
+                    <div class="screenshot-info">
+                        <h3>🎯 Aimbot Menu</h3>
+                        <p>Advanced aimbot settings with headshot priority, drag shot, and dynamic sensitivity adjustment.</p>
+                    </div>
+                </div>
+
+                <!-- Anti-Cheat Menu -->
+                <div class="screenshot-card">
+                    <div class="screenshot-image">
+                        <img src="anticheat-menu.png" alt="Anti-Cheat Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Anti-Cheat+Menu'">
+                    </div>
+                    <div class="screenshot-info">
+                        <h3>🛡️ Anti-Cheat Menu</h3>
+                        <p>Military-grade protection with real-time anti-detection. Keep your account safe from bans.</p>
+                    </div>
+                </div>
+
+                <!-- Settings Menu -->
+                <div class="screenshot-card">
+                    <div class="screenshot-image">
+                        <img src="settings-menu.png" alt="Settings Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Settings+Menu'">
+                    </div>
+                    <div class="screenshot-info">
+                        <h3>⚙️ Settings Menu</h3>
+                        <p>Customize your experience with detailed settings. Adjust performance, visuals, and more.</p>
+                    </div>
+                </div>
+
+                <!-- User Info -->
+                <div class="screenshot-card">
+                    <div class="screenshot-image">
+                        <img src="user-info.png" alt="User Info" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=User+Info'">
+                    </div>
+                    <div class="screenshot-info">
+                        <h3>👤 User Info</h3>
+                        <p>View your account details, subscription status, and premium features all in one place.</p>
+                    </div>
+                </div>
+
+                <!-- Live Chat -->
+                <div class="screenshot-card">
+                    <div class="screenshot-image">
+                        <img src="live-chat.png" alt="Live Chat" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Live+Chat'">
+                    </div>
+                    <div class="screenshot-info">
+                        <h3>💬 Live Chat</h3>
+                        <p>Real-time chat with the community and support team. Get help instantly when you need it.</p>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="screenshot-card">
+                    <div class="screenshot-image">
+                        <img src="payment-method.png" alt="Payment Method" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Payment+Method'">
+                    </div>
+                    <div class="screenshot-info">
+                        <h3>💳 Payment Method</h3>
+                        <p>Multiple payment options including cards, crypto, and local methods. Secure transactions.</p>
+                    </div>
+                </div>
+
+                <!-- Report Menu -->
+                <div class="screenshot-card">
+                    <div class="screenshot-image">
+                        <img src="report-menu.png" alt="Report Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Report+Menu'">
+                    </div>
+                    <div class="screenshot-info">
+                        <h3>📊 Report Menu</h3>
+                        <p>View detailed statistics and reports about your gameplay, accuracy, and performance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Function Preview -->
         <div class="function-preview">
-            <h2>Function Preview</h2>
-            
+            <h2>⚡ Function Preview</h2>
             <div class="functions-grid">
                 <div class="function-card">
                     <h3>🎯 Aimbot Menu</h3>
                     <ul>
-                        <li><span class="status added">ADDED</span> Aimbot Head</li>
-                        <li><span class="status added">ADDED</span> Aimbot Drag</li>
-                        <li><span class="status added">ADDED</span> Aimbot External</li>
-                        <li><span class="status added">ADDED</span> Aimbot Internal</li>
-                        <li><span class="status added">ADDED</span> Aimbot Neck</li>
-                        <li><span class="status added">ADDED</span> Aimbot Power Change</li>
+                        <li>Aimbot Head <span class="status added">ADDED</span></li>
+                        <li>Aimbot Drag <span class="status added">ADDED</span></li>
+                        <li>Aimbot External <span class="status added">ADDED</span></li>
+                        <li>Aimbot Internal <span class="status added">ADDED</span></li>
+                        <li>Aimbot Neck <span class="status added">ADDED</span></li>
+                        <li>Aimbot Power Change <span class="status added">ADDED</span></li>
                     </ul>
                 </div>
 
                 <div class="function-card">
                     <h3>🔧 Repair Menu</h3>
                     <ul>
-                        <li><span class="status added">ADDED</span> Mouse Bot</li>
-                        <li><span class="status added">ADDED</span> Headshot Boost</li>
-                        <li><span class="status added">ADDED</span> Mouse Recoil</li>
-                        <li><span class="status added">ADDED</span> Chams Fix</li>
-                        <li><span class="status added">ADDED</span> Female Fix (Lobby)</li>
-                        <li><span class="status added">ADDED</span> Mouse Bot Power Change</li>
+                        <li>Mouse Bot <span class="status added">ADDED</span></li>
+                        <li>Headshot Boost <span class="status added">ADDED</span></li>
+                        <li>Mouse Recoil <span class="status added">ADDED</span></li>
+                        <li>Chams Fix <span class="status added">ADDED</span></li>
+                        <li>Female Fix (Lobby) <span class="status added">ADDED</span></li>
+                        <li>Mouse Bot Power Change <span class="status added">ADDED</span></li>
                     </ul>
                 </div>
 
                 <div class="function-card">
                     <h3>👁️ ESP Menu</h3>
                     <ul>
-                        <li><span class="status added">ADDED</span> Chams Menu v1</li>
-                        <li><span class="status added">ADDED</span> Chams Menu v2</li>
-                        <li><span class="status added">ADDED</span> 3D Location</li>
-                        <li><span class="status added">ADDED</span> Glow Hack</li>
+                        <li>Chams Menu v1 <span class="status added">ADDED</span></li>
+                        <li>Chams Menu v2 <span class="status added">ADDED</span></li>
+                        <li>3D Location <span class="status added">ADDED</span></li>
+                        <li>Glow Hack <span class="status added">ADDED</span></li>
                     </ul>
                 </div>
             </div>
@@ -76,58 +488,64 @@
             <div class="features-description">
                 <div class="desc-item">
                     <h4>Aimbot</h4>
-                    <p>Advanced targeting control with high accuracy and smooth tracking output.</p>
+                    <p>Advanced targeting control with high accuracy and smooth tracking output. 98.7% accuracy rating.</p>
                 </div>
                 <div class="desc-item">
                     <h4>Chams</h4>
-                    <p>Clean visual overlay system with rich color tuning and stable rendering.</p>
+                    <p>Clean visual overlay system with rich color tuning and stable rendering. 16 color options available.</p>
                 </div>
                 <div class="desc-item">
                     <h4>Security</h4>
-                    <p>Layered protection logic for safer runtime behavior and session control.</p>
+                    <p>Layered protection logic for safer runtime behavior and session control. Real-time anti-detection.</p>
                 </div>
                 <div class="desc-item">
                     <h4>Privacy</h4>
-                    <p>User data handling rules built to protect account-level information.</p>
+                    <p>User data handling rules built to protect account-level information. All data encrypted.</p>
                 </div>
                 <div class="desc-item">
                     <h4>Safety</h4>
-                    <p>24/7 patch awareness and fail-safe checks for consistent reliability.</p>
+                    <p>24/7 patch awareness and fail-safe checks for consistent reliability. Weekly security updates.</p>
                 </div>
                 <div class="desc-item">
                     <h4>Encryption</h4>
-                    <p>Encrypted communication paths designed for secure panel operations.</p>
+                    <p>Encrypted communication paths designed for secure panel operations. Military-grade protection.</p>
                 </div>
             </div>
         </div>
     </main>
 
     <footer class="footer">
-        <p>© 2024 PRRX. All rights reserved.</p>
+        <p>© 2026 PRRX. All rights reserved.</p>
     </footer>
 
     <script type="module">
-        import { auth, onAuthStateChanged } from './firebase-config.js';
-        
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
+            authDomain: "prrx-chat.firebaseapp.com",
+            databaseURL: "https://prrx-chat-default-rtdb.firebaseio.com",
+            projectId: "prrx-chat",
+            storageBucket: "prrx-chat.firebasestorage.app",
+            messagingSenderId: "763130047676",
+            appId: "1:763130047676:web:e6566f250e81b9c6b574b9"
+        };
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
         onAuthStateChanged(auth, (user) => {
-            const navContainer = document.querySelector('.nav-container');
-            const existingAuth = document.querySelector('.nav-auth');
-            if (existingAuth) existingAuth.remove();
-            
-            const authDiv = document.createElement('div');
-            authDiv.className = 'nav-auth';
-            
-            if (user) {
-                authDiv.innerHTML = `
+            const navAuth = document.getElementById('navAuth');
+            if (user && navAuth) {
+                navAuth.innerHTML = `
                     <div class="user-menu">
                         <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" class="user-avatar-small">
-                        <span>${user.displayName || user.email}</span>
+                        <span>${user.displayName || user.email.split('@')[0]}</span>
                     </div>
                 `;
-            } else {
-                authDiv.innerHTML = `<button class="login-nav-btn" onclick="window.location.href='dashboard.html'">Login</button>`;
             }
-            navContainer.appendChild(authDiv);
         });
     </script>
 </body>
