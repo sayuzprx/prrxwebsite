@@ -2,653 +2,133 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX Official | All Features - Ultra Secure Gaming Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- Ultra Security Headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* ========== CUSTOM LOADING SCREEN ========== */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 100%);
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-        .loading-screen.hidden { opacity: 0; visibility: hidden; }
-        
-        .loading-logo {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, #2ecc71, #27ae60);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: loadingShimmer 1.5s ease infinite, logoPulse 1.2s ease infinite;
-            margin-bottom: 2rem;
-        }
-        @keyframes loadingShimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-        
-        .loading-spinner {
-            width: 70px;
-            height: 70px;
-            border: 4px solid rgba(46,204,113,0.15);
-            border-top: 4px solid #2ecc71;
-            border-right: 4px solid #27ae60;
-            border-radius: 50%;
-            animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            margin-bottom: 2rem;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        .loading-progress-container { width: 250px; margin: 1rem 0; }
-        .loading-progress { width: 100%; height: 3px; background: rgba(46,204,113,0.2); border-radius: 4px; overflow: hidden; }
-        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #2ecc71, #27ae60); animation: progressFill 1.4s ease-out forwards; }
-        @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
-        .loading-percentage { font-size: 0.8rem; color: #2ecc71; margin-top: 0.5rem; font-weight: 600; }
-        .loading-text { font-size: 0.85rem; color: #888; letter-spacing: 2px; margin-top: 1rem; }
-        .loading-dots span { display: inline-block; animation: dotBlink 1.4s infinite; }
-        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dotBlink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
-        
-        .loading-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        .loading-particle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: radial-gradient(circle, #2ecc71, #27ae60);
-            border-radius: 50%;
-            opacity: 0;
-            animation: floatParticle 2.5s ease-out forwards;
-        }
-        @keyframes floatParticle {
-            0% { opacity: 0; transform: translateY(0) scale(0); }
-            15% { opacity: 0.8; transform: translateY(-20px) scale(1); }
-            100% { opacity: 0; transform: translateY(-120px) scale(0); }
-        }
-        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #2ecc71; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
-        
-        /* ========== PARTICLE SYSTEM ========== */
-        #particleCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        /* ========== MAIN CONTENT ========== */
-        .content {
-            position: relative;
-            z-index: 2;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-        .content.visible { opacity: 1; }
-        
-        /* Navbar */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            border-bottom: 1px solid rgba(46,204,113,0.2);
-        }
-        .logo { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #fff, #2ecc71); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
-        .menu { display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; }
-        .menu a { color: #fff; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; position: relative; padding: 0.5rem 0; cursor: pointer; }
-        .menu a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; background: linear-gradient(90deg, #2ecc71, #27ae60); transition: width 0.3s ease; }
-        .menu a:hover::after, .menu a.active::after { width: 100%; }
-        .menu a:hover, .menu a.active { color: #2ecc71; text-shadow: 0 0 8px rgba(46,204,113,0.5); }
-        
-        /* Features Header */
-        .features-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeInUp 0.6s ease;
-        }
-        .features-header .badge {
-            font-size: 0.85rem;
-            letter-spacing: 3px;
-            color: #2ecc71;
-            background: rgba(46,204,113,0.1);
-            display: inline-block;
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            margin-bottom: 1rem;
-            border: 1px solid rgba(46,204,113,0.3);
-        }
-        h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, #2ecc71, #27ae60);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 1rem;
-        }
-        .header-desc {
-            color: #888;
-            max-width: 700px;
-            margin: 0 auto;
-            font-size: 1rem;
-        }
-        
-        /* Stats Section */
-        .stats-section {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin: 2rem 0 3rem;
-        }
-        .stat-card {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(8px);
-            border-radius: 20px;
-            padding: 1rem 1.8rem;
-            text-align: center;
-            border: 1px solid rgba(46,204,113,0.2);
-            transition: all 0.3s;
-        }
-        .stat-card:hover { transform: translateY(-5px); border-color: #2ecc71; }
-        .stat-number { font-size: 1.8rem; font-weight: 800; color: #2ecc71; }
-        .stat-label { font-size: 0.75rem; color: #888; }
-        
-        /* Features Grid */
-        .features-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.2rem;
-            justify-content: center;
-            margin: 2rem 0;
-        }
-        .feature-card {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            padding: 1.5rem;
-            width: 280px;
-            transition: all 0.3s;
-            border: 1px solid rgba(46,204,113,0.2);
-            text-align: center;
-            animation: fadeInUp 0.5s ease;
-        }
-        .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: #2ecc71;
-            box-shadow: 0 20px 35px -12px rgba(46,204,113,0.2);
-        }
-        .feature-icon {
-            font-size: 2.5rem;
-            color: #2ecc71;
-            margin-bottom: 1rem;
-        }
-        .feature-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        .feature-card p {
-            color: #888;
-            font-size: 0.75rem;
-            margin-bottom: 1rem;
-            line-height: 1.4;
-        }
-        .feature-btn {
-            background: transparent;
-            border: 1px solid #2ecc71;
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
-            color: #2ecc71;
-            font-weight: 600;
-            transition: all 0.3s;
-            cursor: pointer;
-            font-size: 0.75rem;
-        }
-        .feature-btn:hover {
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
-            color: #fff;
-            box-shadow: 0 0 12px #2ecc71;
-        }
-        
-        /* Custom Cursor */
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #2ecc71;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.05s ease;
-            box-shadow: 0 0 10px #2ecc71;
-        }
-        .cursor-outline {
-            width: 40px;
-            height: 40px;
-            border: 2px solid rgba(46,204,113,0.6);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            transition: transform 0.15s ease, width 0.2s, height 0.2s;
-            backdrop-filter: blur(2px);
-        }
-        @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
-        
-        footer {
-            text-align: center;
-            padding: 2rem;
-            font-size: 0.7rem;
-            color: #666;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            margin-top: 3rem;
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #2ecc71;
-            color: #0a0a0a;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            z-index: 10000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-        .toast.show { transform: translateX(0); }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @media (max-width: 768px) {
-            .content { padding: 1rem; }
-            .navbar { flex-direction: column; gap: 1rem; }
-            .feature-card { width: calc(50% - 0.6rem); min-width: 140px; }
-        }
-        @media (max-width: 480px) { .feature-card { width: 100%; } }
-        
-        /* Anti-DevTools */
-        .anti-devtools {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            z-index: 20000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            backdrop-filter: blur(20px);
-        }
-        .anti-devtools.active { display: flex; }
-        .anti-devtools i { font-size: 4rem; color: #ff5050; margin-bottom: 1rem; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRRX | Functions Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-particles" id="loadingParticles"></div>
-        <div class="loading-logo">PRRX</div>
-        <div class="loading-spinner"></div>
-        <div class="loading-progress-container">
-            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
-            <div class="loading-percentage" id="loadingPercentage">0%</div>
-        </div>
-        <div class="loading-text">
-            Loading PRRX Features
-            <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
-        </div>
-        <div class="loading-security">
-            <i class="fas fa-shield-alt"></i> E2E Encrypted
-            <i class="fas fa-fingerprint"></i> HWID Protected
-        </div>
-    </div>
-
-    <!-- Particle Canvas -->
-    <canvas id="particleCanvas"></canvas>
-    
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-    <div class="anti-devtools" id="antiDevTools">
-        <i class="fas fa-shield-horned"></i>
-        <p>⚠️ Security Alert: Developer Tools Detected<br>Please close DevTools to continue.</p>
-    </div>
-
-    <div class="content" id="mainContent">
-        <div class="navbar">
-            <div class="logo" id="homeLogo">PRRX</div>
-            <div class="menu">
-                <a href="index.html">HOME</a>
-                <a href="features.html" class="active">FEATURES</a>
-                <a href="live-chat.html">LIVE CHAT</a>
-                <a href="dashboard.html">DASHBOARD</a>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>PRRX</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">HOME</a>
+                <a href="features.html" class="nav-link active">FEATURES</a>
+                <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
+                <a href="dashboard.html" class="nav-link">DASHBOARD</a>
             </div>
         </div>
+    </nav>
 
-        <div class="features-header">
-            <div class="badge">⚡ ALL IN ONE ⚡</div>
-            <h1>PRRX Features</h1>
-            <div class="header-desc">
-                Complete gaming enhancement suite with 10+ powerful features. 
-                Designed for performance, security, and domination.
-            </div>
+    <main class="features-page">
+        <div class="page-header">
+            <span class="badge">OFFICIAL</span>
+            <h1>Functions Panel</h1>
+            <p>PRRX is engineered for speed with fast module response, light memory usage, and stable long-session performance. Every feature is tuned to feel smooth, quick, and reliable in real-time gameplay.</p>
         </div>
 
-        <div class="stats-section">
-            <div class="stat-card"><div class="stat-number">10+</div><div class="stat-label">Features</div></div>
-            <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">Undetected</div></div>
-            <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Support</div></div>
-        </div>
+        <div class="function-preview">
+            <h2>Function Preview</h2>
+            
+            <div class="functions-grid">
+                <div class="function-card">
+                    <h3>🎯 Aimbot Menu</h3>
+                    <ul>
+                        <li><span class="status added">ADDED</span> Aimbot Head</li>
+                        <li><span class="status added">ADDED</span> Aimbot Drag</li>
+                        <li><span class="status added">ADDED</span> Aimbot External</li>
+                        <li><span class="status added">ADDED</span> Aimbot Internal</li>
+                        <li><span class="status added">ADDED</span> Aimbot Neck</li>
+                        <li><span class="status added">ADDED</span> Aimbot Power Change</li>
+                    </ul>
+                </div>
 
-        <div class="features-grid">
-            <!-- Main Menu -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-bars"></i></div>
-                <h3>Main Menu</h3>
-                <p>Key Bind, Settings, PC Info, Live Chat, Payment, Report, About</p>
-                <button class="feature-btn" onclick="location.href='feature-mainmenu.html'">View Details</button>
+                <div class="function-card">
+                    <h3>🔧 Repair Menu</h3>
+                    <ul>
+                        <li><span class="status added">ADDED</span> Mouse Bot</li>
+                        <li><span class="status added">ADDED</span> Headshot Boost</li>
+                        <li><span class="status added">ADDED</span> Mouse Recoil</li>
+                        <li><span class="status added">ADDED</span> Chams Fix</li>
+                        <li><span class="status added">ADDED</span> Female Fix (Lobby)</li>
+                        <li><span class="status added">ADDED</span> Mouse Bot Power Change</li>
+                    </ul>
+                </div>
+
+                <div class="function-card">
+                    <h3>👁️ ESP Menu</h3>
+                    <ul>
+                        <li><span class="status added">ADDED</span> Chams Menu v1</li>
+                        <li><span class="status added">ADDED</span> Chams Menu v2</li>
+                        <li><span class="status added">ADDED</span> 3D Location</li>
+                        <li><span class="status added">ADDED</span> Glow Hack</li>
+                    </ul>
+                </div>
             </div>
-            
-            <!-- AIM Assistance -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-crosshairs"></i></div>
-                <h3>AIM Assistance</h3>
-                <p>AIMBOT +++, Head, External, Drag, Mouse Settings, Left/Right Camera</p>
-                <button class="feature-btn" onclick="location.href='feature-aim.html'">View Details</button>
-            </div>
-            
-            <!-- Visual Enhancement -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-eye"></i></div>
-                <h3>Visual Enhancement</h3>
-                <p>CHAMS Menu, ESP, 3D CHAMS, Female Fix, Blue/Red CHAMS, 3D Box</p>
-                <button class="feature-btn" onclick="location.href='feature-visual.html'">View Details</button>
-            </div>
-            
-            <!-- Anti-Cheat -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
-                <h3>Anti-Cheat</h3>
-                <p>Anti Cheates, FPS Boost, Anti Report, EPS Roost, Optimization</p>
-                <button class="feature-btn" onclick="location.href='feature-anticheat.html'">View Details</button>
-            </div>
-            
-            <!-- Settings Menu -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-sliders-h"></i></div>
-                <h3>Settings Menu</h3>
-                <p>Streamer Mode, Mouse Fix, Hide Task, Theme Color, Boost Options</p>
-                <button class="feature-btn" onclick="location.href='feature-settings.html'">View Details</button>
-            </div>
-            
-            <!-- PC Information -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-desktop"></i></div>
-                <h3>PC Information</h3>
-                <p>System Specs, OS, Processor, RAM, Disk Space, IP Address, Uptime</p>
-                <button class="feature-btn" onclick="location.href='feature-pcinfo.html'">View Details</button>
-            </div>
-            
-            <!-- Live Chat -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-comments"></i></div>
-                <h3>Live Chat</h3>
-                <p>Real-time community chat, Online users, Private messaging</p>
-                <button class="feature-btn" onclick="location.href='live-chat.html'">View Details</button>
-            </div>
-            
-            <!-- Payment Method -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-credit-card"></i></div>
-                <h3>Payment Method</h3>
-                <p>1 Week, 1 Month, 6 Months, 1 Year plans available</p>
-                <button class="feature-btn" onclick="location.href='feature-payment.html'">View Details</button>
-            </div>
-            
-            <!-- Report Menu -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-flag"></i></div>
-                <h3>Report Menu</h3>
-                <p>Report cheating, teaming, violations with image upload</p>
-                <button class="feature-btn" onclick="location.href='feature-report.html'">View Details</button>
-            </div>
-            
-            <!-- User Account -->
-            <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-user"></i></div>
-                <h3>User Account</h3>
-                <p>License info, HWID, Last Login, Time Left, Online users</p>
-                <button class="feature-btn" onclick="location.href='feature-user.html'">View Details</button>
+
+            <div class="features-description">
+                <div class="desc-item">
+                    <h4>Aimbot</h4>
+                    <p>Advanced targeting control with high accuracy and smooth tracking output.</p>
+                </div>
+                <div class="desc-item">
+                    <h4>Chams</h4>
+                    <p>Clean visual overlay system with rich color tuning and stable rendering.</p>
+                </div>
+                <div class="desc-item">
+                    <h4>Security</h4>
+                    <p>Layered protection logic for safer runtime behavior and session control.</p>
+                </div>
+                <div class="desc-item">
+                    <h4>Privacy</h4>
+                    <p>User data handling rules built to protect account-level information.</p>
+                </div>
+                <div class="desc-item">
+                    <h4>Safety</h4>
+                    <p>24/7 patch awareness and fail-safe checks for consistent reliability.</p>
+                </div>
+                <div class="desc-item">
+                    <h4>Encryption</h4>
+                    <p>Encrypted communication paths designed for secure panel operations.</p>
+                </div>
             </div>
         </div>
+    </main>
 
-        <footer>
-            <p>© 2026 PRRX Panel — Ultra Secure Gaming Solutions | E2E Encrypted | HWID Protected</p>
-        </footer>
-    </div>
-    
-    <div id="toast" class="toast"></div>
+    <footer class="footer">
+        <p>© 2024 PRRX. All rights reserved.</p>
+    </footer>
 
-    <script>
-        // ========== LOADING SCREEN ==========
-        let loadingProgress = 0;
-        const percentageElement = document.getElementById('loadingPercentage');
-        const progressBar = document.querySelector('.loading-progress-bar');
+    <script type="module">
+        import { auth, onAuthStateChanged } from './firebase-config.js';
         
-        function updateLoadingProgress() {
-            const interval = setInterval(() => {
-                loadingProgress += Math.random() * 12;
-                if (loadingProgress >= 100) {
-                    loadingProgress = 100;
-                    clearInterval(interval);
-                }
-                if (percentageElement) percentageElement.textContent = Math.floor(loadingProgress) + '%';
-                if (progressBar) progressBar.style.width = loadingProgress + '%';
-            }, 100);
-        }
-        
-        function createLoadingParticles() {
-            const container = document.getElementById('loadingParticles');
-            if (!container) return;
-            for (let i = 0; i < 80; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'loading-particle';
-                particle.style.left = Math.random() * window.innerWidth + 'px';
-                particle.style.top = window.innerHeight + Math.random() * 150 + 'px';
-                particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
-                particle.style.animationDelay = Math.random() * 2 + 's';
-                particle.style.animationDuration = 1.5 + Math.random() * 1.5 + 's';
-                container.appendChild(particle);
+        onAuthStateChanged(auth, (user) => {
+            const navContainer = document.querySelector('.nav-container');
+            const existingAuth = document.querySelector('.nav-auth');
+            if (existingAuth) existingAuth.remove();
+            
+            const authDiv = document.createElement('div');
+            authDiv.className = 'nav-auth';
+            
+            if (user) {
+                authDiv.innerHTML = `
+                    <div class="user-menu">
+                        <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" class="user-avatar-small">
+                        <span>${user.displayName || user.email}</span>
+                    </div>
+                `;
+            } else {
+                authDiv.innerHTML = `<button class="login-nav-btn" onclick="window.location.href='dashboard.html'">Login</button>`;
             }
-        }
-        
-        updateLoadingProgress();
-        createLoadingParticles();
-        
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loadingScreen = document.getElementById('loadingScreen');
-                loadingScreen.classList.add('hidden');
-                document.getElementById('mainContent').classList.add('visible');
-                setTimeout(() => {
-                    if (loadingScreen) loadingScreen.style.display = 'none';
-                }, 600);
-            }, 1800);
+            navContainer.appendChild(authDiv);
         });
-        
-        // ========== PARTICLE SYSTEM ==========
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let mouseX = 0, mouseY = 0;
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.3;
-                this.speedY = (Math.random() - 0.5) * 0.3;
-                this.opacity = Math.random() * 0.5 + 0.2;
-                this.color = `rgba(46, 204, 113, ${this.opacity})`;
-            }
-            
-            update() {
-                const dx = this.x - mouseX;
-                const dy = this.y - mouseY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 120) {
-                    const angle = Math.atan2(dy, dx);
-                    const force = (120 - dist) / 120;
-                    this.x += Math.cos(angle) * force * 1.5;
-                    this.y += Math.sin(angle) * force * 1.5;
-                }
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.y < 0) this.y = canvas.height;
-                if (this.y > canvas.height) this.y = 0;
-            }
-            
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-        }
-        
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < 150; i++) {
-                particles.push(new Particle());
-            }
-        }
-        
-        function animateParticles() {
-            if (!ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animateParticles);
-        }
-        
-        // ========== MOUSE TRACKING ==========
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            
-            const cd = document.querySelector('.cursor-dot');
-            const co = document.querySelector('.cursor-outline');
-            if (cd && co) {
-                cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-                co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
-            }
-        });
-        
-        // ========== ANTI-DEBUGGING ==========
-        let devToolsOpen = false;
-        setInterval(() => {
-            const start = performance.now();
-            debugger;
-            const end = performance.now();
-            if (end - start > 100 && !devToolsOpen) {
-                devToolsOpen = true;
-                document.getElementById('antiDevTools').classList.add('active');
-            }
-        }, 2000);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-                showToast("🔒 DevTools blocked");
-                return false;
-            }
-        });
-        
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
-        
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-        
-        // ========== NAVIGATION ==========
-        document.getElementById('homeLogo').addEventListener('click', () => {
-            window.location.href = 'index.html';
-        });
-        
-        // ========== INIT ==========
-        resizeCanvas();
-        initParticles();
-        animateParticles();
-        
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            initParticles();
-        });
-        
-        console.log("%c🔐 PRRX FEATURES PAGE ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c✨ 10+ Features | E2E Encrypted | HWID Protected", "color: #fff; font-size: 12px");
-        console.log("%c🎨 Particle System Active | Dark Theme", "color: #3498db; font-size: 12px");
     </script>
 </body>
 </html>
