@@ -323,6 +323,15 @@
             color: #fff;
             cursor: pointer;
             margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
         }
 
         @media (max-width: 768px) {
@@ -351,7 +360,6 @@
                 <a href="features.html" class="nav-link">FEATURES</a>
                 <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
                 <a href="dashboard.html" class="nav-link">DASHBOARD</a>
-                <a href="support-chat.html" class="nav-link active">SUPPORT</a>
             </div>
             <div class="user-menu" id="userMenu" style="display: none;">
                 <div id="navUserAvatar" class="user-avatar-small">?</div>
@@ -372,7 +380,8 @@
         </div>
 
         <div id="supportContent" style="display: none;">
-            <button id="backToFormBtn" class="back-btn">← Back to Create Ticket</button>
+            <!-- Back to Live Chat Button -->
+            <button id="backToLiveChatBtn" class="back-btn">← Back to Live Chat</button>
 
             <!-- Create Ticket Form -->
             <div id="ticketForm" class="create-ticket-card">
@@ -484,7 +493,7 @@
         const supportContent = document.getElementById('supportContent');
         const userNameInput = document.getElementById('userNameInput');
         const startSupportBtn = document.getElementById('startSupportBtn');
-        const backToFormBtn = document.getElementById('backToFormBtn');
+        const backToLiveChatBtn = document.getElementById('backToLiveChatBtn');
         const ticketForm = document.getElementById('ticketForm');
         const chatArea = document.getElementById('chatArea');
         const createTicketBtn = document.getElementById('createTicketBtn');
@@ -497,6 +506,11 @@
         const chatTitle = document.getElementById('chatTitle');
         const ticketStatusBadge = document.getElementById('ticketStatusBadge');
 
+        // Back to Live Chat - Redirect to live-chat.html
+        backToLiveChatBtn.addEventListener('click', () => {
+            window.location.href = 'live-chat.html';
+        });
+
         startSupportBtn.addEventListener('click', () => {
             const name = userNameInput.value.trim();
             if (name.length < 2) {
@@ -507,15 +521,6 @@
             localStorage.setItem('support_user', name);
             nameModal.style.display = 'none';
             supportContent.style.display = 'block';
-        });
-
-        backToFormBtn.addEventListener('click', () => {
-            if (currentTicketId) {
-                if (messageListener) messageListener();
-                currentTicketId = null;
-            }
-            ticketForm.style.display = 'block';
-            chatArea.style.display = 'none';
         });
 
         createTicketBtn.addEventListener('click', async () => {
