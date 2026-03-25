@@ -2,801 +2,107 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX Official | Ultra Secure Gaming Website</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0a0a0f;
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* ========== CUSTOM LOADING SCREEN ========== */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 100%);
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-        .loading-screen.hidden { opacity: 0; visibility: hidden; }
-        .loading-logo {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, #2ecc71, #27ae60);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: loadingShimmer 1.5s ease infinite, logoPulse 1.2s ease infinite;
-            margin-bottom: 2rem;
-        }
-        @keyframes loadingShimmer { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes logoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-        .loading-spinner {
-            width: 70px;
-            height: 70px;
-            border: 4px solid rgba(46,204,113,0.15);
-            border-top: 4px solid #2ecc71;
-            border-right: 4px solid #27ae60;
-            border-radius: 50%;
-            animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            margin-bottom: 2rem;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-progress-container { width: 250px; margin: 1rem 0; }
-        .loading-progress { width: 100%; height: 3px; background: rgba(46,204,113,0.2); border-radius: 4px; overflow: hidden; }
-        .loading-progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #2ecc71, #27ae60); animation: progressFill 1.4s ease-out forwards; }
-        @keyframes progressFill { 0% { width: 0%; } 100% { width: 100%; } }
-        .loading-percentage { font-size: 0.8rem; color: #2ecc71; margin-top: 0.5rem; font-weight: 600; }
-        .loading-text { font-size: 0.85rem; color: #8e9eb5; letter-spacing: 2px; margin-top: 1rem; }
-        .loading-dots span { display: inline-block; animation: dotBlink 1.4s infinite; }
-        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dotBlink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
-        .loading-particles { position: absolute; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
-        .loading-particle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: radial-gradient(circle, #2ecc71, #27ae60);
-            border-radius: 50%;
-            opacity: 0;
-            animation: floatParticle 2.5s ease-out forwards;
-        }
-        @keyframes floatParticle {
-            0% { opacity: 0; transform: translateY(0) scale(0); }
-            15% { opacity: 0.8; transform: translateY(-20px) scale(1); }
-            100% { opacity: 0; transform: translateY(-120px) scale(0); }
-        }
-        .loading-security { margin-top: 2rem; font-size: 0.7rem; color: #2ecc71; display: flex; align-items: center; gap: 0.5rem; background: rgba(0,0,0,0.3); padding: 0.4rem 1rem; border-radius: 30px; }
-        
-        /* ========== PARTICLE CANVAS ========== */
-        #particleCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-        
-        /* ========== MAIN CONTENT ========== */
-        .content {
-            position: relative;
-            z-index: 2;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-        .content.visible { opacity: 1; }
-        
-        /* Navbar */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            border-bottom: 1px solid rgba(46,204,113,0.2);
-        }
-        .logo { font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #fff, #2ecc71); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
-        .menu { display: flex; gap: 2rem; flex-wrap: wrap; align-items: center; }
-        .menu a { color: #fff; text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; position: relative; padding: 0.5rem 0; cursor: pointer; }
-        .menu a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; background: linear-gradient(90deg, #2ecc71, #27ae60); transition: width 0.3s ease; }
-        .menu a:hover::after, .menu a.active::after { width: 100%; }
-        .menu a:hover, .menu a.active { color: #2ecc71; text-shadow: 0 0 8px rgba(46,204,113,0.5); }
-        
-        /* Panel Container */
-        .panel-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 70vh;
-            margin: 1rem 0;
-        }
-        
-        .panel-image {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        
-        /* New Text Above Image */
-        .panel-title {
-            margin-bottom: 1rem;
-        }
-        .official-text {
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            color: #2ecc71;
-            font-weight: 600;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .power-text {
-            font-size: 0.8rem;
-            color: #888;
-            letter-spacing: 2px;
-            margin-top: 0.3rem;
-            font-weight: 500;
-        }
-        
-        .panel-img {
-            width: 100%;
-            height: auto;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            border: 1px solid rgba(46,204,113,0.3);
-            opacity: 1;
-            transform: scale(1);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        
-        /* Pieces Grid for Assembly Effect */
-        .pieces-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 2px;
-            pointer-events: none;
-            z-index: 5;
-        }
-        
-        .piece {
-            background: rgba(10,10,15,0.9);
-            backdrop-filter: blur(4px);
-            border-radius: 8px;
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            opacity: 1;
-        }
-        
-        .piece.fade-out {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-        
-        /* Topics from Left and Right */
-        .topics-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 2rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-        
-        .left-topics, .right-topics {
-            flex: 1;
-            min-width: 280px;
-        }
-        
-        .topic-item {
-            background: rgba(255,255,255,0.03);
-            border-left: 3px solid #fff;
-            padding: 0.8rem 1.2rem;
-            margin-bottom: 0.8rem;
-            border-radius: 0 12px 12px 0;
-            transition: all 0.3s ease;
-            opacity: 0;
-            transform: translateX(-30px);
-        }
-        
-        .right-topics .topic-item {
-            border-left: none;
-            border-right: 3px solid #fff;
-            border-radius: 12px 0 0 12px;
-            transform: translateX(30px);
-        }
-        
-        .topic-item.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        
-        .topic-item:hover {
-            background: rgba(46,204,113,0.1);
-            border-left-color: #2ecc71;
-            transform: translateX(5px);
-        }
-        
-        .right-topics .topic-item:hover {
-            transform: translateX(-5px);
-            border-right-color: #2ecc71;
-        }
-        
-        .topic-item h3 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-            color: #fff;
-        }
-        
-        .topic-item p {
-            font-size: 0.7rem;
-            color: #888;
-        }
-        
-        .topic-item i {
-            margin-right: 0.5rem;
-            color: #2ecc71;
-        }
-        
-        /* WhatsApp Widget */
-        .whatsapp-widget {
-            background: rgba(20,20,20,0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 24px;
-            padding: 1.2rem;
-            max-width: 380px;
-            margin: 2rem auto;
-            border: 1px solid rgba(46,204,113,0.3);
-            transition: all 0.3s;
-            text-align: center;
-        }
-        .whatsapp-widget:hover { transform: translateY(-5px); border-color: #2ecc71; box-shadow: 0 15px 35px rgba(46,204,113,0.15); }
-        .widget-header { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem; }
-        .widget-header i { font-size: 2rem; color: #2ecc71; }
-        .widget-header h3 { font-size: 1.2rem; font-weight: 700; }
-        .widget-header p { font-size: 0.7rem; color: #888; margin-top: 0.2rem; }
-        .online-status { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.8rem; font-size: 0.75rem; }
-        .online-dot { width: 8px; height: 8px; background-color: #2ecc71; border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.2); } }
-        .member-stats { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem; font-size: 0.7rem; color: #888; }
-        .whatsapp-btn { display: inline-block; background: linear-gradient(135deg, #2ecc71, #27ae60); padding: 0.7rem 1.2rem; border-radius: 50px; color: white; text-decoration: none; font-weight: 600; width: 100%; text-align: center; }
-        .whatsapp-btn:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(46,204,113,0.4); }
-        
-        /* News Section */
-        .news-section { margin: 3rem 0; }
-        .section-header { text-align: center; margin-bottom: 1.5rem; }
-        .section-header h2 { font-size: 1.5rem; background: linear-gradient(135deg, #fff, #2ecc71); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .news-grid { display: flex; flex-direction: column; gap: 0.8rem; }
-        .news-card {
-            background: rgba(255,255,255,0.03);
-            border-radius: 16px;
-            padding: 1rem 1.2rem;
-            border: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .news-card:hover { transform: translateX(5px); border-color: rgba(46,204,113,0.3); background: rgba(46,204,113,0.05); }
-        .news-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
-        .news-badge { background: linear-gradient(90deg, #2ecc71, #27ae60); padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.6rem; font-weight: 600; }
-        .news-badge.announcement { background: linear-gradient(90deg, #f39c12, #e67e22); }
-        .news-badge.patch { background: linear-gradient(90deg, #3498db, #2980b9); }
-        .news-date { font-size: 0.6rem; color: #666; }
-        .news-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
-        .news-preview { font-size: 0.75rem; color: #888; }
-        .news-expanded { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-        .news-card.active .news-expanded { max-height: 200px; margin-top: 0.8rem; }
-        .news-expanded-content { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.8rem; font-size: 0.75rem; color: #aaa; }
-        
-        /* CTA Section */
-        .cta-section {
-            text-align: center;
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: rgba(255,255,255,0.03);
-            border-radius: 24px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .cta-button {
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            font-weight: bold;
-            border: none;
-            color: white;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin-top: 0.5rem;
-        }
-        .cta-button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(46,204,113,0.4); }
-        
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 0.65rem;
-            color: #666;
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #2ecc71;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.05s ease;
-            box-shadow: 0 0 10px #2ecc71;
-        }
-        .cursor-outline {
-            width: 40px;
-            height: 40px;
-            border: 2px solid rgba(46,204,113,0.6);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            transition: transform 0.15s ease, width 0.2s, height 0.2s;
-            backdrop-filter: blur(2px);
-        }
-        @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none; } }
-        
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #2ecc71;
-            color: #0a0a0a;
-            padding: 10px 20px;
-            border-radius: 40px;
-            z-index: 10000;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        }
-        .toast.show { transform: translateX(0); }
-        
-        .anti-devtools {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            z-index: 20000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            backdrop-filter: blur(20px);
-        }
-        .anti-devtools.active { display: flex; }
-        
-        @media (max-width: 768px) {
-            .content { padding: 1rem; }
-            .navbar { flex-direction: column; gap: 1rem; }
-            .topics-container { flex-direction: column; }
-            .panel-container { min-height: 50vh; }
-            .official-text { font-size: 1rem; }
-            .power-text { font-size: 0.7rem; }
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRRX | Home</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-particles" id="loadingParticles"></div>
-        <div class="loading-logo">PRRX</div>
-        <div class="loading-spinner"></div>
-        <div class="loading-progress-container">
-            <div class="loading-progress"><div class="loading-progress-bar"></div></div>
-            <div class="loading-percentage" id="loadingPercentage">0%</div>
-        </div>
-        <div class="loading-text">
-            Initializing Secure Panel Website
-            <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span>
-        </div>
-        <div class="loading-security">
-            <i class="fas fa-shield-alt"></i> E2E Encryption Active
-            <i class="fas fa-fingerprint"></i> HWID Protected
-        </div>
-    </div>
-
-    <!-- Particle Canvas -->
-    <canvas id="particleCanvas"></canvas>
-    
-    <div class="cursor-dot"></div>
-    <div class="cursor-outline"></div>
-    <div class="anti-devtools" id="antiDevTools">
-        <i class="fas fa-shield-horned"></i>
-        <p>⚠️ SECURITY ALERT: Developer Tools Detected<br>Please close DevTools to continue.</p>
-    </div>
-
-    <div class="content" id="mainContent">
-        <div class="navbar">
-            <div class="logo" id="homeLogo">PRRX</div>
-            <div class="menu">
-                <a id="navHome" class="active">HOME</a>
-                <a id="navFeatures">FEATURES</a>
-                <a id="navChat">LIVE CHAT</a>
-                <a href="dashboard.html">DASHBOARD</a>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span>PRRX</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">HOME</a>
+                <a href="features.html" class="nav-link">FEATURES</a>
+                <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
+                <a href="dashboard.html" class="nav-link">DASHBOARD</a>
             </div>
         </div>
+    </nav>
 
-        <!-- Panel Container with Image -->
-        <div class="panel-container">
-            <div class="panel-image" id="panelImage">
-                <!-- NEW TEXT ABOVE IMAGE -->
-                <div class="panel-title">
-                    <div class="official-text">PRRX OFFICIAL</div>
-                    <div class="power-text">POWER • REVOLUTION • RAPID • XTREME</div>
-                </div>
-                <div class="pieces-overlay" id="piecesOverlay"></div>
-                <img src="https://github.com/sayuzprx/prrxwebsite/raw/main/panel-menu.png" 
-                     alt="PRRX Panel Main Menu" 
-                     class="panel-img" 
-                     id="panelImg"
-                     onerror="this.src='https://placehold.co/900x600/1a1a2e/2ecc71?text=PRRX+Panel'">
+    <main>
+        <section class="hero">
+            <div class="hero-badge">WELCOME</div>
+            <h1 class="hero-title">PRRX</h1>
+            <p class="hero-subtitle">Sri Lanka's #1 Free Fire Panel</p>
+            <p class="hero-desc">Engineered for fast response</p>
+            <div class="hero-features">
+                <span>Designed for Performance & Security</span>
+                <span class="server-badge">🇸🇬 Singapore Server</span>
+                <span>Main id safe</span>
             </div>
-        </div>
+        </section>
 
-        <!-- Topics from Left and Right -->
-        <div class="topics-container" id="topicsContainer">
-            <div class="left-topics">
-                <div class="topic-item" data-delay="0">
-                    <h3><i class="fas fa-keyboard"></i> Key Bind</h3>
-                    <p>Customize your hotkeys for quick feature access</p>
-                </div>
-                <div class="topic-item" data-delay="1">
-                    <h3><i class="fas fa-sliders-h"></i> Settings Menu</h3>
-                    <p>Full configuration panel for your preferences</p>
-                </div>
-                <div class="topic-item" data-delay="2">
-                    <h3><i class="fas fa-desktop"></i> Your PC Inform</h3>
-                    <p>System specifications and performance stats</p>
-                </div>
-                <div class="topic-item" data-delay="3">
-                    <h3><i class="fas fa-comments"></i> Real Chat {Live}</h3>
-                    <p>Live community chat and support</p>
-                </div>
-            </div>
-            <div class="right-topics">
-                <div class="topic-item" data-delay="4">
-                    <h3><i class="fas fa-crosshairs"></i> AIM ASSISTANCE</h3>
-                    <p>AIMBOT +++, HEAD, EXTERNAL, DRAG, Mouse Settings</p>
-                </div>
-                <div class="topic-item" data-delay="5">
-                    <h3><i class="fas fa-eye"></i> VISUAL ENHANCEMENT</h3>
-                    <p>CHAMS Menu, ESP, 3D CHAMS, Female Fix, Blue/Red CHAMS</p>
-                </div>
-                <div class="topic-item" data-delay="6">
-                    <h3><i class="fas fa-shield-alt"></i> ANTI-CHEAT</h3>
-                    <p>Anti Cheates, Anti Report, FPS Boost, Optimization</p>
-                </div>
-                <div class="topic-item" data-delay="7">
-                    <h3><i class="fas fa-cog"></i> INTERNAL ESP BOX</h3>
-                    <p>ESP Fixed Mod with advanced detection</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- WhatsApp Widget -->
-        <div class="whatsapp-widget">
-            <div class="widget-header">
-                <i class="fab fa-whatsapp"></i>
-                <div>
-                    <h3>𝗣𝗥𝗥𝗫 • 𝗦𝗧𝗢𝗥𝗘 • 𝗫𝗧𝗥𝗘𝗔𝗠</h3>
-                    <p>Get instant help & updates</p>
-                </div>
-            </div>
-            <div class="online-status"><div class="online-dot"></div><span>Active Now • Quick Support</span></div>
-            <div class="member-stats"><span><i class="fas fa-users"></i> 892 Members</span><span><i class="fas fa-comment-dots"></i> 24/7 Support</span></div>
-            <a href="https://chat.whatsapp.com/EfnFIZp4RnGEKUqFRxajSx" target="_blank" class="whatsapp-btn" id="whatsappJoinBtn"><i class="fab fa-whatsapp"></i> Join WhatsApp Group</a>
-        </div>
-
-        <!-- News Section -->
-        <div class="news-section">
-            <div class="section-header"><h2><i class="fas fa-newspaper"></i> News & Updates</h2><p>Latest announcements, patch notes, and feature updates</p></div>
-            <div class="news-grid" id="newsGrid"></div>
-        </div>
-
-        <!-- CTA Section -->
-        <div class="cta-section">
-            <h3 style="margin-bottom: 0.5rem;">Ready to dominate?</h3>
-            <button class="cta-button" id="downloadBtn"><i class="fas fa-download"></i> GET PRRX PREMIUM</button>
-        </div>
-        
-        <footer>
-            <p>© 2026 PRRX Panel — Ultra Secure Gaming Solutions | E2E Encrypted | HWID Protected</p>
-        </footer>
-    </div>
-    
-    <div id="toast" class="toast"></div>
-
-    <script>
-        // ========== LOADING SCREEN ==========
-        let loadingProgress = 0;
-        const percentageElement = document.getElementById('loadingPercentage');
-        
-        function updateLoadingProgress() {
-            const interval = setInterval(() => {
-                loadingProgress += Math.random() * 12;
-                if (loadingProgress >= 100) {
-                    loadingProgress = 100;
-                    clearInterval(interval);
-                }
-                if (percentageElement) percentageElement.textContent = Math.floor(loadingProgress) + '%';
-            }, 100);
-        }
-        
-        function createLoadingParticles() {
-            const container = document.getElementById('loadingParticles');
-            if (!container) return;
-            for (let i = 0; i < 80; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'loading-particle';
-                particle.style.left = Math.random() * window.innerWidth + 'px';
-                particle.style.top = window.innerHeight + Math.random() * 150 + 'px';
-                particle.style.setProperty('--x', (Math.random() - 0.5) * 150 + 'px');
-                particle.style.animationDelay = Math.random() * 2 + 's';
-                particle.style.animationDuration = 1.5 + Math.random() * 1.5 + 's';
-                container.appendChild(particle);
-            }
-        }
-        
-        updateLoadingProgress();
-        createLoadingParticles();
-        
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loadingScreen = document.getElementById('loadingScreen');
-                loadingScreen.classList.add('hidden');
-                document.getElementById('mainContent').classList.add('visible');
-                assemblePanel();
-                animateTopics();
-                setTimeout(() => {
-                    if (loadingScreen) loadingScreen.style.display = 'none';
-                }, 600);
-            }, 1800);
-        });
-        
-        // ========== PANEL ASSEMBLY ==========
-        function createPieces() {
-            const overlay = document.getElementById('piecesOverlay');
-            if (!overlay) return;
-            overlay.innerHTML = '';
-            for (let i = 0; i < 16; i++) {
-                const piece = document.createElement('div');
-                piece.className = 'piece';
-                overlay.appendChild(piece);
-            }
-        }
-        
-        function assemblePanel() {
-            const pieces = document.querySelectorAll('.piece');
-            const panelImg = document.getElementById('panelImg');
-            if (!pieces.length || !panelImg) return;
+        <section class="entries-section">
+            <h2>Entries</h2>
+            <p class="section-desc">Manage access, stay active, and control everything from one place.</p>
             
-            pieces.forEach((piece, index) => {
-                setTimeout(() => {
-                    piece.classList.add('fade-out');
-                }, index * 70);
-            });
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <div class="card-icon">🔐</div>
+                    <h3>Login System</h3>
+                    <p>A secure and encrypted login system that protects user data while delivering fast and reliable access.</p>
+                    <a href="dashboard.html" class="card-link">View More →</a>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Functions Panel</h3>
+                    <p>Everything you need to manage, play, and stay connected — all in one fast, minimal, user-friendly interface.</p>
+                    <a href="features.html" class="card-link">View More →</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>Ready to dominate?</h2>
+            <h3>GET PRRX</h3>
+            <p>Download PRRX HEX Premium now and unlock the full power of Free Fire. Join 12,000+ elite players today.</p>
+            <div class="version-info">
+                <span>PRRX v3.2</span>
+                <span>· Android</span>
+                <span>· Licence required</span>
+                <span>· Auto-update included</span>
+            </div>
+            <button class="cta-button" onclick="window.location.href='dashboard.html'">Get Started →</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2024 PRRX. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { auth, onAuthStateChanged } from './firebase-config.js';
+        
+        // Check auth status for navbar
+        onAuthStateChanged(auth, (user) => {
+            const navContainer = document.querySelector('.nav-container');
+            const existingAuth = document.querySelector('.nav-auth');
+            if (existingAuth) existingAuth.remove();
             
-            setTimeout(() => {
-                const overlay = document.getElementById('piecesOverlay');
-                if (overlay) overlay.style.display = 'none';
-            }, 1200);
-        }
-        
-        function animateTopics() {
-            const topics = document.querySelectorAll('.topic-item');
-            topics.forEach(topic => {
-                const delay = parseInt(topic.getAttribute('data-delay')) * 120;
-                setTimeout(() => {
-                    topic.classList.add('visible');
-                }, delay + 1600);
-            });
-        }
-        
-        // ========== NEWS DATA ==========
-        const newsData = [
-            { type: "update", date: "March 22, 2026", title: "PRRX v3.2 Released!", preview: "New features: AIMBOT EXTERNAL AI, Enhanced ESP, Performance optimizations.", expanded: "<strong>What's New:</strong><ul><li>AIMBOT EXTERNAL AI - AI-powered aim assistance</li><li>Enhanced ESP with 3D location tracking</li><li>Improved FPS Boost (+15% performance)</li><li>Fixed Mouse Drag issues</li></ul>" },
-            { type: "announcement", date: "March 20, 2026", title: "Server Maintenance Completed", preview: "Singapore server upgraded. All systems operational with improved stability.", expanded: "The Singapore server has been upgraded.<ul><li>30% faster response times</li><li>Improved connection stability</li><li>Reduced latency (avg 45ms → 32ms)</li></ul>" },
-            { type: "patch", date: "March 18, 2026", title: "Hotfix v3.1.2 - Anti-Cheat Update", preview: "Critical anti-cheat update released. Please update to latest version.", expanded: "<strong>Hotfix Details:</strong><ul><li>Updated detection signatures</li><li>Fixed false positive issues</li><li>Improved HWID protection</li></ul>" }
-        ];
-        
-        function renderNews() {
-            const grid = document.getElementById('newsGrid');
-            if (!grid) return;
-            grid.innerHTML = newsData.map((item, i) => `
-                <div class="news-card" onclick="toggleNews(${i})">
-                    <div class="news-header">
-                        <span class="news-badge ${item.type}">${item.type === 'update' ? '<i class="fas fa-download"></i> Update' : item.type === 'announcement' ? '<i class="fas fa-bullhorn"></i> Announcement' : '<i class="fas fa-bug"></i> Patch'}</span>
-                        <span class="news-date">${item.date}</span>
+            const authDiv = document.createElement('div');
+            authDiv.className = 'nav-auth';
+            
+            if (user) {
+                authDiv.innerHTML = `
+                    <div class="user-menu">
+                        <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" class="user-avatar-small">
+                        <span>${user.displayName || user.email}</span>
                     </div>
-                    <div class="news-title">${item.title}</div>
-                    <div class="news-preview">${item.preview}</div>
-                    <div class="news-expanded" id="news-expanded-${i}"><div class="news-expanded-content">${item.expanded}</div></div>
-                </div>
-            `).join('');
-        }
-        
-        window.toggleNews = function(i) {
-            const card = document.querySelectorAll('.news-card')[i];
-            if (card.classList.contains('active')) card.classList.remove('active');
-            else { document.querySelectorAll('.news-card').forEach(c => c.classList.remove('active')); card.classList.add('active'); }
-        }
-        
-        // ========== PARTICLE SYSTEM ==========
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let mouseX = 0, mouseY = 0;
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.3;
-                this.speedY = (Math.random() - 0.5) * 0.3;
-                this.opacity = Math.random() * 0.5 + 0.2;
-                this.color = `rgba(46, 204, 113, ${this.opacity})`;
+                `;
+            } else {
+                authDiv.innerHTML = `<button class="login-nav-btn" onclick="window.location.href='dashboard.html'">Login</button>`;
             }
-            update() {
-                const dx = this.x - mouseX;
-                const dy = this.y - mouseY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 120) {
-                    const angle = Math.atan2(dy, dx);
-                    const force = (120 - dist) / 120;
-                    this.x += Math.cos(angle) * force * 1.5;
-                    this.y += Math.sin(angle) * force * 1.5;
-                }
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0) this.x = canvas.width;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.y < 0) this.y = canvas.height;
-                if (this.y > canvas.height) this.y = 0;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-        }
-        
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < 180; i++) particles.push(new Particle());
-        }
-        
-        function animateParticles() {
-            if (!ctx) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateParticles);
-        }
-        
-        // ========== MOUSE TRACKING ==========
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            const cd = document.querySelector('.cursor-dot');
-            const co = document.querySelector('.cursor-outline');
-            if (cd && co) {
-                cd.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-                co.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
-            }
+            navContainer.appendChild(authDiv);
         });
-        
-        // ========== NAVIGATION ==========
-        document.getElementById('navHome')?.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
-            document.getElementById('navHome').classList.add('active');
-        });
-        document.getElementById('navFeatures')?.addEventListener('click', () => {
-            window.location.href = 'features.html';
-        });
-        document.getElementById('navChat')?.addEventListener('click', () => {
-            window.location.href = 'live-chat.html';
-        });
-        document.getElementById('downloadBtn')?.addEventListener('click', () => {
-            window.open('https://github.com/sayuzprx/prrxwebsite/releases/download/v3.2/PRRX.HEX.1.rar', '_blank');
-            showToast("🔒 Secure download started");
-        });
-        document.getElementById('whatsappJoinBtn')?.addEventListener('click', () => {
-            showToast("💬 Opening WhatsApp group...");
-        });
-        document.getElementById('homeLogo')?.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
-            document.getElementById('navHome').classList.add('active');
-        });
-        
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-        
-        // ========== ANTI-DEBUGGING ==========
-        let devToolsOpen = false;
-        setInterval(() => {
-            const start = performance.now();
-            debugger;
-            const end = performance.now();
-            if (end - start > 100 && !devToolsOpen) {
-                devToolsOpen = true;
-                document.getElementById('antiDevTools').classList.add('active');
-            }
-        }, 2000);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u')) {
-                e.preventDefault();
-                showToast("🔒 DevTools blocked");
-                return false;
-            }
-        });
-        document.addEventListener('contextmenu', (e) => { e.preventDefault(); showToast("🔒 Right-click disabled"); return false; });
-        
-        // ========== INIT ==========
-        createPieces();
-        renderNews();
-        resizeCanvas();
-        initParticles();
-        animateParticles();
-        
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            initParticles();
-        });
-        
-        console.log("%c🔐 PRRX ULTRA SECURE WEBSITE ACTIVE", "color: #2ecc71; font-size: 14px");
-        console.log("%c✨ Panel assembly animation | White particles follow mouse | Topics from left & right", "color: #fff; font-size: 12px");
-        console.log("%c💬 WhatsApp widget integrated | News & Updates system active", "color: #2ecc71; font-size: 12px");
     </script>
 </body>
 </html>
