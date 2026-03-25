@@ -2,10 +2,451 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>PRRX | Live Chat</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #00ff88;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+
+        .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* Name Modal */
+        .name-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .name-modal-content {
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid rgba(0,255,136,0.3);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .name-modal-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .name-modal-content h2 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .name-modal-content p {
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .enter-chat-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 12px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Main Chat Layout - Two Options */
+        .chat-main-container {
+            padding-top: 80px;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a, #0f0f0f);
+        }
+
+        .options-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            min-height: calc(100vh - 150px);
+            align-items: center;
+        }
+
+        .option-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-decoration: none;
+            display: block;
+        }
+
+        .option-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0,255,136,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .option-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-card h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff, #00ff88);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .option-card p {
+            color: #888;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .option-features {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .feature-tag {
+            background: rgba(0,255,136,0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #00ff88;
+        }
+
+        .enter-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 40px;
+            color: #000;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .enter-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Public Chat Container (shown after selection) */
+        .public-chat-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: none;
+        }
+
+        .back-button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .chat-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            height: 70vh;
+        }
+
+        .chat-card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .chat-card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chat-card-title .icon {
+            font-size: 1.5rem;
+        }
+
+        .chat-card-title h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .chat-badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+        }
+
+        .chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .message {
+            max-width: 90%;
+            padding: 0.6rem 0.85rem;
+            border-radius: 16px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .message-other {
+            background: rgba(255,255,255,0.08);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-own {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            color: #000;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-system {
+            text-align: center;
+            color: #888;
+            font-size: 0.7rem;
+            padding: 0.25rem;
+            align-self: center;
+        }
+
+        .message-sender {
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+            opacity: 0.7;
+        }
+
+        .message-text {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message-time {
+            font-size: 0.55rem;
+            opacity: 0.5;
+            margin-top: 0.2rem;
+            text-align: right;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 0.25rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .typing-indicator span {
+            width: 5px;
+            height: 5px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            gap: 0.75rem;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 30px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .chat-input-area button {
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            border-radius: 30px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .user-info-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 1rem;
+            border-radius: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .message {
+                max-width: 95%;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -24,171 +465,280 @@
                 <a href="live-chat.html" class="nav-link active">LIVE CHAT</a>
                 <a href="dashboard.html" class="nav-link">DASHBOARD</a>
             </div>
+            <div class="user-menu" id="userMenu" style="display: none;">
+                <div id="navUserAvatar" class="user-avatar-small">?</div>
+                <span id="navUserName"></span>
+            </div>
         </div>
     </nav>
 
-    <main class="chat-page">
-        <div class="chat-container">
-            <div class="chat-sidebar">
-                <div class="chat-user-info" id="chatUserInfo">
-                    <div class="user-avatar-placeholder">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <div class="user-details">
-                        <h4>Guest User</h4>
-                        <p>Login to chat</p>
-                    </div>
-                </div>
-                <div class="chat-rooms">
-                    <h3>Chat Rooms</h3>
-                    <div class="room-list">
-                        <div class="room-item active">
-                            <span>💬</span>
-                            <span>General Chat</span>
-                            <span class="room-badge">12</span>
-                        </div>
-                        <div class="room-item">
-                            <span>🎮</span>
-                            <span>Free Fire Talk</span>
-                            <span class="room-badge">8</span>
-                        </div>
-                        <div class="room-item">
-                            <span>⚡</span>
-                            <span>PRRX Support</span>
-                            <span class="room-badge">5</span>
-                        </div>
-                    </div>
-                </div>
+    <!-- Name Entry Modal -->
+    <div class="name-modal" id="nameModal">
+        <div class="name-modal-content">
+            <div class="name-modal-icon">💬</div>
+            <h2>Enter Live Chat</h2>
+            <p>Choose a name to start chatting</p>
+            <input type="text" id="userNameInput" class="name-input" placeholder="Your name" maxlength="30">
+            <button id="enterChatBtn" class="enter-chat-btn">Join Chat →</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="chat-main-container" id="chatContainer" style="display: none;">
+        <!-- User Info Bar -->
+        <div class="user-info-bar">
+            <div class="user-info-display">
+                <div id="globalUserAvatar" class="user-avatar-small-chat" style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #00ff88, #00cc66); display: inline-flex; align-items: center; justify-content: center; font-weight: bold;">?</div>
+                <span id="globalUserName" style="margin-left: 0.5rem;">Guest</span>
+                <button id="editGlobalNameBtn" class="edit-name-button" style="background: rgba(255,255,255,0.1); border: none; padding: 0.3rem 0.8rem; border-radius: 20px; color: #888; font-size: 0.7rem; margin-left: 0.5rem; cursor: pointer;">✏️ Change Name</button>
             </div>
-            
-            <div class="chat-main">
-                <div class="chat-header">
-                    <h3>General Chat</h3>
-                    <span class="online-status">● 24 online</span>
+            <div style="font-size: 0.7rem; color: #00ff88;">● Choose an option below</div>
+        </div>
+
+        <!-- Two Options Grid -->
+        <div id="optionsGrid" class="options-grid">
+            <div class="option-card" id="publicChatOption">
+                <div class="option-icon">🌐</div>
+                <h2>Public Chat</h2>
+                <p>Join the community and chat with other players in real-time!</p>
+                <div class="option-features">
+                    <span class="feature-tag">Real-time</span>
+                    <span class="feature-tag">Community</span>
+                    <span class="feature-tag">Free</span>
                 </div>
-                
-                <div class="chat-messages" id="chatMessages">
-                    <div class="welcome-message">
-                        <p>Welcome to PRRX Live Chat!</p>
-                        <p>Please login with Google to join the conversation.</p>
+                <div class="enter-btn">Enter Public Chat →</div>
+            </div>
+
+            <div class="option-card" id="supportTicketOption">
+                <div class="option-icon">🎧</div>
+                <h2>Create Support Ticket</h2>
+                <p>Need help? Create a support ticket and our team will assist you.</p>
+                <div class="option-features">
+                    <span class="feature-tag">24/7 Support</span>
+                    <span class="feature-tag">Fast Response</span>
+                    <span class="feature-tag">Dedicated Help</span>
+                </div>
+                <div class="enter-btn">Create Ticket →</div>
+            </div>
+        </div>
+
+        <!-- Public Chat Container (Hidden by default) -->
+        <div id="publicChatContainer" class="public-chat-container">
+            <button id="backToOptionsBtn" class="back-button">← Back to Options</button>
+            <div class="chat-card">
+                <div class="chat-card-header">
+                    <div class="chat-card-title">
+                        <span class="icon">🌐</span>
+                        <h3>Public Chat</h3>
                     </div>
+                    <span class="chat-badge" id="publicBadge">0</span>
                 </div>
-                
+                <div class="chat-messages-area" id="publicMessages">
+                    <div style="text-align: center; color: #666; padding: 1rem;">Loading messages...</div>
+                </div>
                 <div class="chat-input-area">
-                    <input type="text" id="chatInput" placeholder="Type your message..." disabled>
-                    <button id="sendBtn" disabled>Send</button>
+                    <input type="text" id="publicInput" placeholder="Type your message...">
+                    <button id="publicSendBtn">Send</button>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+
+    <style>
+        .user-avatar-small-chat {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+        }
+        .edit-name-button:hover {
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+        }
+    </style>
 
     <script type="module">
-        import { auth, onAuthStateChanged } from './firebase-config.js';
-        import { getDatabase, ref, push, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-        
-        const db = getDatabase();
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
+            authDomain: "prrx-chat.firebaseapp.com",
+            databaseURL: "https://prrx-chat-default-rtdb.firebaseio.com",
+            projectId: "prrx-chat",
+            storageBucket: "prrx-chat.firebasestorage.app",
+            messagingSenderId: "763130047676",
+            appId: "1:763130047676:web:e6566f250e81b9c6b574b9"
+        };
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getDatabase, ref, push, onChildAdded, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
         let currentUser = null;
-        
-        // Check auth
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            const chatUserInfo = document.getElementById('chatUserInfo');
-            const chatInput = document.getElementById('chatInput');
-            const sendBtn = document.getElementById('sendBtn');
-            
-            if (user) {
-                chatUserInfo.innerHTML = `
-                    <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" class="user-avatar">
-                    <div class="user-details">
-                        <h4>${user.displayName || user.email}</h4>
-                        <p>Online</p>
-                    </div>
-                `;
-                chatInput.disabled = false;
-                sendBtn.disabled = false;
-                
-                // Load messages
-                loadMessages();
-            } else {
-                chatUserInfo.innerHTML = `
-                    <div class="user-avatar-placeholder">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <div class="user-details">
-                        <h4>Guest User</h4>
-                        <p><a href="dashboard.html" style="color: #00ff88;">Login to chat</a></p>
-                    </div>
-                `;
-                chatInput.disabled = true;
-                sendBtn.disabled = true;
-            }
-            
-            // Update navbar
-            const navContainer = document.querySelector('.nav-container');
-            const existingAuth = document.querySelector('.nav-auth');
-            if (existingAuth) existingAuth.remove();
-            
-            const authDiv = document.createElement('div');
-            authDiv.className = 'nav-auth';
-            
-            if (user) {
-                authDiv.innerHTML = `
-                    <div class="user-menu">
-                        <img src="${user.photoURL}" class="user-avatar-small">
-                        <span>${user.displayName}</span>
-                    </div>
-                `;
-            } else {
-                authDiv.innerHTML = `<button class="login-nav-btn" onclick="window.location.href='dashboard.html'">Login</button>`;
-            }
-            navContainer.appendChild(authDiv);
-        });
-        
-        function loadMessages() {
-            const messagesRef = ref(db, 'chats/general');
-            const chatMessages = document.getElementById('chatMessages');
-            
-            onChildAdded(messagesRef, (snapshot) => {
-                const message = snapshot.val();
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${message.uid === currentUser?.uid ? 'message-own' : 'message-other'}`;
-                messageDiv.innerHTML = `
-                    <div class="message-sender">${message.name}</div>
-                    <div class="message-text">${message.text}</div>
-                    <div class="message-time">${new Date(message.timestamp).toLocaleTimeString()}</div>
-                `;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            });
+        let userId = Math.random().toString(36).substr(2, 9);
+        let messageListener = null;
+
+        // DOM Elements
+        const nameModal = document.getElementById('nameModal');
+        const chatContainer = document.getElementById('chatContainer');
+        const userNameInput = document.getElementById('userNameInput');
+        const enterChatBtn = document.getElementById('enterChatBtn');
+        const editGlobalNameBtn = document.getElementById('editGlobalNameBtn');
+        const optionsGrid = document.getElementById('optionsGrid');
+        const publicChatContainer = document.getElementById('publicChatContainer');
+        const backToOptionsBtn = document.getElementById('backToOptionsBtn');
+        const publicChatOption = document.getElementById('publicChatOption');
+        const supportTicketOption = document.getElementById('supportTicketOption');
+
+        // Load saved name
+        const savedName = localStorage.getItem('chat_username');
+        if (savedName) {
+            currentUser = { name: savedName, id: userId };
+            updateGlobalUI(savedName);
+            nameModal.style.display = 'none';
+            chatContainer.style.display = 'block';
         }
-        
-        document.getElementById('sendBtn')?.addEventListener('click', () => {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if (text && currentUser) {
-                const messagesRef = ref(db, 'chats/general');
-                push(messagesRef, {
+
+        enterChatBtn.addEventListener('click', () => {
+            const name = userNameInput.value.trim();
+            if (name.length < 2) {
+                alert('Please enter a name (at least 2 characters)');
+                return;
+            }
+            if (name.length > 30) {
+                alert('Name too long (max 30 characters)');
+                return;
+            }
+            
+            currentUser = { name: name, id: userId };
+            localStorage.setItem('chat_username', name);
+            updateGlobalUI(name);
+            nameModal.style.display = 'none';
+            chatContainer.style.display = 'block';
+        });
+
+        userNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') enterChatBtn.click();
+        });
+
+        editGlobalNameBtn.addEventListener('click', () => {
+            const newName = prompt('Enter new name:', currentUser?.name);
+            if (newName && newName.trim().length >= 2) {
+                currentUser.name = newName.trim();
+                localStorage.setItem('chat_username', currentUser.name);
+                updateGlobalUI(currentUser.name);
+            }
+        });
+
+        function updateGlobalUI(name) {
+            const initial = name.charAt(0).toUpperCase();
+            document.getElementById('navUserName').textContent = name;
+            document.getElementById('navUserAvatar').textContent = initial;
+            document.getElementById('globalUserName').textContent = name;
+            document.getElementById('globalUserAvatar').textContent = initial;
+        }
+
+        // Public Chat Option - Show Public Chat
+        publicChatOption.addEventListener('click', () => {
+            optionsGrid.style.display = 'none';
+            publicChatContainer.style.display = 'block';
+            initPublicChat();
+        });
+
+        // Support Ticket Option - Redirect to support-chat.html
+        supportTicketOption.addEventListener('click', () => {
+            window.location.href = 'support-chat.html';
+        });
+
+        // Back to Options
+        backToOptionsBtn.addEventListener('click', () => {
+            if (messageListener) messageListener();
+            publicChatContainer.style.display = 'none';
+            optionsGrid.style.display = 'grid';
+        });
+
+        // Initialize Public Chat
+        function initPublicChat() {
+            const messagesDiv = document.getElementById('publicMessages');
+            const input = document.getElementById('publicInput');
+            const sendBtn = document.getElementById('publicSendBtn');
+            
+            if (messageListener) messageListener();
+            
+            messagesDiv.innerHTML = '';
+            const publicRef = ref(db, 'chats/public');
+            
+            messageListener = onChildAdded(publicRef, (snapshot) => {
+                const msg = snapshot.val();
+                if (msg.type === 'system') {
+                    addSystemMessage(messagesDiv, msg.text);
+                } else {
+                    const isOwn = msg.uid === userId;
+                    addPublicMessage(messagesDiv, msg.text, msg.name, isOwn, msg.timestamp);
+                }
+            });
+            
+            sendBtn.onclick = () => {
+                const text = input.value.trim();
+                if (!text || !currentUser) return;
+                push(publicRef, {
                     text: text,
-                    name: currentUser.displayName || currentUser.email,
-                    uid: currentUser.uid,
-                    photoURL: currentUser.photoURL,
-                    timestamp: serverTimestamp()
+                    name: currentUser.name,
+                    uid: userId,
+                    timestamp: serverTimestamp(),
+                    type: 'user'
                 });
                 input.value = '';
-            }
-        });
-        
-        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('sendBtn').click();
-            }
-        });
+            };
+            
+            input.onkeypress = (e) => { if (e.key === 'Enter') sendBtn.click(); };
+            
+            updatePublicBadge();
+            setInterval(updatePublicBadge, 5000);
+        }
+
+        function addPublicMessage(container, text, sender, isOwn, timestamp) {
+            const messageDiv = document.createElement('div');
+            const messageClass = isOwn ? 'message message-own' : 'message message-other';
+            const time = timestamp?.toDate ? timestamp.toDate().toLocaleTimeString() : new Date().toLocaleTimeString();
+            
+            messageDiv.className = messageClass;
+            messageDiv.innerHTML = `
+                <div class="message-sender">${escapeHtml(sender)}</div>
+                <div class="message-text">${escapeHtml(text)}</div>
+                <div class="message-time">${time}</div>
+            `;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addSystemMessage(container, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message-system';
+            messageDiv.textContent = text;
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function updatePublicBadge() {
+            const publicRef = ref(db, 'chats/public');
+            get(publicRef).then(snapshot => {
+                const count = snapshot.numChildren();
+                document.getElementById('publicBadge').textContent = count > 99 ? '99+' : count;
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
     </script>
 </body>
 </html>
