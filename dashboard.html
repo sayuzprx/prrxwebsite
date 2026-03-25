@@ -3,10 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRRX | Dashboard</title>
+    <title>PRRX | Premium Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Premium Login Box Styles */
+        .premium-login-section {
+            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,204,102,0.05));
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,255,136,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-login-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,136,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .premium-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .premium-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            color: #000;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .premium-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .premium-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.875rem;
+        }
+
+        .premium-status.active {
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+        }
+
+        .premium-status.inactive {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+        }
+
+        /* Login Form */
+        .premium-login-form {
+            background: rgba(0,0,0,0.5);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #888;
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0,255,136,0.3);
+        }
+
+        .premium-login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 12px;
+            color: #000;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin-top: 0.5rem;
+        }
+
+        .premium-login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Premium Features Grid */
+        .premium-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .premium-feature-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+            opacity: 0.5;
+            filter: blur(2px);
+        }
+
+        .premium-feature-card.active {
+            opacity: 1;
+            filter: blur(0);
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .premium-feature-card .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .premium-feature-card .feature-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .premium-feature-card .feature-desc {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.25rem;
+        }
+
+        /* Key Display */
+        .key-display {
+            background: rgba(0,0,0,0.5);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            text-align: center;
+            border: 1px solid rgba(0,255,136,0.3);
+        }
+
+        .logout-premium {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 1rem;
+        }
+
+        .logout-premium:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        /* Dashboard Header Update */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .user-welcome {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar-large {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #00ff88;
+        }
+
+        .user-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info h1 span {
+            color: #00ff88;
+        }
+
+        .user-info p {
+            color: #888;
+        }
+
+        .logout-btn-dashboard {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn-dashboard:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        /* Rest of your existing dashboard styles */
+        .stats-grid, .charts-grid, .recent-activity {
+            margin-bottom: 2rem;
+        }
+
+        .stat-card, .chart-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .premium-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -25,36 +311,39 @@
                 <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
                 <a href="dashboard.html" class="nav-link active">DASHBOARD</a>
             </div>
+            <div class="nav-auth" id="navAuth">
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <img id="navUserAvatar" class="user-avatar-small">
+                    <span id="navUserName"></span>
+                </div>
+                <button class="login-nav-btn" id="navLoginBtn" onclick="window.location.href='index.html'">Login</button>
+            </div>
         </div>
     </nav>
 
     <main class="dashboard-page">
-        <!-- Login Required Overlay -->
-        <div id="loginOverlay" class="login-overlay">
+        <div id="loginOverlay" class="login-overlay" style="display: flex;">
             <div class="login-modal">
-                <div class="login-modal-content">
-                    <div class="login-icon">🔐</div>
-                    <h2>Login Required</h2>
-                    <p>Please sign in with Google to access your dashboard</p>
-                    <button id="googleLoginBtn" class="google-login-btn-dashboard">
-                        <svg width="20" height="20" viewBox="0 0 24 24">
-                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                        </svg>
-                        Sign in with Google
-                    </button>
-                </div>
+                <div class="login-icon">🔐</div>
+                <h2>Login Required</h2>
+                <p>Please sign in with Google to access your dashboard</p>
+                <button id="googleLoginBtn" class="google-login-btn-dashboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
             </div>
         </div>
 
-        <!-- Dashboard Content (Hidden until login) -->
         <div id="dashboardContent" class="dashboard-content" style="display: none;">
             <div class="dashboard-header">
                 <div class="user-welcome">
                     <img id="userAvatar" class="user-avatar-large" alt="User Avatar">
-                    <div>
+                    <div class="user-info">
                         <h1>Welcome back, <span id="userName"></span>!</h1>
                         <p id="userEmail"></p>
                     </div>
@@ -62,6 +351,71 @@
                 <button id="logoutBtn" class="logout-btn-dashboard">Logout</button>
             </div>
 
+            <!-- Premium Login Box -->
+            <div class="premium-login-section" id="premiumSection">
+                <div class="premium-header">
+                    <div>
+                        <div class="premium-badge">
+                            👑 PREMIUM ACCESS
+                        </div>
+                        <div class="premium-title">Unlock Premium Features</div>
+                    </div>
+                    <div id="premiumStatus" class="premium-status inactive">
+                        🔒 Not Activated
+                    </div>
+                </div>
+
+                <!-- Premium Login Form (Visible when not logged in) -->
+                <div id="premiumLoginForm" class="premium-login-form">
+                    <div class="form-group">
+                        <label>🔑 Premium License Key</label>
+                        <input type="text" id="licenseKey" class="form-input" placeholder="Enter your PRRX Premium Key">
+                    </div>
+                    <div class="form-group">
+                        <label>👤 Username</label>
+                        <input type="text" id="premiumUser" class="form-input" placeholder="Enter your username">
+                    </div>
+                    <button id="premiumLoginBtn" class="premium-login-btn">
+                        Activate Premium →
+                    </button>
+                    <div id="premiumError" style="color: #ff4444; font-size: 0.75rem; margin-top: 0.5rem; text-align: center;"></div>
+                </div>
+
+                <!-- Premium Active Display (Visible when logged in) -->
+                <div id="premiumActiveDisplay" style="display: none;">
+                    <div class="key-display">
+                        <span>🎖️ Premium Activated</span><br>
+                        <span id="activeKey" style="color: #ffd700; font-size: 0.875rem;"></span>
+                    </div>
+                    <div class="premium-features-grid">
+                        <div class="premium-feature-card" data-feature="aimbot">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-name">Advanced Aimbot</div>
+                            <div class="feature-desc">100% Accuracy Mode</div>
+                        </div>
+                        <div class="premium-feature-card" data-feature="esp">
+                            <div class="feature-icon">👁️</div>
+                            <div class="feature-name">Pro ESP</div>
+                            <div class="feature-desc">Wallhack + Radar</div>
+                        </div>
+                        <div class="premium-feature-card" data-feature="chams">
+                            <div class="feature-icon">🎨</div>
+                            <div class="feature-name">Custom Chams</div>
+                            <div class="feature-desc">16 Color Options</div>
+                        </div>
+                        <div class="premium-feature-card" data-feature="security">
+                            <div class="feature-icon">🛡️</div>
+                            <div class="feature-name">Premium Security</div>
+                            <div class="feature-desc">Anti-Ban Protection</div>
+                        </div>
+                    </div>
+                    <button id="logoutPremiumBtn" class="logout-premium" style="margin-top: 1rem; width: 100%;">
+                        Deactivate Premium
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
@@ -129,31 +483,196 @@
     </main>
 
     <script type="module">
-        import { auth, provider, signInWithPopup, signOut, onAuthStateChanged } from './firebase-config.js';
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
         
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
+            authDomain: "prrx-chat.firebaseapp.com",
+            databaseURL: "https://prrx-chat-default-rtdb.firebaseio.com",
+            projectId: "prrx-chat",
+            storageBucket: "prrx-chat.firebasestorage.app",
+            messagingSenderId: "763130047676",
+            appId: "1:763130047676:web:e6566f250e81b9c6b574b9",
+            measurementId: "G-SQ0GGFJ704"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        
+        // DOM Elements
         const loginOverlay = document.getElementById('loginOverlay');
         const dashboardContent = document.getElementById('dashboardContent');
         const googleLoginBtn = document.getElementById('googleLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         
-        // Check auth state
+        // Premium System Variables
+        let isPremiumActive = false;
+        let currentLicenseKey = '';
+        
+        // Premium Keys Database (In production, this should be on your server)
+        // You can add/remove keys here
+        const PREMIUM_KEYS = {
+            'PRRX-PREMIUM-2024': {
+                username: 'premium_user',
+                expires: '2025-12-31',
+                features: ['aimbot', 'esp', 'chams', 'security']
+            },
+            'PRRX-GOLD-001': {
+                username: 'gold_member',
+                expires: '2025-06-30',
+                features: ['aimbot', 'esp', 'chams']
+            },
+            'PRRX-TEST-123': {
+                username: 'tester',
+                expires: '2024-12-31',
+                features: ['aimbot', 'esp']
+            }
+        };
+        
+        // Function to check premium key
+        function validatePremiumKey(key, username) {
+            const keyData = PREMIUM_KEYS[key];
+            if (keyData && keyData.username === username) {
+                // Check if not expired
+                const today = new Date();
+                const expiryDate = new Date(keyData.expires);
+                if (expiryDate > today) {
+                    return { valid: true, data: keyData };
+                } else {
+                    return { valid: false, error: 'License key expired' };
+                }
+            }
+            return { valid: false, error: 'Invalid license key or username' };
+        }
+        
+        // Save premium session
+        function savePremiumSession(key, userData) {
+            localStorage.setItem('premium_key', key);
+            localStorage.setItem('premium_username', userData.username);
+            localStorage.setItem('premium_expires', userData.expires);
+            isPremiumActive = true;
+            currentLicenseKey = key;
+        }
+        
+        // Load premium session
+        function loadPremiumSession() {
+            const savedKey = localStorage.getItem('premium_key');
+            const savedUsername = localStorage.getItem('premium_username');
+            if (savedKey && savedUsername) {
+                const validation = validatePremiumKey(savedKey, savedUsername);
+                if (validation.valid) {
+                    isPremiumActive = true;
+                    currentLicenseKey = savedKey;
+                    updatePremiumUI(true, savedKey, validation.data);
+                    return true;
+                } else {
+                    // Clear invalid session
+                    localStorage.removeItem('premium_key');
+                    localStorage.removeItem('premium_username');
+                    localStorage.removeItem('premium_expires');
+                }
+            }
+            return false;
+        }
+        
+        // Clear premium session
+        function clearPremiumSession() {
+            localStorage.removeItem('premium_key');
+            localStorage.removeItem('premium_username');
+            localStorage.removeItem('premium_expires');
+            isPremiumActive = false;
+            currentLicenseKey = '';
+            updatePremiumUI(false);
+        }
+        
+        // Update Premium UI
+        function updatePremiumUI(active, key = '', data = null) {
+            const premiumLoginForm = document.getElementById('premiumLoginForm');
+            const premiumActiveDisplay = document.getElementById('premiumActiveDisplay');
+            const premiumStatus = document.getElementById('premiumStatus');
+            
+            if (active) {
+                premiumLoginForm.style.display = 'none';
+                premiumActiveDisplay.style.display = 'block';
+                premiumStatus.className = 'premium-status active';
+                premiumStatus.innerHTML = '👑 Premium Active';
+                document.getElementById('activeKey').textContent = `Key: ${key}`;
+                
+                // Unlock premium features in stats
+                document.querySelectorAll('.premium-feature-card').forEach(card => {
+                    card.classList.add('active');
+                });
+                
+                // Update dashboard stats with premium benefits
+                document.getElementById('accuracy').textContent = '98.7%';
+                document.getElementById('responseTime').textContent = '12ms';
+                
+            } else {
+                premiumLoginForm.style.display = 'block';
+                premiumActiveDisplay.style.display = 'none';
+                premiumStatus.className = 'premium-status inactive';
+                premiumStatus.innerHTML = '🔒 Not Activated';
+                
+                // Lock premium features
+                document.querySelectorAll('.premium-feature-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+                
+                // Reset stats
+                document.getElementById('accuracy').textContent = '94.2%';
+                document.getElementById('responseTime').textContent = '24ms';
+            }
+        }
+        
+        // Premium Login Handler
+        document.getElementById('premiumLoginBtn')?.addEventListener('click', () => {
+            const licenseKey = document.getElementById('licenseKey').value.trim();
+            const username = document.getElementById('premiumUser').value.trim();
+            const errorDiv = document.getElementById('premiumError');
+            
+            if (!licenseKey || !username) {
+                errorDiv.textContent = 'Please enter both license key and username';
+                return;
+            }
+            
+            const validation = validatePremiumKey(licenseKey, username);
+            
+            if (validation.valid) {
+                savePremiumSession(licenseKey, validation.data);
+                errorDiv.textContent = '';
+                errorDiv.style.color = '#00ff88';
+                errorDiv.textContent = '✓ Premium activated successfully!';
+                setTimeout(() => { errorDiv.textContent = ''; }, 3000);
+            } else {
+                errorDiv.textContent = validation.error;
+            }
+        });
+        
+        // Premium Logout Handler
+        document.getElementById('logoutPremiumBtn')?.addEventListener('click', () => {
+            clearPremiumSession();
+        });
+        
+        // Google Auth Handlers
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is logged in
                 loginOverlay.style.display = 'none';
                 dashboardContent.style.display = 'block';
                 loadUserData(user);
                 initCharts();
                 updateNavbarAuth(user);
+                loadPremiumSession(); // Check for saved premium session
             } else {
-                // User is logged out
                 loginOverlay.style.display = 'flex';
                 dashboardContent.style.display = 'none';
                 updateNavbarAuth(null);
             }
         });
         
-        // Google Login
         googleLoginBtn?.addEventListener('click', async () => {
             try {
                 const result = await signInWithPopup(auth, provider);
@@ -164,10 +683,10 @@
             }
         });
         
-        // Logout
         logoutBtn?.addEventListener('click', async () => {
             try {
                 await signOut(auth);
+                clearPremiumSession();
                 console.log('Logged out');
             } catch (error) {
                 console.error('Logout error:', error);
@@ -186,24 +705,19 @@
         }
         
         function updateNavbarAuth(user) {
-            const navContainer = document.querySelector('.nav-container');
-            const existingAuth = document.querySelector('.nav-auth');
-            if (existingAuth) existingAuth.remove();
-            
-            const authDiv = document.createElement('div');
-            authDiv.className = 'nav-auth';
+            const navAuth = document.getElementById('navAuth');
+            const userMenu = document.getElementById('userMenu');
+            const navLoginBtn = document.getElementById('navLoginBtn');
             
             if (user) {
-                authDiv.innerHTML = `
-                    <div class="user-menu">
-                        <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" class="user-avatar-small">
-                        <span>${user.displayName || user.email}</span>
-                    </div>
-                `;
+                userMenu.style.display = 'flex';
+                navLoginBtn.style.display = 'none';
+                document.getElementById('navUserAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`;
+                document.getElementById('navUserName').textContent = user.displayName?.split(' ')[0] || user.email.split('@')[0];
             } else {
-                authDiv.innerHTML = `<button class="login-nav-btn" onclick="document.getElementById('googleLoginBtn')?.click()">Login</button>`;
+                userMenu.style.display = 'none';
+                navLoginBtn.style.display = 'block';
             }
-            navContainer.appendChild(authDiv);
         }
         
         let activityChart, performanceChart;
