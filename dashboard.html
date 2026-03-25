@@ -79,12 +79,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #00ff88, #00cc66);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #000;
+            object-fit: cover;
         }
 
         /* Login Overlay */
@@ -112,6 +107,21 @@
             width: 90%;
         }
 
+        .login-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .login-modal h2 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-modal p {
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
         .google-login-btn-dashboard {
             display: flex;
             align-items: center;
@@ -133,6 +143,181 @@
             margin: 0 auto;
             padding: 2rem;
             padding-top: 100px;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .user-welcome {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar-large {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #00ff88;
+        }
+
+        .user-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info h1 span {
+            color: #00ff88;
+        }
+
+        .user-info p {
+            color: #888;
+        }
+
+        .logout-btn-dashboard {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Premium Login Box */
+        .premium-login-section {
+            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,204,102,0.05));
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,255,136,0.3);
+        }
+
+        .premium-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .premium-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            color: #000;
+            font-weight: 700;
+        }
+
+        .premium-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .premium-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.875rem;
+        }
+
+        .premium-status.active {
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+        }
+
+        .premium-status.inactive {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+        }
+
+        .premium-login-form {
+            background: rgba(0,0,0,0.5);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #888;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            color: #fff;
+        }
+
+        .premium-login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 12px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .premium-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .premium-feature-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            opacity: 0.5;
+            filter: blur(2px);
+        }
+
+        .premium-feature-card.active {
+            opacity: 1;
+            filter: blur(0);
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .logout-premium {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            width: 100%;
         }
 
         /* Admin Login Box */
@@ -188,25 +373,6 @@
             padding: 1.5rem;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #888;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 12px;
-            color: #fff;
-        }
-
         .admin-login-btn {
             width: 100%;
             background: linear-gradient(135deg, #ffd700, #ffaa00);
@@ -244,16 +410,7 @@
             background: rgba(255,215,0,0.1);
         }
 
-        .ticket-item h4 {
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .ticket-item p {
-            font-size: 0.75rem;
-            color: #888;
-        }
-
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -270,6 +427,30 @@
             gap: 1rem;
         }
 
+        .stat-icon {
+            font-size: 2.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 0.875rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+        }
+
+        .stat-change.positive {
+            color: #00ff88;
+        }
+
+        /* Charts */
         .charts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
@@ -281,6 +462,30 @@
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
             padding: 1.5rem;
+        }
+
+        .recent-activity {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .activity-item {
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border-left: 3px solid #00ff88;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         @media (max-width: 768px) {
@@ -306,7 +511,6 @@
                 <a href="features.html" class="nav-link">FEATURES</a>
                 <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
                 <a href="dashboard.html" class="nav-link active">DASHBOARD</a>
-                <a href="support-chat.html" class="nav-link">SUPPORT</a>
             </div>
             <div class="nav-auth" id="navAuth">
                 <div class="user-menu" id="userMenu" style="display: none;">
@@ -337,7 +541,74 @@
         </div>
 
         <div id="dashboardContent" class="dashboard-content" style="display: none;">
-            <!-- Admin Login Box -->
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="user-welcome">
+                    <img id="userAvatar" class="user-avatar-large" alt="User Avatar">
+                    <div class="user-info">
+                        <h1>Welcome back, <span id="userName"></span>!</h1>
+                        <p id="userEmail"></p>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="logout-btn-dashboard">Logout</button>
+            </div>
+
+            <!-- PREMIUM LOGIN BOX -->
+            <div class="premium-login-section" id="premiumSection">
+                <div class="premium-header">
+                    <div>
+                        <div class="premium-badge">👑 PREMIUM ACCESS</div>
+                        <div class="premium-title">Unlock Premium Features</div>
+                    </div>
+                    <div id="premiumStatus" class="premium-status inactive">🔒 Not Activated</div>
+                </div>
+
+                <div id="premiumLoginForm" class="premium-login-form">
+                    <div class="form-group">
+                        <label>👤 Username</label>
+                        <input type="text" id="premiumUser" class="form-input" placeholder="Enter your premium username">
+                    </div>
+                    <div class="form-group">
+                        <label>🔑 Password</label>
+                        <input type="password" id="premiumPass" class="form-input" placeholder="Enter your password">
+                    </div>
+                    <button id="premiumLoginBtn" class="premium-login-btn">Activate Premium →</button>
+                    <div id="premiumError" style="color: #ff4444; font-size: 0.75rem; margin-top: 0.5rem;"></div>
+                </div>
+
+                <div id="premiumActiveDisplay" style="display: none;">
+                    <div class="user-display" style="background: rgba(0,0,0,0.5); border-radius: 12px; padding: 1rem; text-align: center;">
+                        <span>🎖️ Premium Activated</span><br>
+                        <span class="premium-user" id="activeUsername" style="color: #ffd700;"></span>
+                        <div style="font-size: 0.75rem; color: #888; margin-top: 0.5rem;">✨ All premium features unlocked</div>
+                    </div>
+                    <div class="premium-features-grid">
+                        <div class="premium-feature-card" data-feature="aimbot">
+                            <div class="feature-icon" style="font-size: 2rem;">🎯</div>
+                            <div class="feature-name">Advanced Aimbot</div>
+                            <div class="feature-desc" style="font-size: 0.7rem; color: #888;">100% Accuracy Mode</div>
+                        </div>
+                        <div class="premium-feature-card" data-feature="esp">
+                            <div class="feature-icon" style="font-size: 2rem;">👁️</div>
+                            <div class="feature-name">Pro ESP</div>
+                            <div class="feature-desc" style="font-size: 0.7rem; color: #888;">Wallhack + Radar</div>
+                        </div>
+                        <div class="premium-feature-card" data-feature="chams">
+                            <div class="feature-icon" style="font-size: 2rem;">🎨</div>
+                            <div class="feature-name">Custom Chams</div>
+                            <div class="feature-desc" style="font-size: 0.7rem; color: #888;">16 Color Options</div>
+                        </div>
+                        <div class="premium-feature-card" data-feature="security">
+                            <div class="feature-icon" style="font-size: 2rem;">🛡️</div>
+                            <div class="feature-name">Premium Security</div>
+                            <div class="feature-desc" style="font-size: 0.7rem; color: #888;">Anti-Ban Protection</div>
+                        </div>
+                    </div>
+                    <button id="logoutPremiumBtn" class="logout-premium">Deactivate Premium</button>
+                </div>
+            </div>
+
+            <!-- ADMIN LOGIN BOX -->
             <div class="admin-login-section" id="adminSection">
                 <div class="admin-header">
                     <div>
@@ -371,14 +642,12 @@
                         <div class="admin-panel">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                                 <h3 id="chatWithUserName">Chat with User</h3>
-                                <button id="closeChatBtn" class="close-chat-btn" style="background: rgba(255,68,68,0.2); color: #ff4444; border: none; padding: 0.25rem 0.75rem; border-radius: 8px; cursor: pointer;">Close Chat</button>
+                                <button id="closeChatBtn" style="background: rgba(255,68,68,0.2); color: #ff4444; border: none; padding: 0.25rem 0.75rem; border-radius: 8px; cursor: pointer;">Close Chat</button>
                             </div>
-                            <div id="adminChatMessages" style="height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;">
-                                <div style="text-align: center; color: #888;">Select a ticket to start chatting</div>
-                            </div>
+                            <div id="adminChatMessages" style="height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;"></div>
                             <div style="display: flex; gap: 0.5rem;">
                                 <input type="text" id="adminReplyInput" class="form-input" placeholder="Type your reply..." style="flex: 1;">
-                                <button id="sendReplyBtn" class="admin-login-btn" style="width: auto; padding: 0.75rem 1.5rem;">Send Reply</button>
+                                <button id="sendReplyBtn" class="admin-login-btn" style="width: auto; padding: 0.75rem 1.5rem;">Send</button>
                             </div>
                         </div>
                     </div>
@@ -392,6 +661,7 @@
                     <div class="stat-info">
                         <h3>Total Users</h3>
                         <p class="stat-value" id="totalUsers">12,847</p>
+                        <span class="stat-change positive">+12.5%</span>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -399,6 +669,15 @@
                     <div class="stat-info">
                         <h3>Aimbot Accuracy</h3>
                         <p class="stat-value" id="accuracy">94.2%</p>
+                        <span class="stat-change positive">+5.3%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💬</div>
+                    <div class="stat-info">
+                        <h3>Active Chats</h3>
+                        <p class="stat-value" id="activeChats">1,234</p>
+                        <span class="stat-change positive">+8%</span>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -406,13 +685,7 @@
                     <div class="stat-info">
                         <h3>Open Tickets</h3>
                         <p class="stat-value" id="openTickets">0</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">⚡</div>
-                    <div class="stat-info">
-                        <h3>Response Time</h3>
-                        <p class="stat-value" id="responseTime">24ms</p>
+                        <span class="stat-change">New</span>
                     </div>
                 </div>
             </div>
@@ -423,8 +696,26 @@
                     <canvas id="activityChart"></canvas>
                 </div>
                 <div class="chart-card">
-                    <h3>Support Tickets</h3>
-                    <canvas id="ticketsChart"></canvas>
+                    <h3>Performance Metrics</h3>
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="recent-activity">
+                <h3>Recent Activity</h3>
+                <div class="activity-list" id="activityList">
+                    <div class="activity-item">
+                        <strong>Aimbot</strong> Headshot boost activated
+                        <small>2 minutes ago</small>
+                    </div>
+                    <div class="activity-item">
+                        <strong>ESP</strong> Chams configuration updated
+                        <small>15 minutes ago</small>
+                    </div>
+                    <div class="activity-item">
+                        <strong>Security</strong> New protection layer added
+                        <small>1 hour ago</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -444,22 +735,28 @@
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { getDatabase, ref, onChildAdded, push, serverTimestamp, get, update, set } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+        import { getDatabase, ref, onChildAdded, push, serverTimestamp, get, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         const db = getDatabase(app);
 
-        // ============ ADMIN CREDENTIALS ============
-        // You can change these to your own username/password
-        const ADMIN_CREDENTIALS = {
-            username: "prrx_admin",
-            password: "admin123"
+        // ============ PREMIUM ACCOUNTS ============
+        const PREMIUM_ACCOUNTS = {
+            'admin': { password: 'admin123', tier: 'admin', expires: '2025-12-31', features: ['aimbot', 'esp', 'chams', 'security'] },
+            'premium_user': { password: 'premium123', tier: 'gold', expires: '2025-06-30', features: ['aimbot', 'esp', 'chams'] },
+            'vip_member': { password: 'vip2024', tier: 'vip', expires: '2024-12-31', features: ['aimbot', 'esp'] },
+            'test_user': { password: 'test123', tier: 'test', expires: '2025-03-31', features: ['aimbot'] },
+            'prrx_elite': { password: 'elite2024', tier: 'elite', expires: '2025-12-31', features: ['aimbot', 'esp', 'chams', 'security'] }
         };
 
+        // ============ ADMIN CREDENTIALS ============
+        const ADMIN_CREDENTIALS = { username: "prrx_admin", password: "admin123" };
+
+        let isPremiumActive = false;
+        let currentPremiumUser = '';
         let isAdminLoggedIn = false;
-        let currentAdmin = null;
         let selectedTicketId = null;
         let ticketsListener = null;
         let messagesListener = null;
@@ -469,7 +766,17 @@
         const dashboardContent = document.getElementById('dashboardContent');
         const googleLoginBtn = document.getElementById('googleLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
-        
+
+        // Premium Elements
+        const premiumLoginForm = document.getElementById('premiumLoginForm');
+        const premiumActiveDisplay = document.getElementById('premiumActiveDisplay');
+        const premiumStatus = document.getElementById('premiumStatus');
+        const premiumLoginBtn = document.getElementById('premiumLoginBtn');
+        const premiumUser = document.getElementById('premiumUser');
+        const premiumPass = document.getElementById('premiumPass');
+        const premiumError = document.getElementById('premiumError');
+        const logoutPremiumBtn = document.getElementById('logoutPremiumBtn');
+
         // Admin Elements
         const adminLoginForm = document.getElementById('adminLoginForm');
         const adminPanel = document.getElementById('adminPanel');
@@ -486,14 +793,99 @@
         const closeChatBtn = document.getElementById('closeChatBtn');
         const chatWithUserName = document.getElementById('chatWithUserName');
 
-        // Admin Login Handler
+        // ============ PREMIUM FUNCTIONS ============
+        function validatePremiumLogin(username, password) {
+            const account = PREMIUM_ACCOUNTS[username];
+            if (account && account.password === password) {
+                const today = new Date();
+                const expiryDate = new Date(account.expires);
+                if (expiryDate > today) {
+                    return { valid: true, data: account, username: username };
+                }
+                return { valid: false, error: 'Your premium subscription has expired' };
+            }
+            return { valid: false, error: 'Invalid username or password' };
+        }
+
+        function savePremiumSession(username, userData) {
+            localStorage.setItem('premium_username', username);
+            localStorage.setItem('premium_tier', userData.tier);
+            isPremiumActive = true;
+            currentPremiumUser = username;
+            updatePremiumUI(true, username, userData);
+        }
+
+        function loadPremiumSession() {
+            const savedUsername = localStorage.getItem('premium_username');
+            if (savedUsername && PREMIUM_ACCOUNTS[savedUsername]) {
+                const account = PREMIUM_ACCOUNTS[savedUsername];
+                const validation = validatePremiumLogin(savedUsername, account.password);
+                if (validation.valid) {
+                    isPremiumActive = true;
+                    currentPremiumUser = savedUsername;
+                    updatePremiumUI(true, savedUsername, validation.data);
+                    return true;
+                } else {
+                    clearPremiumSession();
+                }
+            }
+            return false;
+        }
+
+        function clearPremiumSession() {
+            localStorage.removeItem('premium_username');
+            localStorage.removeItem('premium_tier');
+            isPremiumActive = false;
+            currentPremiumUser = '';
+            updatePremiumUI(false);
+        }
+
+        function updatePremiumUI(active, username = '', data = null) {
+            if (active) {
+                premiumLoginForm.style.display = 'none';
+                premiumActiveDisplay.style.display = 'block';
+                premiumStatus.className = 'premium-status active';
+                premiumStatus.innerHTML = '👑 Premium Active';
+                document.getElementById('activeUsername').textContent = `@${username} (${data?.tier || 'Premium'} Tier)`;
+                document.querySelectorAll('.premium-feature-card').forEach(card => card.classList.add('active'));
+                document.getElementById('accuracy').textContent = '98.7%';
+            } else {
+                premiumLoginForm.style.display = 'block';
+                premiumActiveDisplay.style.display = 'none';
+                premiumStatus.className = 'premium-status inactive';
+                premiumStatus.innerHTML = '🔒 Not Activated';
+                document.querySelectorAll('.premium-feature-card').forEach(card => card.classList.remove('active'));
+                document.getElementById('accuracy').textContent = '94.2%';
+            }
+        }
+
+        premiumLoginBtn.addEventListener('click', () => {
+            const username = premiumUser.value.trim();
+            const password = premiumPass.value;
+            if (!username || !password) {
+                premiumError.textContent = 'Please enter both username and password';
+                return;
+            }
+            const validation = validatePremiumLogin(username, password);
+            if (validation.valid) {
+                savePremiumSession(username, validation.data);
+                premiumError.textContent = '';
+                premiumError.style.color = '#00ff88';
+                premiumError.textContent = '✓ Premium activated successfully!';
+                setTimeout(() => { premiumError.textContent = ''; }, 3000);
+            } else {
+                premiumError.textContent = validation.error;
+            }
+        });
+
+        logoutPremiumBtn.addEventListener('click', () => { clearPremiumSession(); });
+
+        // ============ ADMIN FUNCTIONS ============
         adminLoginBtn.addEventListener('click', () => {
             const username = adminUsername.value.trim();
             const password = adminPassword.value;
-            
             if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
                 isAdminLoggedIn = true;
-                currentAdmin = { username: username };
                 adminLoginForm.style.display = 'none';
                 adminPanel.style.display = 'block';
                 adminStatus.className = 'admin-status active';
@@ -504,7 +896,6 @@
             }
         });
 
-        // Load all open tickets
         function loadTickets() {
             const ticketsRef = ref(db, 'support-tickets');
             get(ticketsRef).then((snapshot) => {
@@ -512,10 +903,7 @@
                 snapshot.forEach((childSnapshot) => {
                     const ticket = childSnapshot.val();
                     if (ticket.status === 'open') {
-                        tickets.push({
-                            id: childSnapshot.key,
-                            ...ticket
-                        });
+                        tickets.push({ id: childSnapshot.key, ...ticket });
                     }
                 });
                 updateTicketsList(tickets);
@@ -528,21 +916,17 @@
                 ticketsListDiv.innerHTML = '<div style="text-align: center; color: #888; padding: 1rem;">No open tickets</div>';
                 return;
             }
-            
             ticketsListDiv.innerHTML = tickets.map(ticket => `
                 <div class="ticket-item" data-ticket-id="${ticket.id}">
                     <h4>${escapeHtml(ticket.subject)}</h4>
-                    <p>From: ${escapeHtml(ticket.userName)} | Created: ${new Date(ticket.createdAt).toLocaleString()}</p>
+                    <p>From: ${escapeHtml(ticket.userName)}</p>
                 </div>
             `).join('');
-            
             document.querySelectorAll('.ticket-item').forEach(item => {
                 item.addEventListener('click', () => {
                     const ticketId = item.dataset.ticketId;
                     const ticket = tickets.find(t => t.id === ticketId);
-                    if (ticket) {
-                        openChatWithUser(ticketId, ticket.userName);
-                    }
+                    if (ticket) openChatWithUser(ticketId, ticket.userName);
                 });
             });
         }
@@ -551,57 +935,36 @@
             selectedTicketId = ticketId;
             chatWithUser.style.display = 'block';
             chatWithUserName.textContent = `Chat with ${userName}`;
-            loadAdminMessages(ticketId);
-        }
-
-        function loadAdminMessages(ticketId) {
             if (messagesListener) messagesListener();
-            
             adminChatMessages.innerHTML = '';
             const messagesRef = ref(db, `support-messages/${ticketId}`);
-            
             messagesListener = onChildAdded(messagesRef, (snapshot) => {
                 const msg = snapshot.val();
-                addAdminMessageToUI(msg.text, msg.senderName, msg.senderRole === 'admin', msg.timestamp);
+                const isAdmin = msg.senderRole === 'admin';
+                const messageDiv = document.createElement('div');
+                messageDiv.style.cssText = `margin-bottom: 0.75rem; text-align: ${isAdmin ? 'right' : 'left'};`;
+                const time = msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleTimeString() : new Date().toLocaleTimeString();
+                messageDiv.innerHTML = `
+                    <div style="display: inline-block; max-width: 70%; background: ${isAdmin ? 'linear-gradient(135deg, #ffd700, #ffaa00)' : 'rgba(255,255,255,0.1)'}; color: ${isAdmin ? '#000' : '#fff'}; padding: 0.6rem 0.85rem; border-radius: 16px;">
+                        <div style="font-size: 0.65rem;">${escapeHtml(msg.senderName)}</div>
+                        <div style="font-size: 0.85rem;">${escapeHtml(msg.text)}</div>
+                        <div style="font-size: 0.55rem; opacity: 0.5; text-align: right;">${time}</div>
+                    </div>
+                `;
+                adminChatMessages.appendChild(messageDiv);
+                adminChatMessages.scrollTop = adminChatMessages.scrollHeight;
             });
-        }
-
-        function addAdminMessageToUI(text, sender, isAdmin, timestamp) {
-            const messageDiv = document.createElement('div');
-            messageDiv.style.cssText = `
-                margin-bottom: 0.75rem;
-                text-align: ${isAdmin ? 'right' : 'left'};
-            `;
-            const time = timestamp?.toDate ? timestamp.toDate().toLocaleTimeString() : new Date().toLocaleTimeString();
-            messageDiv.innerHTML = `
-                <div style="display: inline-block; max-width: 70%; background: ${isAdmin ? 'linear-gradient(135deg, #ffd700, #ffaa00)' : 'rgba(255,255,255,0.1)'}; color: ${isAdmin ? '#000' : '#fff'}; padding: 0.6rem 0.85rem; border-radius: 16px;">
-                    <div style="font-size: 0.65rem; opacity: 0.7;">${escapeHtml(sender)}</div>
-                    <div style="font-size: 0.85rem;">${escapeHtml(text)}</div>
-                    <div style="font-size: 0.55rem; opacity: 0.5; text-align: right;">${time}</div>
-                </div>
-            `;
-            adminChatMessages.appendChild(messageDiv);
-            adminChatMessages.scrollTop = adminChatMessages.scrollHeight;
         }
 
         sendReplyBtn.addEventListener('click', async () => {
             const text = adminReplyInput.value.trim();
             if (!text || !selectedTicketId) return;
-            
             const messagesRef = ref(db, `support-messages/${selectedTicketId}`);
             await push(messagesRef, {
-                text: text,
-                senderId: 'admin',
-                senderName: 'PRRX Support',
-                senderRole: 'admin',
-                timestamp: serverTimestamp(),
-                read: false
+                text: text, senderId: 'admin', senderName: 'PRRX Support',
+                senderRole: 'admin', timestamp: serverTimestamp(), read: false
             });
-            
-            await update(ref(db, `support-tickets/${selectedTicketId}`), {
-                lastActivity: serverTimestamp()
-            });
-            
+            await update(ref(db, `support-tickets/${selectedTicketId}`), { lastActivity: serverTimestamp() });
             adminReplyInput.value = '';
         });
 
@@ -611,17 +974,9 @@
             if (messagesListener) messagesListener();
         });
 
-        adminReplyInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendReplyBtn.click();
-        });
+        adminReplyInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendReplyBtn.click(); });
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Google Auth
+        // ============ GOOGLE AUTH ============
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 loginOverlay.style.display = 'none';
@@ -629,6 +984,7 @@
                 loadUserData(user);
                 initCharts();
                 updateNavbarAuth(user);
+                loadPremiumSession();
                 setInterval(() => loadTickets(), 5000);
             } else {
                 loginOverlay.style.display = 'flex';
@@ -638,23 +994,23 @@
         });
 
         googleLoginBtn.addEventListener('click', async () => {
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                alert('Login failed: ' + error.message);
-            }
+            try { await signInWithPopup(auth, provider); } catch (error) { alert('Login failed: ' + error.message); }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            try { await signOut(auth); clearPremiumSession(); } catch (error) { console.error('Logout error:', error); }
         });
 
         function loadUserData(user) {
             document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
             document.getElementById('userEmail').textContent = user.email;
+            document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || user.email}&background=00ff88&color=000`;
         }
 
         function updateNavbarAuth(user) {
             const navAuth = document.getElementById('navAuth');
             const userMenu = document.getElementById('userMenu');
             const navLoginBtn = document.getElementById('navLoginBtn');
-            
             if (user) {
                 userMenu.style.display = 'flex';
                 navLoginBtn.style.display = 'none';
@@ -666,61 +1022,41 @@
             }
         }
 
-        let activityChart, ticketsChart;
-        
+        let activityChart, performanceChart;
         function initCharts() {
             const activityCtx = document.getElementById('activityChart')?.getContext('2d');
             if (activityCtx) {
                 activityChart = new Chart(activityCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        datasets: [{
-                            label: 'Active Users',
-                            data: [1250, 1320, 1480, 1650, 1820, 2100, 2450],
-                            borderColor: '#00ff88',
-                            backgroundColor: 'rgba(0, 255, 136, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#fff' } } },
-                        scales: {
-                            y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } },
-                            x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } }
-                        }
-                    }
+                    type: 'line', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{ label: 'Active Users', data: [1250, 1320, 1480, 1650, 1820, 2100, 2450],
+                    borderColor: '#00ff88', backgroundColor: 'rgba(0, 255, 136, 0.1)', tension: 0.4, fill: true }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } },
+                    scales: { y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } },
+                    x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } } } }
                 });
             }
-            
-            const ticketsCtx = document.getElementById('ticketsChart')?.getContext('2d');
-            if (ticketsCtx) {
-                ticketsChart = new Chart(ticketsCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Open', 'Resolved', 'Closed'],
-                        datasets: [{
-                            label: 'Tickets',
-                            data: [0, 0, 0],
-                            backgroundColor: '#ffd700',
-                            borderRadius: 8
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { labels: { color: '#fff' } } },
-                        scales: {
-                            y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } },
-                            x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } }
-                        }
-                    }
+            const perfCtx = document.getElementById('performanceChart')?.getContext('2d');
+            if (perfCtx) {
+                performanceChart = new Chart(perfCtx, {
+                    type: 'bar', data: { labels: ['Aimbot', 'ESP', 'Security', 'Speed', 'Stability'],
+                    datasets: [{ label: 'Performance Score', data: [94, 88, 96, 92, 98], backgroundColor: '#00ff88', borderRadius: 8 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } },
+                    scales: { y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff', max: 100 }, max: 100 },
+                    x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff' } } } }
                 });
             }
         }
+
+        setInterval(() => {
+            const activeChats = document.getElementById('activeChats');
+            if (activeChats && dashboardContent.style.display === 'block') {
+                const current = parseInt(activeChats.textContent.replace(',', ''));
+                const change = Math.floor(Math.random() * 50) - 20;
+                activeChats.textContent = Math.max(0, current + change).toLocaleString();
+            }
+        }, 10000);
+
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     </script>
 </body>
 </html>
