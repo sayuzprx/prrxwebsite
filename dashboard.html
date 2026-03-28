@@ -6,12 +6,10 @@
     <title>PRRX | Premium Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Lightweight Anti-Debugging (No False Positives) -->
+    <!-- Anti-Debugging & Protection -->
     <script>
         (function() {
             // ============ F12 AND KEYBOARD PROTECTION ============
-            // This only blocks F12 and DevTools shortcuts - NO blur/warning
-            
             document.addEventListener('keydown', function(e) {
                 // F12 key
                 if (e.key === 'F12' || e.keyCode === 123) {
@@ -40,20 +38,13 @@
                 }
             });
             
-            // Disable right-click on sensitive areas only (not entire page)
-            const sensitiveAreas = ['.premium-login-form', '.admin-login-form', '.form-input'];
+            // ============ RIGHT-CLICK DISABLE (FULL PAGE) ============
             document.addEventListener('contextmenu', function(e) {
-                let target = e.target;
-                while (target) {
-                    if (target.classList && target.classList.contains('form-input')) {
-                        e.preventDefault();
-                        return false;
-                    }
-                    target = target.parentElement;
-                }
+                e.preventDefault();
+                return false;
             });
             
-            // Simple console clear prevention (no blur effect)
+            // ============ CONSOLE PROTECTION ============
             const originalConsoleLog = console.log;
             console.log = function() {
                 const args = Array.from(arguments);
@@ -804,9 +795,6 @@
     </main>
 
     <script type="module">
-        // Your original Firebase and functionality code remains EXACTLY the same
-        // ... (keep all your existing JavaScript code here)
-        
         // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
