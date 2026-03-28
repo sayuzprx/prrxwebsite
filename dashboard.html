@@ -11,34 +11,29 @@
         (function() {
             // ============ F12 AND KEYBOARD PROTECTION ============
             document.addEventListener('keydown', function(e) {
-                // F12 key
                 if (e.key === 'F12' || e.keyCode === 123) {
                     e.preventDefault();
                     return false;
                 }
-                // Ctrl+Shift+I (DevTools)
                 if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
                     e.preventDefault();
                     return false;
                 }
-                // Ctrl+Shift+J (Console)
                 if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.keyCode === 74)) {
                     e.preventDefault();
                     return false;
                 }
-                // Ctrl+U (View Source)
                 if (e.ctrlKey && (e.key === 'u' || e.keyCode === 85)) {
                     e.preventDefault();
                     return false;
                 }
-                // Ctrl+S (Save)
                 if (e.ctrlKey && (e.key === 's' || e.keyCode === 83)) {
                     e.preventDefault();
                     return false;
                 }
             });
             
-            // ============ RIGHT-CLICK DISABLE (FULL PAGE) ============
+            // ============ RIGHT-CLICK DISABLE ============
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 return false;
@@ -486,6 +481,7 @@
             cursor: pointer;
             transition: all 0.3s;
             border-left: 3px solid #ffd700;
+            position: relative;
         }
 
         .ticket-item:hover {
@@ -500,6 +496,44 @@
         .ticket-item p {
             font-size: 0.75rem;
             color: #888;
+        }
+
+        /* Delete button inside ticket item */
+        .delete-ticket-btn-item {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .delete-ticket-btn-item:hover {
+            background: #ff4444;
+            color: #fff;
+        }
+
+        /* Admin Chat Delete Button */
+        .delete-chat-ticket-btn {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: all 0.3s;
+        }
+
+        .delete-chat-ticket-btn:hover {
+            background: #ff4444;
+            color: #fff;
         }
 
         /* Stats Cards - Simple */
@@ -737,7 +771,10 @@
                         <div class="admin-panel">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                                 <h3 id="chatWithUserName">Chat with User</h3>
-                                <button id="closeChatBtn" style="background: rgba(255,68,68,0.2); color: #ff4444; border: none; padding: 0.25rem 0.75rem; border-radius: 8px; cursor: pointer;">Close Chat</button>
+                                <div>
+                                    <button id="deleteChatTicketBtn" class="delete-chat-ticket-btn">🗑️ Delete Ticket</button>
+                                    <button id="closeChatBtn" style="background: rgba(255,68,68,0.2); color: #ff4444; border: 1px solid #ff4444; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; margin-left: 0.5rem;">Close Chat</button>
+                                </div>
                             </div>
                             <div id="adminChatMessages" style="height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 1rem; margin-bottom: 1rem;"></div>
                             <div style="display: flex; gap: 0.5rem;">
@@ -808,7 +845,7 @@
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { getDatabase, ref, onChildAdded, push, serverTimestamp, get, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+        import { getDatabase, ref, onChildAdded, push, serverTimestamp, get, update, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -863,7 +900,55 @@
         const adminReplyInput = document.getElementById('adminReplyInput');
         const sendReplyBtn = document.getElementById('sendReplyBtn');
         const closeChatBtn = document.getElementById('closeChatBtn');
+        const deleteChatTicketBtn = document.getElementById('deleteChatTicketBtn');
         const chatWithUserName = document.getElementById('chatWithUserName');
+
+        // ============ DELETE TICKET FUNCTION ============
+        async function deleteTicket(ticketId, ticketSubject) {
+            if (!isAdminLoggedIn) {
+                adminError.textContent = 'Please login as admin first';
+                return false;
+            }
+            
+            const confirmDelete = confirm(`⚠️ WARNING: Are you sure you want to delete ticket "${ticketSubject}"?\n\nThis action cannot be undone. All messages will be permanently deleted.`);
+            
+            if (confirmDelete) {
+                try {
+                    // Delete all messages in the ticket
+                    const messagesRef = ref(db, `support-messages/${ticketId}`);
+                    const messagesSnapshot = await get(messagesRef);
+                    
+                    if (messagesSnapshot.exists()) {
+                        const messages = messagesSnapshot.val();
+                        for (const messageId in messages) {
+                            await remove(ref(db, `support-messages/${ticketId}/${messageId}`));
+                        }
+                    }
+                    
+                    // Delete the ticket itself
+                    await remove(ref(db, `support-tickets/${ticketId}`));
+                    
+                    // Refresh tickets list
+                    loadTickets();
+                    
+                    // Close chat if this ticket was open
+                    if (selectedTicketId === ticketId) {
+                        chatWithUser.style.display = 'none';
+                        selectedTicketId = null;
+                        if (messagesListener) messagesListener();
+                    }
+                    
+                    alert(`✅ Ticket "${ticketSubject}" has been permanently deleted.`);
+                    return true;
+                    
+                } catch (error) {
+                    console.error("Delete error:", error);
+                    alert("❌ Error deleting ticket. Please try again.");
+                    return false;
+                }
+            }
+            return false;
+        }
 
         // Premium Functions
         function validatePremiumLogin(username, password) {
@@ -980,10 +1065,23 @@
                 <div class="ticket-item" data-ticket-id="${ticket.id}">
                     <h4>${escapeHtml(ticket.subject)}</h4>
                     <p>From: ${escapeHtml(ticket.userName)}</p>
+                    <button class="delete-ticket-btn-item" data-ticket-id="${ticket.id}" data-ticket-subject="${escapeHtml(ticket.subject)}">🗑️ Delete</button>
                 </div>
             `).join('');
+            
+            // Add delete button event listeners
+            document.querySelectorAll('.delete-ticket-btn-item').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const ticketId = btn.dataset.ticketId;
+                    const ticketSubject = btn.dataset.ticketSubject;
+                    deleteTicket(ticketId, ticketSubject);
+                });
+            });
+            
             document.querySelectorAll('.ticket-item').forEach(item => {
-                item.addEventListener('click', () => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-ticket-btn-item')) return;
                     const ticketId = item.dataset.ticketId;
                     const ticket = tickets.find(t => t.id === ticketId);
                     if (ticket) openChatWithUser(ticketId, ticket.userName);
@@ -1032,6 +1130,14 @@
             chatWithUser.style.display = 'none';
             selectedTicketId = null;
             if (messagesListener) messagesListener();
+        });
+
+        // Delete ticket from chat view
+        deleteChatTicketBtn.addEventListener('click', async () => {
+            if (selectedTicketId) {
+                const subject = chatWithUserName.textContent.replace('Chat with ', '');
+                await deleteTicket(selectedTicketId, subject);
+            }
         });
 
         adminReplyInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendReplyBtn.click(); });
