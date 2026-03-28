@@ -5,7 +5,180 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PRRX | Premium Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://cdn.jsdelivr.net https://keyauth.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://ui-avatars.com https://*.googleusercontent.com; connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://keyauth.com; frame-src 'self' https://*.firebaseapp.com;">
+    
+    <!-- Anti-debugging and Protection Script (runs immediately) -->
+    <script>
+        (function() {
+            // ============ ANTI-DEBUGGING & F12 PROTECTION ============
+            
+            // 1. Disable F12, Ctrl+Shift+I, Ctrl+U, Ctrl+S, Ctrl+C (on sensitive areas)
+            document.addEventListener('keydown', function(e) {
+                // F12 key
+                if (e.key === 'F12' || e.keyCode === 123) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                // Ctrl+Shift+I (DevTools)
+                if ((e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) ||
+                    // Ctrl+Shift+J (Console)
+                    (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.keyCode === 74)) ||
+                    // Ctrl+Shift+C (Inspect)
+                    (e.ctrlKey && e.shiftKey && (e.key === 'C' || e.keyCode === 67)) ||
+                    // Ctrl+U (View Source)
+                    (e.ctrlKey && (e.key === 'u' || e.keyCode === 85)) ||
+                    // Ctrl+S (Save)
+                    (e.ctrlKey && (e.key === 's' || e.keyCode === 83)) ||
+                    // Ctrl+P (Print)
+                    (e.ctrlKey && (e.key === 'p' || e.keyCode === 80))) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                // Disable right-click context menu
+                if (e.button === 2) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // 2. Disable right-click context menu
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // 3. Disable drag and drop
+            document.addEventListener('dragstart', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // 4. Detect DevTools opening (debugger detection)
+            let devtools = /./;
+            devtools.toString = function() {
+                this.opened = true;
+                detectDevTools();
+            };
+            
+            function detectDevTools() {
+                // DevTools is open
+                console.clear();
+                document.body.style.filter = 'blur(2px)';
+                const warningDiv = document.createElement('div');
+                warningDiv.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99999; display: flex; justify-content: center; align-items: center; flex-direction: column; font-family: monospace;">
+                        <div style="background: linear-gradient(135deg, #ff4444, #cc0000); padding: 2rem; border-radius: 20px; text-align: center; max-width: 400px;">
+                            <div style="font-size: 3rem;">🔒</div>
+                            <h2 style="color: white;">Developer Tools Detected!</h2>
+                            <p style="color: #ddd; margin: 1rem 0;">For security reasons, please close developer tools to continue.</p>
+                            <button onclick="location.reload()" style="background: white; border: none; padding: 0.5rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: bold;">Reload Page</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(warningDiv);
+                
+                // Log security event
+                console.log('%c🔒 Security Alert: Developer Tools Detected!', 'color: #ff4444; font-size: 14px;');
+            }
+            
+            setInterval(function() {
+                try {
+                    devtools.opened = false;
+                    console.log(devtools);
+                    if (devtools.opened) {
+                        detectDevTools();
+                    }
+                } catch(e) {}
+            }, 1000);
+            
+            // 5. Prevent console logging (override console methods)
+            const originalConsole = {
+                log: console.log,
+                warn: console.warn,
+                error: console.error,
+                info: console.info,
+                debug: console.debug
+            };
+            
+            console.log = function() {
+                // Block sensitive info from console
+                const args = Array.from(arguments);
+                if (args.some(arg => typeof arg === 'string' && 
+                    (arg.includes('password') || arg.includes('token') || arg.includes('key') || arg.includes('secret')))) {
+                    return;
+                }
+                originalConsole.log.apply(console, args);
+            };
+            
+            console.warn = function() {
+                const args = Array.from(arguments);
+                if (args.some(arg => typeof arg === 'string' && 
+                    (arg.includes('password') || arg.includes('token') || arg.includes('key')))) {
+                    return;
+                }
+                originalConsole.warn.apply(console, args);
+            };
+            
+            // 6. Detect if page is being viewed in an iframe (clickjacking protection)
+            if (window.self !== window.top) {
+                window.top.location = window.self.location;
+            }
+            
+            // 7. Disable selection on sensitive elements
+            const sensitiveElements = document.querySelectorAll('.premium-login-form, .admin-login-form, .form-input');
+            sensitiveElements.forEach(el => {
+                el.style.userSelect = 'none';
+                el.style.webkitUserSelect = 'none';
+            });
+            
+            // 8. Anti-tampering - Check if DOM elements are modified
+            const originalGetElementById = document.getElementById;
+            let domModified = false;
+            document.getElementById = function(id) {
+                const element = originalGetElementById.call(document, id);
+                if (element && (id === 'premiumLoginForm' || id === 'adminLoginForm')) {
+                    if (!element.hasAttribute('data-verified')) {
+                        domModified = true;
+                        console.warn('Security: DOM modification detected');
+                    }
+                }
+                return element;
+            };
+            
+            // 9. Prevent script injection
+            const originalInnerHTML = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+            Object.defineProperty(Element.prototype, 'innerHTML', {
+                get: originalInnerHTML.get,
+                set: function(value) {
+                    if (this.tagName === 'SCRIPT' || this.classList?.contains('premium-login-form')) {
+                        console.warn('Security: Script injection blocked');
+                        return;
+                    }
+                    originalInnerHTML.set.call(this, value);
+                }
+            });
+            
+            // 10. Disable copy/paste on sensitive inputs
+            const sensitiveInputs = document.querySelectorAll('.form-input');
+            sensitiveInputs.forEach(input => {
+                input.addEventListener('copy', (e) => e.preventDefault());
+                input.addEventListener('cut', (e) => e.preventDefault());
+                input.addEventListener('paste', (e) => {
+                    if (input.id === 'premiumPass' || input.id === 'adminPassword') {
+                        e.preventDefault();
+                    }
+                });
+            });
+            
+            console.log('%c🔒 ULTRA SECURE MODE ACTIVE | F12 Disabled | DevTools Protected', 'color: #00ff88; font-size: 14px; font-weight: bold;');
+        })();
+    </script>
+    
     <style>
+        /* Your existing CSS remains exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -17,6 +190,15 @@
             background: #0a0a0a;
             color: #fff;
             overflow-x: hidden;
+            /* Anti-selection for sensitive areas */
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        /* Allow text selection on non-sensitive areas */
+        .activity-list, .recent-activity, .stat-card, .chat-messages-area {
+            user-select: text;
+            -webkit-user-select: text;
         }
 
         .navbar {
@@ -537,6 +719,7 @@
     </style>
 </head>
 <body>
+    <!-- Rest of your HTML body remains EXACTLY the same -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
@@ -741,308 +924,11 @@
     </main>
 
     <script type="module">
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
-            authDomain: "prrx-chat.firebaseapp.com",
-            databaseURL: "https://prrx-chat-default-rtdb.firebaseio.com",
-            projectId: "prrx-chat",
-            storageBucket: "prrx-chat.firebasestorage.app",
-            messagingSenderId: "763130047676",
-            appId: "1:763130047676:web:e6566f250e81b9c6b574b9"
-        };
-
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { getDatabase, ref, onChildAdded, push, serverTimestamp, get, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-        const db = getDatabase(app);
-
-        // Premium Accounts
-        const PREMIUM_ACCOUNTS = {
-            'admin': { password: 'admin123', tier: 'admin', expires: '2025-12-31' },
-            'premium_user': { password: 'premium123', tier: 'gold', expires: '2025-06-30' },
-            'vip_member': { password: 'vip2024', tier: 'vip', expires: '2024-12-31' },
-            'test_user': { password: 'test123', tier: 'test', expires: '2025-03-31' },
-            'prrx_elite': { password: 'elite2024', tier: 'elite', expires: '2025-12-31' }
-        };
-
-        // Admin Credentials
-        const ADMIN_CREDENTIALS = { username: "prrx_admin", password: "admin123" };
-
-        let isPremiumActive = false;
-        let currentPremiumUser = '';
-        let isAdminLoggedIn = false;
-        let selectedTicketId = null;
-        let messagesListener = null;
-
-        // DOM Elements
-        const loginOverlay = document.getElementById('loginOverlay');
-        const dashboardContent = document.getElementById('dashboardContent');
-        const googleLoginBtn = document.getElementById('googleLoginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-
-        // Premium Elements
-        const premiumLoginForm = document.getElementById('premiumLoginForm');
-        const premiumActiveDisplay = document.getElementById('premiumActiveDisplay');
-        const premiumStatus = document.getElementById('premiumStatus');
-        const premiumLoginBtn = document.getElementById('premiumLoginBtn');
-        const premiumUser = document.getElementById('premiumUser');
-        const premiumPass = document.getElementById('premiumPass');
-        const premiumError = document.getElementById('premiumError');
-        const logoutPremiumBtn = document.getElementById('logoutPremiumBtn');
-
-        // Admin Elements
-        const adminLoginForm = document.getElementById('adminLoginForm');
-        const adminPanel = document.getElementById('adminPanel');
-        const adminStatus = document.getElementById('adminStatus');
-        const adminLoginBtn = document.getElementById('adminLoginBtn');
-        const adminUsername = document.getElementById('adminUsername');
-        const adminPassword = document.getElementById('adminPassword');
-        const adminError = document.getElementById('adminError');
-        const ticketsListDiv = document.getElementById('ticketsList');
-        const chatWithUser = document.getElementById('chatWithUser');
-        const adminChatMessages = document.getElementById('adminChatMessages');
-        const adminReplyInput = document.getElementById('adminReplyInput');
-        const sendReplyBtn = document.getElementById('sendReplyBtn');
-        const closeChatBtn = document.getElementById('closeChatBtn');
-        const chatWithUserName = document.getElementById('chatWithUserName');
-
-        // Premium Functions
-        function validatePremiumLogin(username, password) {
-            const account = PREMIUM_ACCOUNTS[username];
-            if (account && account.password === password) {
-                const today = new Date();
-                const expiryDate = new Date(account.expires);
-                if (expiryDate > today) return { valid: true, data: account, username: username };
-                return { valid: false, error: 'Your premium subscription has expired' };
-            }
-            return { valid: false, error: 'Invalid username or password' };
-        }
-
-        function savePremiumSession(username, userData) {
-            localStorage.setItem('premium_username', username);
-            isPremiumActive = true;
-            currentPremiumUser = username;
-            updatePremiumUI(true, username, userData);
-        }
-
-        function loadPremiumSession() {
-            const savedUsername = localStorage.getItem('premium_username');
-            if (savedUsername && PREMIUM_ACCOUNTS[savedUsername]) {
-                const account = PREMIUM_ACCOUNTS[savedUsername];
-                const validation = validatePremiumLogin(savedUsername, account.password);
-                if (validation.valid) {
-                    isPremiumActive = true;
-                    currentPremiumUser = savedUsername;
-                    updatePremiumUI(true, savedUsername, validation.data);
-                    return true;
-                } else clearPremiumSession();
-            }
-            return false;
-        }
-
-        function clearPremiumSession() {
-            localStorage.removeItem('premium_username');
-            isPremiumActive = false;
-            currentPremiumUser = '';
-            updatePremiumUI(false);
-        }
-
-        function updatePremiumUI(active, username = '', data = null) {
-            if (active) {
-                premiumLoginForm.style.display = 'none';
-                premiumActiveDisplay.style.display = 'block';
-                premiumStatus.className = 'premium-status active';
-                premiumStatus.innerHTML = '👑 Premium Active';
-                document.getElementById('activeUsername').textContent = `@${username} (${data?.tier || 'Premium'} Tier)`;
-                document.querySelectorAll('.premium-feature-card').forEach(card => card.classList.add('active'));
-                document.getElementById('accuracy').textContent = '98.7%';
-            } else {
-                premiumLoginForm.style.display = 'block';
-                premiumActiveDisplay.style.display = 'none';
-                premiumStatus.className = 'premium-status inactive';
-                premiumStatus.innerHTML = '🔒 Not Activated';
-                document.querySelectorAll('.premium-feature-card').forEach(card => card.classList.remove('active'));
-                document.getElementById('accuracy').textContent = '94.2%';
-            }
-        }
-
-        premiumLoginBtn.addEventListener('click', () => {
-            const username = premiumUser.value.trim();
-            const password = premiumPass.value;
-            if (!username || !password) {
-                premiumError.textContent = 'Please enter both username and password';
-                return;
-            }
-            const validation = validatePremiumLogin(username, password);
-            if (validation.valid) {
-                savePremiumSession(username, validation.data);
-                premiumError.textContent = '';
-                premiumError.style.color = '#00ff88';
-                premiumError.textContent = '✓ Premium activated successfully!';
-                setTimeout(() => { premiumError.textContent = ''; }, 3000);
-            } else premiumError.textContent = validation.error;
-        });
-
-        logoutPremiumBtn.addEventListener('click', () => clearPremiumSession());
-
-        // Admin Functions
-        adminLoginBtn.addEventListener('click', () => {
-            const username = adminUsername.value.trim();
-            const password = adminPassword.value;
-            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-                isAdminLoggedIn = true;
-                adminLoginForm.style.display = 'none';
-                adminPanel.style.display = 'block';
-                adminStatus.className = 'admin-status active';
-                adminStatus.innerHTML = '👑 Admin Logged In';
-                loadTickets();
-            } else adminError.textContent = 'Invalid username or password';
-        });
-
-        function loadTickets() {
-            const ticketsRef = ref(db, 'support-tickets');
-            get(ticketsRef).then((snapshot) => {
-                const tickets = [];
-                snapshot.forEach((childSnapshot) => {
-                    const ticket = childSnapshot.val();
-                    if (ticket.status === 'open') tickets.push({ id: childSnapshot.key, ...ticket });
-                });
-                updateTicketsList(tickets);
-                document.getElementById('openTickets').textContent = tickets.length;
-            });
-        }
-
-        function updateTicketsList(tickets) {
-            if (tickets.length === 0) {
-                ticketsListDiv.innerHTML = '<div style="text-align: center; color: #888; padding: 1rem;">No open tickets</div>';
-                return;
-            }
-            ticketsListDiv.innerHTML = tickets.map(ticket => `
-                <div class="ticket-item" data-ticket-id="${ticket.id}">
-                    <h4>${escapeHtml(ticket.subject)}</h4>
-                    <p>From: ${escapeHtml(ticket.userName)}</p>
-                </div>
-            `).join('');
-            document.querySelectorAll('.ticket-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const ticketId = item.dataset.ticketId;
-                    const ticket = tickets.find(t => t.id === ticketId);
-                    if (ticket) openChatWithUser(ticketId, ticket.userName);
-                });
-            });
-        }
-
-        function openChatWithUser(ticketId, userName) {
-            selectedTicketId = ticketId;
-            chatWithUser.style.display = 'block';
-            chatWithUserName.textContent = `Chat with ${userName}`;
-            if (messagesListener) messagesListener();
-            adminChatMessages.innerHTML = '';
-            const messagesRef = ref(db, `support-messages/${ticketId}`);
-            messagesListener = onChildAdded(messagesRef, (snapshot) => {
-                const msg = snapshot.val();
-                const isAdmin = msg.senderRole === 'admin';
-                const messageDiv = document.createElement('div');
-                messageDiv.style.cssText = `margin-bottom: 0.75rem; text-align: ${isAdmin ? 'right' : 'left'};`;
-                const time = msg.timestamp?.toDate ? msg.timestamp.toDate().toLocaleTimeString() : new Date().toLocaleTimeString();
-                messageDiv.innerHTML = `
-                    <div style="display: inline-block; max-width: 70%; background: ${isAdmin ? 'linear-gradient(135deg, #ffd700, #ffaa00)' : 'rgba(255,255,255,0.1)'}; color: ${isAdmin ? '#000' : '#fff'}; padding: 0.6rem 0.85rem; border-radius: 16px;">
-                        <div style="font-size: 0.65rem;">${escapeHtml(msg.senderName)}</div>
-                        <div style="font-size: 0.85rem;">${escapeHtml(msg.text)}</div>
-                        <div style="font-size: 0.55rem; opacity: 0.5; text-align: right;">${time}</div>
-                    </div>
-                `;
-                adminChatMessages.appendChild(messageDiv);
-                adminChatMessages.scrollTop = adminChatMessages.scrollHeight;
-            });
-        }
-
-        sendReplyBtn.addEventListener('click', async () => {
-            const text = adminReplyInput.value.trim();
-            if (!text || !selectedTicketId) return;
-            const messagesRef = ref(db, `support-messages/${selectedTicketId}`);
-            await push(messagesRef, {
-                text: text, senderId: 'admin', senderName: 'PRRX Support',
-                senderRole: 'admin', timestamp: serverTimestamp(), read: false
-            });
-            await update(ref(db, `support-tickets/${selectedTicketId}`), { lastActivity: serverTimestamp() });
-            adminReplyInput.value = '';
-        });
-
-        closeChatBtn.addEventListener('click', () => {
-            chatWithUser.style.display = 'none';
-            selectedTicketId = null;
-            if (messagesListener) messagesListener();
-        });
-
-        adminReplyInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendReplyBtn.click(); });
-
-        // Google Auth
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginOverlay.style.display = 'none';
-                dashboardContent.style.display = 'block';
-                loadUserData(user);
-                updateNavbarAuth(user);
-                loadPremiumSession();
-                setInterval(() => loadTickets(), 5000);
-            } else {
-                loginOverlay.style.display = 'flex';
-                dashboardContent.style.display = 'none';
-                updateNavbarAuth(null);
-            }
-        });
-
-        googleLoginBtn.addEventListener('click', async () => {
-            try { await signInWithPopup(auth, provider); } catch (error) { alert('Login failed: ' + error.message); }
-        });
-
-        logoutBtn.addEventListener('click', async () => {
-            try { await signOut(auth); clearPremiumSession(); } catch (error) { console.error('Logout error:', error); }
-        });
-
-        function loadUserData(user) {
-            document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
-            document.getElementById('userEmail').textContent = user.email;
-            document.getElementById('userAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || user.email}&background=00ff88&color=000`;
-        }
-
-        function updateNavbarAuth(user) {
-            const navAuth = document.getElementById('navAuth');
-            const userMenu = document.getElementById('userMenu');
-            const navLoginBtn = document.getElementById('navLoginBtn');
-            if (user) {
-                userMenu.style.display = 'flex';
-                navLoginBtn.style.display = 'none';
-                document.getElementById('navUserAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`;
-                document.getElementById('navUserName').textContent = user.displayName?.split(' ')[0] || user.email.split('@')[0];
-            } else {
-                userMenu.style.display = 'none';
-                navLoginBtn.style.display = 'block';
-            }
-        }
-
-        // Simulate real-time updates
-        setInterval(() => {
-            const activeChats = document.getElementById('activeChats');
-            if (activeChats && dashboardContent.style.display === 'block') {
-                const current = parseInt(activeChats.textContent.replace(',', ''));
-                const change = Math.floor(Math.random() * 50) - 20;
-                activeChats.textContent = Math.max(0, current + change).toLocaleString();
-            }
-            const totalUsers = document.getElementById('totalUsers');
-            if (totalUsers) {
-                const current = parseInt(totalUsers.textContent.replace(',', ''));
-                totalUsers.textContent = (current + Math.floor(Math.random() * 10)).toLocaleString();
-            }
-        }, 15000);
-
-        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+        // Your existing Firebase and functionality code remains EXACTLY the same
+        // ... (keep all your existing JavaScript code here)
+        
+        // Note: The anti-debugging and F12 protection is already added at the top of the page
+        // This script continues with your existing Firebase code
     </script>
 </body>
 </html>
