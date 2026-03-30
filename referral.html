@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRRX | Refer & Earn - Get Free Internal Premium Keys</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .nav-logo svg {
+            color: #00ff88;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #00ff88;
+        }
+
+        .login-nav-btn {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .referral-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 2rem 2rem;
+        }
+
+        .referral-header {
+            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,204,102,0.05));
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border: 1px solid rgba(0,255,136,0.2);
+        }
+
+        .referral-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .referral-header p {
+            color: #888;
+        }
+
+        .premium-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .referral-link-box {
+            background: rgba(0,0,0,0.5);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .referral-link-box h3 {
+            margin-bottom: 1rem;
+        }
+
+        .link-display {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .link-display input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .share-btn:hover {
+            background: rgba(0,255,136,0.2);
+            border-color: #00ff88;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00ff88;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .earned-keys {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .earned-keys h3 {
+            margin-bottom: 1rem;
+        }
+
+        .keys-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .key-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .key-code {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #ffd700;
+        }
+
+        .key-status {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+        }
+
+        .key-status.active {
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+        }
+
+        .key-status.used {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+        }
+
+        .referral-history {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .referral-history h3 {
+            margin-bottom: 1rem;
+        }
+
+        .history-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .history-user {
+            color: #00ff88;
+        }
+
+        .history-date {
+            color: #888;
+            font-size: 0.8rem;
+        }
+
+        .copy-success {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00ff88;
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            animation: fadeOut 2s ease;
+            z-index: 1000;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .link-display {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>PRRX</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">HOME</a>
+                <a href="features.html" class="nav-link">FEATURES</a>
+                <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
+                <a href="dashboard.html" class="nav-link">DASHBOARD</a>
+                <a href="referral.html" class="nav-link active">REFER & EARN</a>
+            </div>
+            <div class="nav-auth" id="navAuth">
+                <button class="login-nav-btn" onclick="window.location.href='dashboard.html'">Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="referral-container" id="referralContainer" style="display: none;">
+        <div class="referral-header">
+            <h1>🎁 Refer & Earn</h1>
+            <p>Invite your friends and earn FREE PRRX HEX INTERNAL PREMIUM keys!</p>
+            <span class="premium-badge">⚡ 1 Week Premium Access Each Key</span>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem;">You get 1 key • Your friend gets 1 key</p>
+        </div>
+
+        <div class="referral-link-box">
+            <h3>Your Referral Link</h3>
+            <div class="link-display">
+                <input type="text" id="referralLink" readonly>
+                <button class="copy-btn" onclick="copyReferralLink()">📋 Copy Link</button>
+            </div>
+            <div class="share-buttons">
+                <button class="share-btn" onclick="shareToWhatsApp()">💬 WhatsApp</button>
+                <button class="share-btn" onclick="shareToTelegram()">📱 Telegram</button>
+                <button class="share-btn" onclick="shareToDiscord()">🎮 Discord</button>
+                <button class="share-btn" onclick="shareToTwitter()">🐦 Twitter</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Referrals</div>
+                <div class="stat-value" id="totalReferrals">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Keys Earned</div>
+                <div class="stat-value" id="keysEarned">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Keys Remaining</div>
+                <div class="stat-value" id="keysRemaining">100</div>
+            </div>
+        </div>
+
+        <div class="earned-keys">
+            <h3>🎖️ Your Earned PRRX INTERNAL Premium Keys (1 Week)</h3>
+            <div class="keys-list" id="earnedKeysList">
+                <div style="text-align: center; color: #888; padding: 1rem;">No keys earned yet. Refer friends to get keys!</div>
+            </div>
+        </div>
+
+        <div class="referral-history">
+            <h3>📋 Referral History</h3>
+            <div id="historyList">
+                <div style="text-align: center; color: #888; padding: 1rem;">No referrals yet. Share your link!</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginRequired" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; text-align: center; padding: 2rem;">
+        <div>
+            <h2>🔐 Login Required</h2>
+            <p style="margin: 1rem 0;">Please login to access the referral program</p>
+            <button onclick="window.location.href='dashboard.html'" style="background: linear-gradient(135deg, #00ff88, #00cc66); border: none; padding: 0.75rem 1.5rem; border-radius: 8px; color: #000; font-weight: 600; cursor: pointer;">Go to Login</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { getDatabase, ref, get, set, push, update } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
+            authDomain: "prrx-chat.firebaseapp.com",
+            databaseURL: "https://prrx-chat-default-rtdb.firebaseio.com",
+            projectId: "prrx-chat",
+            storageBucket: "prrx-chat.firebasestorage.app",
+            messagingSenderId: "763130047676",
+            appId: "1:763130047676:web:e6566f250e81b9c6b574b9"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let currentUser = null;
+        let referralCode = null;
+
+        // Your 100 License Keys (PRRX HEX INTERNAL PREMIUM - 1 Week)
+        const LICENSE_KEYS = [
+            "sOq7W-Qiaf-H9Nuc-Hbcd6-0fbctd-savers-prrx", "HIWR5-MGmZ-fHHE1-Bn0UL-4GNSF7-savers-prrx",
+            "N5KZF-zvEq-8Nxbn-Vrl2D-vWBCwx-savers-prrx", "mmzRH-rgMc-ghsSJ-FsZHi-xKUD4x-savers-prrx",
+            "YD7Tw-t8w7-3DKfg-NlplN-4fmzgC-savers-prrx", "iUpwF-3q3O-5ZagO-OoKKA-FvpzNR-savers-prrx",
+            "ZPiGh-y1vr-PBJki-9YXvz-7dXeuB-savers-prrx", "DsTWU-Pcxd-7GXwY-7THDF-HQAnZc-savers-prrx",
+            "wn7dk-HkHt-61TeZ-m14gg-VNkxZ6-savers-prrx", "19hzG-vg3Q-iEa6N-Aeea6-9W2vMw-savers-prrx",
+            "z9SdI-rkPe-qBZ9x-V4W1O-zO6UvA-savers-prrx", "n0Gt7-tftj-mdRtf-hx1rp-rPo6yr-savers-prrx",
+            "DO7ui-Ys0g-EjJ8w-Ta6k0-2OOI2q-savers-prrx", "jfFZ6-FGfr-bcZDj-GoWfF-yia2tR-savers-prrx",
+            "8TsDs-W8Ej-uW3mP-FJaos-C2cVbm-savers-prrx", "pmZbr-Jc6P-aWFS5-FqkLg-j9mjl9-savers-prrx",
+            "4snE3-7Ea5-wJkoS-ilmNw-7AXrza-savers-prrx", "dAbeI-sF0C-3PCWB-URxVd-Y7YMGf-savers-prrx",
+            "VL4iK-27Lp-Lw1NQ-KhM0D-1RfPfD-savers-prrx", "ubZvb-tkmN-mAJl6-QJs04-Oc2AxT-savers-prrx",
+            "sVz99-16sX-LlQYw-siY0r-oNF8zr-savers-prrx", "J9bBM-rItu-XN9oZ-jO4xX-Y5mN2w-savers-prrx",
+            "JT1NM-1ZI7-C9lYP-xbkFU-YPriaS-savers-prrx", "7olpI-dBAy-1ZAqQ-GpwaX-uwZjOY-savers-prrx",
+            "PgPXo-NrvF-FUY7W-pw3EB-SKLTHq-savers-prrx", "DhAbP-gqbt-E321s-iLOOY-zdS5SQ-savers-prrx",
+            "XSmKI-Dsqi-9Q7XR-jLGrg-Tl3phO-savers-prrx", "nTiQW-4r5j-yBs1r-BiDr5-MzHRnJ-savers-prrx",
+            "DHi0k-5a13-xOIiM-JGAFJ-tGwn9z-savers-prrx", "erZzB-fDWD-64vNS-I32NL-XvfeP4-savers-prrx",
+            "Oe1Kz-su4O-PsWUO-4DfOi-HXezwn-savers-prrx", "JI7RU-8u6S-L9sy7-renyg-IgkjpU-savers-prrx",
+            "ou7sH-EncF-goMUn-iL5IF-Bxyhoe-savers-prrx", "OFq1J-FJoX-4zeO6-y8dIm-eBSxM9-savers-prrx",
+            "BfFV1-l17u-CHZhF-KPe95-cvmpH2-savers-prrx", "W03w5-yqP8-CBZnT-yymYQ-5dW2uM-savers-prrx",
+            "jdCxq-Is12-gunpj-8O2VZ-KFvTOH-savers-prrx", "FkHYG-DGu7-b6TkY-JNHBL-uUuJYT-savers-prrx",
+            "JEA98-DMoA-EiBbt-dWhKv-hbDtrG-savers-prrx", "MWvBE-A6m9-w1wFO-0sz9I-9U9jCR-savers-prrx",
+            "i7ssa-50TZ-Gxjaj-Iz0Ld-LDiGgD-savers-prrx", "q7RnE-SR1M-UIwsY-zBbbO-62LVoT-savers-prrx",
+            "azobG-8odN-0OFAD-1wQ8o-CyUA8M-savers-prrx", "wtP5w-ppJi-KcAx1-Hzhgh-ufK4Kr-savers-prrx",
+            "VPJeS-y0EG-3cSpJ-DHGTq-HE7GYm-savers-prrx", "o8q1n-iSrh-Zo3Jh-FtPhS-WIaO32-savers-prrx",
+            "Gepbf-eq96-xuPSM-pqleQ-GW8IZe-savers-prrx", "YMNdU-nTRJ-TIhfX-NVdvA-vkWtAN-savers-prrx",
+            "Yu9eY-8JGj-cLGG1-iDv6Y-Rer00m-savers-prrx", "tr8Ak-7jKX-FLxuM-9ztGz-TRY7EP-savers-prrx",
+            "leiJj-NwpX-B38tc-yCCS7-rY9tET-savers-prrx", "4eTFR-VmZp-qUT0c-FSZmQ-zyYaWa-savers-prrx",
+            "vdpE9-LZGI-b9AbR-kmBOr-uEpdSM-savers-prrx", "IxFZL-IIhT-NxtxI-iZMUN-cjYM8V-savers-prrx",
+            "qEJOB-272W-fvD7M-dPffT-nw7IX8-savers-prrx", "qaUJK-Z3H8-PCbkp-pTgt6-VB7D75-savers-prrx",
+            "8c6Hf-aR42-0bY4x-CVTlk-4Rmt4C-savers-prrx", "uEN5Z-PWTm-UPCal-OaNsy-YlAjjV-savers-prrx",
+            "ooCMq-kSVV-84kxX-R1fI5-pDslYn-savers-prrx", "JLBC9-OPKq-5sYFo-73cjx-uSrloB-savers-prrx",
+            "X5rXO-CACm-xtxLl-ldbRK-Dn8BRm-savers-prrx", "gKzgu-nbsV-JWg66-oKuHJ-LvzTbz-savers-prrx",
+            "u8Ntn-THLC-A4WU6-zXPHl-pqCWGl-savers-prrx", "HGgyh-I6xF-8HmnN-SU3Ud-mTo47x-savers-prrx",
+            "B9UuR-4hpF-cjrJJ-ChbCG-ynIs0g-savers-prrx", "EcLEh-Gkae-s09zT-7Xwms-2IbYwV-savers-prrx",
+            "2pfxd-cXHJ-drzi5-mzF13-GIeOUk-savers-prrx", "Qxk1P-D6cH-VqdOV-KgFpm-hsLF4L-savers-prrx",
+            "mYabz-EZca-HqqEU-5rAzy-5GN01H-savers-prrx", "13OsM-NiO3-hHoYQ-Mdn8j-JzJ035-savers-prrx",
+            "T4ivH-idUL-mKM4B-8G14s-VfJ9HP-savers-prrx", "BFQLk-nxfZ-SYEy5-zR4Gk-FanXQp-savers-prrx",
+            "NMmnH-QNUd-avOZO-QH9z3-9T6lTe-savers-prrx", "U0oiT-8ahU-cK7X0-1bkqa-GimPCg-savers-prrx",
+            "mmNoS-a1tR-AOP1k-gcSMu-x6VzIS-savers-prrx", "msDuS-MZRL-UXqU0-Qpj8d-uxtjVM-savers-prrx",
+            "HSdkE-fYic-ezv6q-jDHUa-Gbg5iV-savers-prrx", "lYlVI-ZQSb-DgiTd-7N0lF-rGd1gh-savers-prrx",
+            "SGmX1-9U2x-MyUR2-XJSJA-HIRdYC-savers-prrx", "hSJGd-DG8w-85rok-afHXA-qZ1Z3C-savers-prrx",
+            "UY1BD-y1EX-BaA1w-R871i-nNexdy-savers-prrx", "JXJ8H-QOm6-WxwX3-x63ZG-l97YZX-savers-prrx",
+            "o9ncc-02FK-bc8Tf-S3sjx-8Qh3gw-savers-prrx", "VS4Cn-E28Y-oFx4q-1Y2eN-ejmkPA-savers-prrx",
+            "yIq3k-to4P-AXSpT-wglxE-zjrHeE-savers-prrx", "sgYh3-Rx8J-5fsit-eBchb-GoPj0g-savers-prrx",
+            "5STLf-gdXp-nUtf9-2MfGJ-Zyxd7q-savers-prrx", "SZh73-QrWk-Qm1DJ-uqomf-zjY9PA-savers-prrx",
+            "nnxeP-pjGx-QKGN0-LKHoN-Fm1Kvm-savers-prrx", "ZUfxu-8K5g-FzUGb-NypNo-I2HvzC-savers-prrx",
+            "8yDgl-NKYt-HKW9b-VGzos-kY2Cs0-savers-prrx", "0c6R7-RPSn-J8agV-FE6rv-HH2x45-savers-prrx",
+            "xLRKe-W0X1-GOdIf-ot4Rq-t5ESue-savers-prrx", "JnZCm-1eDh-EOl3a-i86NT-PomEF2-savers-prrx",
+            "39vLP-J18Z-HaJVZ-tCsfA-BHgiF6-savers-prrx", "FwbhB-9Gr3-7o1Yo-hltTA-c8TUM8-savers-prrx",
+            "Prl06-HVsf-D6agy-D3kJe-6ds8sz-savers-prrx", "nEw2z-qPGa-Mb9Oc-SxjA2-62vKck-savers-prrx",
+            "46s1e-VcSm-jVMjZ-veanT-vsfZel-savers-prrx", "Ccb9Q-MUhs-rzKsj-0yFxo-WsDxCV-savers-prrx"
+        ];
+
+        // Initialize keys in Firebase if not exists
+        async function initializeKeys() {
+            const keysRef = ref(db, 'license_keys/available');
+            const snapshot = await get(keysRef);
+            
+            if (!snapshot.exists()) {
+                // Store all keys as available
+                for (const key of LICENSE_KEYS) {
+                    const newKeyRef = push(keysRef);
+                    await set(newKeyRef, {
+                        key: key,
+                        status: 'available',
+                        duration: '1 week',
+                        type: 'PRRX HEX INTERNAL PREMIUM',
+                        added_at: new Date().toISOString()
+                    });
+                }
+                console.log(`✅ ${LICENSE_KEYS.length} license keys initialized`);
+            }
+        }
+
+        // Get available key count
+        async function getAvailableKeyCount() {
+            const keysRef = ref(db, 'license_keys/available');
+            const snapshot = await get(keysRef);
+            return snapshot.numChildren();
+        }
+
+        // Get user's earned keys
+        async function getUserKeys(userId) {
+            const userKeysRef = ref(db, `users/${userId}/earned_keys`);
+            const snapshot = await get(userKeysRef);
+            const keys = [];
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    keys.push({
+                        id: child.key,
+                        ...child.val()
+                    });
+                });
+            }
+            return keys;
+        }
+
+        // Get user's referrals
+        async function getUserReferrals(userId) {
+            const referralsRef = ref(db, `referrals/referred_by/${userId}`);
+            const snapshot = await get(referralsRef);
+            const referrals = [];
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    referrals.push({
+                        id: child.key,
+                        ...child.val()
+                    });
+                });
+            }
+            return referrals;
+        }
+
+        // Update UI
+        async function updateUI() {
+            if (!currentUser) return;
+            
+            const userId = currentUser.uid;
+            
+            // Get referral code
+            const codeRef = ref(db, `referral_codes/${userId}`);
+            const codeSnap = await get(codeRef);
+            if (codeSnap.exists()) {
+                referralCode = codeSnap.val().code;
+            } else {
+                // Generate new referral code
+                referralCode = generateReferralCode();
+                await set(codeRef, {
+                    code: referralCode,
+                    user_id: userId,
+                    created_at: new Date().toISOString()
+                });
+            }
+            
+            // Update referral link
+            const linkInput = document.getElementById('referralLink');
+            if (linkInput) {
+                linkInput.value = `${window.location.origin}/index.html?ref=${referralCode}`;
+            }
+            
+            // Get user's referrals
+            const referrals = await getUserReferrals(userId);
+            document.getElementById('totalReferrals').textContent = referrals.length;
+            
+            // Get user's earned keys
+            const earnedKeys = await getUserKeys(userId);
+            document.getElementById('keysEarned').textContent = earnedKeys.length;
+            
+            // Update earned keys list
+            const keysListDiv = document.getElementById('earnedKeysList');
+            if (earnedKeys.length === 0) {
+                keysListDiv.innerHTML = '<div style="text-align: center; color: #888; padding: 1rem;">No keys earned yet. Refer friends to get PRRX INTERNAL Premium keys!</div>';
+            } else {
+                keysListDiv.innerHTML = earnedKeys.map(key => `
+                    <div class="key-item">
+                        <span class="key-code">🔑 ${key.key}</span>
+                        <span class="key-status ${key.status}">${key.status === 'active' ? '✅ Active' : '❌ Used'}</span>
+                        <span style="font-size: 0.7rem; color: #888;">Earned: ${new Date(key.earned_at).toLocaleDateString()}</span>
+                    </div>
+                `).join('');
+            }
+            
+            // Update referral history
+            const historyDiv = document.getElementById('historyList');
+            if (referrals.length === 0) {
+                historyDiv.innerHTML = '<div style="text-align: center; color: #888; padding: 1rem;">No referrals yet. Share your link!</div>';
+            } else {
+                historyDiv.innerHTML = referrals.map(ref => `
+                    <div class="history-item">
+                        <span class="history-user">👤 ${ref.referred_name || 'New User'}</span>
+                        <span class="history-date">📅 ${new Date(ref.date).toLocaleDateString()}</span>
+                    </div>
+                `).join('');
+            }
+            
+            // Update keys remaining
+            const remaining = await getAvailableKeyCount();
+            document.getElementById('keysRemaining').textContent = remaining;
+        }
+
+        function generateReferralCode() {
+            return Math.random().toString(36).substring(2, 10).toUpperCase();
+        }
+
+        // Share functions
+        window.copyReferralLink = function() {
+            const linkInput = document.getElementById('referralLink');
+            linkInput.select();
+            document.execCommand('copy');
+            const successDiv = document.createElement('div');
+            successDiv.className = 'copy-success';
+            successDiv.textContent = '✅ Link copied to clipboard!';
+            document.body.appendChild(successDiv);
+            setTimeout(() => successDiv.remove(), 2000);
+        };
+
+        window.shareToWhatsApp = function() {
+            const link = document.getElementById('referralLink').value;
+            window.open(`https://wa.me/?text=🎁 Join PRRX using my referral link and get FREE 1-Week INTERNAL Premium! ${link}`, '_blank');
+        };
+
+        window.shareToTelegram = function() {
+            const link = document.getElementById('referralLink').value;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=🎁 Join PRRX using my referral link and get FREE 1-Week INTERNAL Premium!`, '_blank');
+        };
+
+        window.shareToDiscord = function() {
+            const link = document.getElementById('referralLink').value;
+            window.open(`https://discord.com/channels/@me`, '_blank');
+            alert(`Share this link: ${link}`);
+        };
+
+        window.shareToTwitter = function() {
+            const link = document.getElementById('referralLink').value;
+            window.open(`https://twitter.com/intent/tweet?text=🎁 Join PRRX using my referral link and get FREE 1-Week INTERNAL Premium! ${link}`, '_blank');
+        };
+
+        // Initialize
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('referralContainer').style.display = 'block';
+                document.getElementById('loginRequired').style.display = 'none';
+                
+                // Update navbar
+                const navAuth = document.getElementById('navAuth');
+                navAuth.innerHTML = `
+                    <div class="user-menu" style="display: flex; align-items: center; gap: 10px;">
+                        <span>${user.displayName || user.email.split('@')[0]}</span>
+                    </div>
+                `;
+                
+                await initializeKeys();
+                await updateUI();
+            } else {
+                document.getElementById('referralContainer').style.display = 'none';
+                document.getElementById('loginRequired').style.display = 'flex';
+            }
+        });
+    </script>
+</body>
+</html>
