@@ -5,55 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PRRX | Premium Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Anti-Debugging & Protection -->
-    <script>
-        (function() {
-            // ============ F12 AND KEYBOARD PROTECTION ============
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'F12' || e.keyCode === 123) {
-                    e.preventDefault();
-                    return false;
-                }
-                if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
-                    e.preventDefault();
-                    return false;
-                }
-                if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.keyCode === 74)) {
-                    e.preventDefault();
-                    return false;
-                }
-                if (e.ctrlKey && (e.key === 'u' || e.keyCode === 85)) {
-                    e.preventDefault();
-                    return false;
-                }
-                if (e.ctrlKey && (e.key === 's' || e.keyCode === 83)) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-            
-            // ============ RIGHT-CLICK DISABLE ============
-            document.addEventListener('contextmenu', function(e) {
-                e.preventDefault();
-                return false;
-            });
-            
-            // ============ CONSOLE PROTECTION ============
-            const originalConsoleLog = console.log;
-            console.log = function() {
-                const args = Array.from(arguments);
-                if (args.some(arg => typeof arg === 'string' && 
-                    (arg.includes('password') || arg.includes('token') || arg.includes('key')))) {
-                    return;
-                }
-                originalConsoleLog.apply(console, args);
-            };
-            
-            console.log('🔒 Security Active | PRRX Dashboard');
-        })();
-    </script>
-    
     <style>
         * {
             margin: 0;
@@ -498,7 +449,6 @@
             color: #888;
         }
 
-        /* Delete button inside ticket item */
         .delete-ticket-btn-item {
             position: absolute;
             right: 10px;
@@ -519,7 +469,6 @@
             color: #fff;
         }
 
-        /* Admin Chat Delete Button */
         .delete-chat-ticket-btn {
             background: rgba(255,68,68,0.2);
             color: #ff4444;
@@ -536,7 +485,48 @@
             color: #fff;
         }
 
-        /* Stats Cards - Simple */
+        /* Admin Alert Styles */
+        .admin-alert {
+            background: rgba(0,0,0,0.8);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+
+        .admin-alert.success {
+            border-left-color: #00ff88;
+            background: rgba(0,255,136,0.1);
+        }
+
+        .admin-alert.warning {
+            border-left-color: #ffaa00;
+            background: rgba(255,170,0,0.1);
+        }
+
+        .admin-alert.error {
+            border-left-color: #ff4444;
+            background: rgba(255,68,68,0.1);
+        }
+
+        .admin-alert.info {
+            border-left-color: #00aaff;
+            background: rgba(0,170,255,0.1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -682,6 +672,9 @@
                 <button id="logoutBtn" class="logout-btn-dashboard">Logout</button>
             </div>
 
+            <!-- Admin Alerts Container -->
+            <div id="adminAlertsContainer" style="margin-bottom: 1rem;"></div>
+
             <!-- PREMIUM LOGIN BOX -->
             <div class="premium-login-section" id="premiumSection">
                 <div class="premium-header">
@@ -786,7 +779,7 @@
                 </div>
             </div>
 
-            <!-- Simple Stats Cards (No Charts) -->
+            <!-- Simple Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
@@ -902,51 +895,241 @@
         const closeChatBtn = document.getElementById('closeChatBtn');
         const deleteChatTicketBtn = document.getElementById('deleteChatTicketBtn');
         const chatWithUserName = document.getElementById('chatWithUserName');
+        const adminAlertsContainer = document.getElementById('adminAlertsContainer');
 
-        // ============ DELETE TICKET FUNCTION ============
-        async function deleteTicket(ticketId, ticketSubject) {
-            if (!isAdminLoggedIn) {
-                adminError.textContent = 'Please login as admin first';
+        // ============ ADMIN ALERT FUNCTIONS ============
+        function addAdminAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `admin-alert ${type}`;
+            alertDiv.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: #888; cursor: pointer;">✕</button>
+                </div>
+            `;
+            adminAlertsContainer.insertBefore(alertDiv, adminAlertsContainer.firstChild);
+            
+            // Auto remove after 10 seconds
+            setTimeout(() => {
+                if (alertDiv && alertDiv.remove) alertDiv.remove();
+            }, 10000);
+        }
+
+        // ============ KEY STATUS FUNCTIONS ============
+        async function getAvailableKeyCount() {
+            const keysRef = ref(db, 'license_keys/available');
+            const snapshot = await get(keysRef);
+            return snapshot.numChildren();
+        }
+
+        async function checkKeyStatus() {
+            const available = await getAvailableKeyCount();
+            
+            if (available === 0) {
+                addAdminAlert('❌ CRITICAL: No license keys available! Please add new keys immediately.', 'error');
+            } else if (available < 10) {
+                addAdminAlert(`⚠️ WARNING: Only ${available} license keys remaining! Please add more keys soon.`, 'warning');
+            } else {
+                addAdminAlert(`✅ Keys available: ${available} keys remaining in pool.`, 'success');
+            }
+        }
+
+        // ============ WEEKLY REPORT FUNCTION ============
+        async function generateWeeklyReport() {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            
+            // Get keys given in last week
+            const usedKeysRef = ref(db, 'license_keys/used');
+            const usedSnapshot = await get(usedKeysRef);
+            let keysGiven = 0;
+            if (usedSnapshot.exists()) {
+                usedSnapshot.forEach(() => keysGiven++);
+            }
+            
+            // Get new users in last week
+            const usersRef = ref(db, 'users');
+            const usersSnapshot = await get(usersRef);
+            let newUsers = 0;
+            if (usersSnapshot.exists()) {
+                usersSnapshot.forEach((child) => {
+                    const userData = child.val();
+                    if (userData.created_at && new Date(userData.created_at) > oneWeekAgo) {
+                        newUsers++;
+                    }
+                });
+            }
+            
+            // Get new tickets in last week
+            const ticketsRef = ref(db, 'support-tickets');
+            const ticketsSnapshot = await get(ticketsRef);
+            let newTickets = 0;
+            if (ticketsSnapshot.exists()) {
+                ticketsSnapshot.forEach((child) => {
+                    const ticket = child.val();
+                    if (ticket.createdAt && new Date(ticket.createdAt) > oneWeekAgo) {
+                        newTickets++;
+                    }
+                });
+            }
+            
+            const available = await getAvailableKeyCount();
+            
+            addAdminAlert(`📊 WEEKLY REPORT: ${keysGiven} keys given | ${newUsers} new users | ${newTickets} new tickets | ${available} keys remaining`, 'info');
+        }
+
+        // ============ REFERRAL SYSTEM FUNCTIONS ============
+        async function giveKeyToUser(userId, userName, reason) {
+            const keysRef = ref(db, 'license_keys/available');
+            const snapshot = await get(keysRef);
+            
+            if (!snapshot.exists()) {
+                console.log('No keys available');
+                return null;
+            }
+            
+            let firstKey = null;
+            let firstKeyId = null;
+            snapshot.forEach((child) => {
+                if (!firstKey) {
+                    firstKey = child.val();
+                    firstKeyId = child.key;
+                }
+            });
+            
+            if (firstKey && firstKeyId) {
+                await remove(ref(db, `license_keys/available/${firstKeyId}`));
+                
+                // Add to used keys
+                await set(ref(db, `license_keys/used/${firstKeyId}`), {
+                    key: firstKey.key,
+                    given_to: userId,
+                    given_to_name: userName,
+                    reason: reason,
+                    given_at: new Date().toISOString(),
+                    duration: '1 week',
+                    type: 'PRRX HEX INTERNAL PREMIUM'
+                });
+                
+                const userKeyRef = ref(db, `users/${userId}/earned_keys/${firstKeyId}`);
+                await set(userKeyRef, {
+                    key: firstKey.key,
+                    status: 'active',
+                    earned_at: new Date().toISOString(),
+                    reason: reason,
+                    duration: '1 week',
+                    type: 'PRRX HEX INTERNAL PREMIUM'
+                });
+                
+                console.log(`✅ Key given to ${userName} for ${reason}`);
+                addAdminAlert(`✅ Key given successfully to ${userName} (${reason})`, 'success');
+                
+                // Check key status after giving
+                const remaining = await getAvailableKeyCount();
+                if (remaining < 10) {
+                    addAdminAlert(`⚠️ WARNING: Only ${remaining} license keys remaining!`, 'warning');
+                }
+                
+                return firstKey.key;
+            }
+            return null;
+        }
+
+        async function checkPendingReferral(user) {
+            const pendingReferral = localStorage.getItem('pending_referral');
+            
+            if (!pendingReferral) {
+                console.log('No pending referral');
                 return false;
             }
             
-            const confirmDelete = confirm(`⚠️ WARNING: Are you sure you want to delete ticket "${ticketSubject}"?\n\nThis action cannot be undone. All messages will be permanently deleted.`);
+            console.log('Pending referral found:', pendingReferral);
             
-            if (confirmDelete) {
-                try {
-                    // Delete all messages in the ticket
-                    const messagesRef = ref(db, `support-messages/${ticketId}`);
-                    const messagesSnapshot = await get(messagesRef);
-                    
-                    if (messagesSnapshot.exists()) {
-                        const messages = messagesSnapshot.val();
-                        for (const messageId in messages) {
-                            await remove(ref(db, `support-messages/${ticketId}/${messageId}`));
-                        }
-                    }
-                    
-                    // Delete the ticket itself
-                    await remove(ref(db, `support-tickets/${ticketId}`));
-                    
-                    // Refresh tickets list
-                    loadTickets();
-                    
-                    // Close chat if this ticket was open
-                    if (selectedTicketId === ticketId) {
-                        chatWithUser.style.display = 'none';
-                        selectedTicketId = null;
-                        if (messagesListener) messagesListener();
-                    }
-                    
-                    alert(`✅ Ticket "${ticketSubject}" has been permanently deleted.`);
-                    return true;
-                    
-                } catch (error) {
-                    console.error("Delete error:", error);
-                    alert("❌ Error deleting ticket. Please try again.");
-                    return false;
-                }
+            const alreadyClaimed = localStorage.getItem(`referral_claimed_${user.uid}`);
+            if (alreadyClaimed) {
+                console.log('User already claimed referral before');
+                localStorage.removeItem('pending_referral');
+                return false;
             }
+            
+            const referralCodesRef = ref(db, 'referral_codes');
+            const snapshot = await get(referralCodesRef);
+            let referrerId = null;
+            let referrerName = null;
+            
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    const codeData = child.val();
+                    if (codeData.code === pendingReferral) {
+                        referrerId = child.key;
+                        referrerName = codeData.user_name || 'User';
+                    }
+                });
+            }
+            
+            if (!referrerId) {
+                console.log('Invalid referral code');
+                localStorage.removeItem('pending_referral');
+                return false;
+            }
+            
+            if (referrerId === user.uid) {
+                console.log('Cannot refer yourself');
+                localStorage.removeItem('pending_referral');
+                return false;
+            }
+            
+            const referralRecordRef = ref(db, `referrals/used/${pendingReferral}_${user.uid}`);
+            const recordSnap = await get(referralRecordRef);
+            if (recordSnap.exists()) {
+                console.log('Referral already used');
+                localStorage.removeItem('pending_referral');
+                return false;
+            }
+            
+            const keysRef = ref(db, 'license_keys/available');
+            const keysSnapshot = await get(keysRef);
+            const availableKeys = keysSnapshot.numChildren();
+            
+            if (availableKeys < 2) {
+                console.log('Not enough keys available');
+                addAdminAlert('❌ Referral failed: Not enough keys available!', 'error');
+                alert('⚠️ Sorry! No keys available right now. Please try again later.');
+                localStorage.removeItem('pending_referral');
+                return false;
+            }
+            
+            const userKey = await giveKeyToUser(user.uid, user.displayName || user.email, 'referral_welcome');
+            const referrerKey = await giveKeyToUser(referrerId, referrerName, 'referral_reward');
+            
+            if (userKey && referrerKey) {
+                await set(referralRecordRef, {
+                    referrer_id: referrerId,
+                    referred_id: user.uid,
+                    referred_name: user.displayName || user.email,
+                    date: new Date().toISOString(),
+                    status: 'completed'
+                });
+                
+                const historyRef = ref(db, `referrals/history/${pendingReferral}`);
+                await push(historyRef, {
+                    referred_id: user.uid,
+                    referred_name: user.displayName || user.email,
+                    date: new Date().toISOString(),
+                    key_given: userKey
+                });
+                
+                localStorage.setItem(`referral_claimed_${user.uid}`, 'true');
+                localStorage.removeItem('pending_referral');
+                
+                setTimeout(() => {
+                    alert(`🎉 CONGRATULATIONS! 🎉\n\nYou received a FREE 1-Week PRRX INTERNAL PREMIUM Key!\n\nKey: ${userKey}\n\nUse this key in the Premium section to activate your 1-week access!`);
+                }, 1000);
+                
+                return true;
+            }
+            
+            localStorage.removeItem('pending_referral');
             return false;
         }
 
@@ -1029,7 +1212,7 @@
 
         logoutPremiumBtn.addEventListener('click', () => clearPremiumSession());
 
-        // Admin Functions
+        // ============ ADMIN FUNCTIONS ============
         adminLoginBtn.addEventListener('click', () => {
             const username = adminUsername.value.trim();
             const password = adminPassword.value;
@@ -1040,8 +1223,54 @@
                 adminStatus.className = 'admin-status active';
                 adminStatus.innerHTML = '👑 Admin Logged In';
                 loadTickets();
+                checkKeyStatus();
+                generateWeeklyReport();
             } else adminError.textContent = 'Invalid username or password';
         });
+
+        async function deleteTicket(ticketId, ticketSubject) {
+            if (!isAdminLoggedIn) {
+                adminError.textContent = 'Please login as admin first';
+                return false;
+            }
+            
+            const confirmDelete = confirm(`⚠️ WARNING: Are you sure you want to delete ticket "${ticketSubject}"?\n\nThis action cannot be undone. All messages will be permanently deleted.`);
+            
+            if (confirmDelete) {
+                try {
+                    const messagesRef = ref(db, `support-messages/${ticketId}`);
+                    const messagesSnapshot = await get(messagesRef);
+                    
+                    if (messagesSnapshot.exists()) {
+                        const messages = messagesSnapshot.val();
+                        for (const messageId in messages) {
+                            await remove(ref(db, `support-messages/${ticketId}/${messageId}`));
+                        }
+                    }
+                    
+                    await remove(ref(db, `support-tickets/${ticketId}`));
+                    
+                    loadTickets();
+                    
+                    if (selectedTicketId === ticketId) {
+                        chatWithUser.style.display = 'none';
+                        selectedTicketId = null;
+                        if (messagesListener) messagesListener();
+                    }
+                    
+                    addAdminAlert(`✅ Ticket "${ticketSubject}" was deleted by admin`, 'success');
+                    alert(`✅ Ticket "${ticketSubject}" has been permanently deleted.`);
+                    return true;
+                    
+                } catch (error) {
+                    console.error("Delete error:", error);
+                    addAdminAlert(`❌ Failed to delete ticket: ${error.message}`, 'error');
+                    alert("❌ Error deleting ticket. Please try again.");
+                    return false;
+                }
+            }
+            return false;
+        }
 
         function loadTickets() {
             const ticketsRef = ref(db, 'support-tickets');
@@ -1069,7 +1298,6 @@
                 </div>
             `).join('');
             
-            // Add delete button event listeners
             document.querySelectorAll('.delete-ticket-btn-item').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1124,6 +1352,7 @@
             });
             await update(ref(db, `support-tickets/${selectedTicketId}`), { lastActivity: serverTimestamp() });
             adminReplyInput.value = '';
+            addAdminAlert(`✅ Replied to ticket #${selectedTicketId.substring(0, 8)}`, 'success');
         });
 
         closeChatBtn.addEventListener('click', () => {
@@ -1132,7 +1361,6 @@
             if (messagesListener) messagesListener();
         });
 
-        // Delete ticket from chat view
         deleteChatTicketBtn.addEventListener('click', async () => {
             if (selectedTicketId) {
                 const subject = chatWithUserName.textContent.replace('Chat with ', '');
@@ -1143,7 +1371,7 @@
         adminReplyInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendReplyBtn.click(); });
 
         // Google Auth
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 loginOverlay.style.display = 'none';
                 dashboardContent.style.display = 'block';
@@ -1151,6 +1379,10 @@
                 updateNavbarAuth(user);
                 loadPremiumSession();
                 setInterval(() => loadTickets(), 5000);
+                
+                // Check for referral after login
+                await checkPendingReferral(user);
+                
             } else {
                 loginOverlay.style.display = 'flex';
                 dashboardContent.style.display = 'none';
@@ -1201,6 +1433,20 @@
                 totalUsers.textContent = (current + Math.floor(Math.random() * 10)).toLocaleString();
             }
         }, 15000);
+
+        // Weekly report every 7 days (604800000 ms)
+        setInterval(() => {
+            if (isAdminLoggedIn) {
+                generateWeeklyReport();
+            }
+        }, 604800000);
+
+        // Check key status every hour
+        setInterval(() => {
+            if (isAdminLoggedIn) {
+                checkKeyStatus();
+            }
+        }, 3600000);
 
         function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     </script>
