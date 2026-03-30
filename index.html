@@ -1199,6 +1199,35 @@
                 } catch(e) {}
             }, 1000);
         })();
+    // Save referral code when page loads
+    (function() {
+        // Get referral code from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const referralCode = urlParams.get('ref');
+        
+        if (referralCode && referralCode.length > 0) {
+            // Save referral code to localStorage
+            localStorage.setItem('pending_referral', referralCode);
+            console.log('✅ Referral code saved:', referralCode);
+            
+            // Show a small notification
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+                <div style="position: fixed; bottom: 20px; right: 20px; background: #00ff88; color: #000; padding: 10px 20px; border-radius: 8px; z-index: 9999; font-size: 14px; animation: fadeOut 5s ease;">
+                    🎁 You were referred! Login to claim your FREE 1-Week Premium Key!
+                </div>
+                <style>
+                    @keyframes fadeOut {
+                        0% { opacity: 1; }
+                        70% { opacity: 1; }
+                        100% { opacity: 0; visibility: hidden; }
+                    }
+                </style>
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        }
+    })();       
     </script>
 </body>
 </html>
