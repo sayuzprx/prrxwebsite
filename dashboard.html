@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PRRX | Premium Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
     <style>
         * {
             margin: 0;
@@ -82,7 +81,6 @@
             object-fit: cover;
         }
 
-        /* Login Overlay */
         .login-overlay {
             position: fixed;
             top: 0;
@@ -145,7 +143,6 @@
             padding-top: 100px;
         }
 
-        /* Dashboard Header */
         .dashboard-header {
             display: flex;
             justify-content: space-between;
@@ -194,7 +191,6 @@
             cursor: pointer;
         }
 
-        /* Premium Login Box */
         .premium-login-section {
             background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,204,102,0.05));
             border-radius: 20px;
@@ -349,7 +345,6 @@
             font-weight: 600;
         }
 
-        /* Admin Login Box */
         .admin-login-section {
             background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,136,0,0.05));
             border-radius: 20px;
@@ -486,7 +481,6 @@
             color: #fff;
         }
 
-        /* Admin Alert Styles */
         .admin-alert {
             background: rgba(0,0,0,0.8);
             border-radius: 12px;
@@ -527,7 +521,6 @@
             }
         }
 
-        /* Stats Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -565,7 +558,6 @@
             color: #888;
         }
 
-        /* Recent Activity */
         .recent-activity {
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -602,7 +594,6 @@
             font-size: 0.7rem;
         }
 
-        /* Copy Notification */
         .copy-notification {
             position: fixed;
             bottom: 20px;
@@ -682,7 +673,6 @@
         </div>
 
         <div id="dashboardContent" class="dashboard-content" style="display: none;">
-            <!-- Dashboard Header -->
             <div class="dashboard-header">
                 <div class="user-welcome">
                     <img id="userAvatar" class="user-avatar-large" alt="User Avatar">
@@ -694,10 +684,8 @@
                 <button id="logoutBtn" class="logout-btn-dashboard">Logout</button>
             </div>
 
-            <!-- Admin Alerts Container -->
             <div id="adminAlertsContainer" style="margin-bottom: 1rem;"></div>
 
-            <!-- PREMIUM LOGIN BOX -->
             <div class="premium-login-section" id="premiumSection">
                 <div class="premium-header">
                     <div>
@@ -752,7 +740,6 @@
                 </div>
             </div>
 
-            <!-- ADMIN LOGIN BOX -->
             <div class="admin-login-section" id="adminSection">
                 <div class="admin-header">
                     <div>
@@ -801,7 +788,6 @@
                 </div>
             </div>
 
-            <!-- Simple Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
@@ -825,7 +811,6 @@
                 </div>
             </div>
 
-            <!-- Recent Activity -->
             <div class="recent-activity">
                 <h3>📋 Recent Activity</h3>
                 <div class="activity-list" id="activityList">
@@ -847,7 +832,6 @@
     </main>
 
     <script type="module">
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
             authDomain: "prrx-chat.firebaseapp.com",
@@ -867,7 +851,6 @@
         const provider = new GoogleAuthProvider();
         const db = getDatabase(app);
 
-        // Premium Accounts
         const PREMIUM_ACCOUNTS = {
             'admin': { password: 'admin123', tier: 'admin', expires: '2025-12-31' },
             'premium_user': { password: 'premium123', tier: 'gold', expires: '2025-06-30' },
@@ -876,7 +859,6 @@
             'prrx_elite': { password: 'elite2024', tier: 'elite', expires: '2025-12-31' }
         };
 
-        // Admin Credentials
         const ADMIN_CREDENTIALS = { username: "prrx_admin", password: "admin123" };
 
         let isPremiumActive = false;
@@ -885,13 +867,11 @@
         let selectedTicketId = null;
         let messagesListener = null;
 
-        // DOM Elements
         const loginOverlay = document.getElementById('loginOverlay');
         const dashboardContent = document.getElementById('dashboardContent');
         const googleLoginBtn = document.getElementById('googleLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
 
-        // Premium Elements
         const premiumLoginForm = document.getElementById('premiumLoginForm');
         const premiumActiveDisplay = document.getElementById('premiumActiveDisplay');
         const premiumStatus = document.getElementById('premiumStatus');
@@ -901,7 +881,6 @@
         const premiumError = document.getElementById('premiumError');
         const logoutPremiumBtn = document.getElementById('logoutPremiumBtn');
 
-        // Admin Elements
         const adminLoginForm = document.getElementById('adminLoginForm');
         const adminPanel = document.getElementById('adminPanel');
         const adminStatus = document.getElementById('adminStatus');
@@ -919,7 +898,6 @@
         const chatWithUserName = document.getElementById('chatWithUserName');
         const adminAlertsContainer = document.getElementById('adminAlertsContainer');
 
-        // ============ COPY TO CLIPBOARD FUNCTION ============
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
                 const notification = document.createElement('div');
@@ -927,12 +905,9 @@
                 notification.innerHTML = '✅ License key copied to clipboard!';
                 document.body.appendChild(notification);
                 setTimeout(() => notification.remove(), 3000);
-            }).catch(() => {
-                alert('Failed to copy. Please copy manually.');
             });
         }
 
-        // ============ ADMIN ALERT FUNCTIONS ============
         function addAdminAlert(message, type) {
             const alertDiv = document.createElement('div');
             alertDiv.className = `admin-alert ${type}`;
@@ -943,12 +918,9 @@
                 </div>
             `;
             adminAlertsContainer.insertBefore(alertDiv, adminAlertsContainer.firstChild);
-            setTimeout(() => {
-                if (alertDiv && alertDiv.remove) alertDiv.remove();
-            }, 10000);
+            setTimeout(() => { if (alertDiv && alertDiv.remove) alertDiv.remove(); }, 10000);
         }
 
-        // ============ LICENSE KEYS (100 keys) ============
         const LICENSE_KEYS = [
             "sOq7W-Qiaf-H9Nuc-Hbcd6-0fbctd-savers-prrx", "HIWR5-MGmZ-fHHE1-Bn0UL-4GNSF7-savers-prrx",
             "N5KZF-zvEq-8Nxbn-Vrl2D-vWBCwx-savers-prrx", "mmzRH-rgMc-ghsSJ-FsZHi-xKUD4x-savers-prrx",
@@ -1005,20 +977,12 @@
         async function initializeKeys() {
             const keysRef = ref(db, 'license_keys/available');
             const snapshot = await get(keysRef);
-            
             if (!snapshot.exists()) {
                 for (const key of LICENSE_KEYS) {
                     const newKeyRef = push(keysRef);
-                    await set(newKeyRef, {
-                        key: key,
-                        status: 'available',
-                        duration: '1 week',
-                        type: 'PRRX HEX INTERNAL PREMIUM',
-                        added_at: new Date().toISOString()
-                    });
+                    await set(newKeyRef, { key: key, status: 'available', duration: '1 week', type: 'PRRX HEX INTERNAL PREMIUM', added_at: new Date().toISOString() });
                 }
                 console.log(`✅ ${LICENSE_KEYS.length} license keys initialized`);
-                addAdminAlert(`✅ ${LICENSE_KEYS.length} license keys have been initialized!`, 'success');
             }
         }
 
@@ -1026,48 +990,14 @@
             const keysRef = ref(db, 'license_keys/available');
             const snapshot = await get(keysRef);
             let count = 0;
-            if (snapshot.exists()) {
-                snapshot.forEach(() => count++);
-            }
+            if (snapshot.exists()) snapshot.forEach(() => count++);
             return count;
         }
 
-        async function checkKeyStatus() {
-            const available = await getAvailableKeyCount();
-            
-            if (available === 0) {
-                addAdminAlert('❌ CRITICAL: No license keys available! Please add new keys immediately.', 'error');
-            } else if (available < 10) {
-                addAdminAlert(`⚠️ WARNING: Only ${available} license keys remaining! Please add more keys soon.`, 'warning');
-            } else {
-                addAdminAlert(`✅ Keys available: ${available} keys remaining in pool.`, 'success');
-            }
-        }
-
-        async function generateWeeklyReport() {
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-            
-            const usedKeysRef = ref(db, 'license_keys/used');
-            const usedSnapshot = await get(usedKeysRef);
-            let keysGiven = 0;
-            if (usedSnapshot.exists()) {
-                usedSnapshot.forEach(() => keysGiven++);
-            }
-            
-            const available = await getAvailableKeyCount();
-            addAdminAlert(`📊 WEEKLY REPORT: ${keysGiven} keys given | ${available} keys remaining`, 'info');
-        }
-
-        // ============ FIXED REFERRAL FUNCTIONS ============
         async function giveKeyToUser(userId, userName, reason) {
             const keysRef = ref(db, 'license_keys/available');
             const snapshot = await get(keysRef);
-            
-            if (!snapshot.exists()) {
-                console.log('No keys available');
-                return null;
-            }
+            if (!snapshot.exists()) return null;
             
             let firstKey = null;
             let firstKeyId = null;
@@ -1080,30 +1010,16 @@
             
             if (firstKey && firstKeyId) {
                 await remove(ref(db, `license_keys/available/${firstKeyId}`));
-                
                 await set(ref(db, `license_keys/used/${firstKeyId}`), {
-                    key: firstKey.key,
-                    given_to: userId,
-                    given_to_name: userName,
-                    reason: reason,
-                    given_at: new Date().toISOString(),
-                    duration: '1 week',
-                    type: 'PRRX HEX INTERNAL PREMIUM'
+                    key: firstKey.key, given_to: userId, given_to_name: userName, reason: reason,
+                    given_at: new Date().toISOString(), duration: '1 week', type: 'PRRX HEX INTERNAL PREMIUM'
                 });
-                
                 const userKeyRef = ref(db, `users/${userId}/earned_keys/${firstKeyId}`);
                 await set(userKeyRef, {
-                    key: firstKey.key,
-                    status: 'active',
-                    earned_at: new Date().toISOString(),
-                    reason: reason,
-                    duration: '1 week',
-                    type: 'PRRX HEX INTERNAL PREMIUM'
+                    key: firstKey.key, status: 'active', earned_at: new Date().toISOString(),
+                    reason: reason, duration: '1 week', type: 'PRRX HEX INTERNAL PREMIUM'
                 });
-                
-                console.log(`✅ Key given to ${userName} for ${reason}`);
-                addAdminAlert(`✅ Key given successfully to ${userName} (${reason})`, 'success');
-                
+                addAdminAlert(`✅ Key given to ${userName} (${reason})`, 'success');
                 return firstKey.key;
             }
             return null;
@@ -1111,26 +1027,22 @@
 
         async function checkPendingReferral(user) {
             const pendingReferral = localStorage.getItem('pending_referral');
-            
             if (!pendingReferral) {
-                console.log('No pending referral');
+                console.log('No pending referral - Direct signup. No key given.');
                 return false;
             }
             
-            console.log('Pending referral found:', pendingReferral);
+            console.log('✅ Referral user detected!', pendingReferral);
             
             const alreadyClaimed = localStorage.getItem(`referral_claimed_${user.uid}`);
             if (alreadyClaimed) {
-                console.log('User already claimed referral before');
                 localStorage.removeItem('pending_referral');
                 return false;
             }
             
             const referralCodesRef = ref(db, 'referral_codes');
             const snapshot = await get(referralCodesRef);
-            let referrerId = null;
-            let referrerName = null;
-            
+            let referrerId = null, referrerName = null;
             if (snapshot.exists()) {
                 snapshot.forEach((child) => {
                     const codeData = child.val();
@@ -1141,14 +1053,7 @@
                 });
             }
             
-            if (!referrerId) {
-                console.log('Invalid referral code');
-                localStorage.removeItem('pending_referral');
-                return false;
-            }
-            
-            if (referrerId === user.uid) {
-                console.log('Cannot refer yourself');
+            if (!referrerId || referrerId === user.uid) {
                 localStorage.removeItem('pending_referral');
                 return false;
             }
@@ -1156,68 +1061,48 @@
             const referralRecordRef = ref(db, `referrals/used/${pendingReferral}_${user.uid}`);
             const recordSnap = await get(referralRecordRef);
             if (recordSnap.exists()) {
-                console.log('Referral already used');
                 localStorage.removeItem('pending_referral');
                 return false;
             }
             
             const keysRef = ref(db, 'license_keys/available');
             const keysSnapshot = await get(keysRef);
-            
             let availableKeys = 0;
-            if (keysSnapshot.exists()) {
-                keysSnapshot.forEach(() => {
-                    availableKeys++;
-                });
-            }
-            
-            console.log('Available keys:', availableKeys);
+            if (keysSnapshot.exists()) keysSnapshot.forEach(() => availableKeys++);
             
             if (availableKeys < 2) {
-                console.log('Not enough keys available');
-                addAdminAlert('❌ Referral failed: Not enough keys available!', 'error');
                 alert('⚠️ Sorry! No keys available right now. Please try again later.');
                 localStorage.removeItem('pending_referral');
                 return false;
             }
             
+            // Give 1 key to the new user (referred friend)
             const userKey = await giveKeyToUser(user.uid, user.displayName || user.email, 'referral_welcome');
+            
+            // Give 1 key to the referrer (the friend who shared the link)
             const referrerKey = await giveKeyToUser(referrerId, referrerName, 'referral_reward');
             
             if (userKey && referrerKey) {
                 await set(referralRecordRef, {
-                    referrer_id: referrerId,
-                    referred_id: user.uid,
-                    referred_name: user.displayName || user.email,
-                    date: new Date().toISOString(),
-                    status: 'completed'
+                    referrer_id: referrerId, referred_id: user.uid,
+                    referred_name: user.displayName || user.email, date: new Date().toISOString(), status: 'completed'
                 });
-                
                 const historyRef = ref(db, `referrals/history/${pendingReferral}`);
                 await push(historyRef, {
-                    referred_id: user.uid,
-                    referred_name: user.displayName || user.email,
-                    date: new Date().toISOString(),
-                    key_given: userKey
+                    referred_id: user.uid, referred_name: user.displayName || user.email,
+                    date: new Date().toISOString(), key_given: userKey
                 });
-                
                 localStorage.setItem(`referral_claimed_${user.uid}`, 'true');
                 localStorage.removeItem('pending_referral');
                 
-                // Show popup with auto-copy button
-                const copyPopup = confirm(`🎉 CONGRATULATIONS! 🎉\n\nYou received a FREE 1-Week PRRX INTERNAL PREMIUM Key!\n\nKey: ${userKey}\n\nClick OK to copy the key to clipboard!`);
-                if (copyPopup) {
-                    copyToClipboard(userKey);
-                }
-                
+                const copyPopup = confirm(`🎉 CONGRATULATIONS! 🎉\n\nYou received a FREE 1-Week PRRX INTERNAL PREMIUM Key because you signed up using a referral link!\n\nKey: ${userKey}\n\nClick OK to copy the key to clipboard!`);
+                if (copyPopup) copyToClipboard(userKey);
                 return true;
             }
-            
             localStorage.removeItem('pending_referral');
             return false;
         }
 
-        // Premium Functions
         function validatePremiumLogin(username, password) {
             const account = PREMIUM_ACCOUNTS[username];
             if (account && account.password === password) {
@@ -1296,7 +1181,6 @@
 
         logoutPremiumBtn.addEventListener('click', () => clearPremiumSession());
 
-        // ============ ADMIN FUNCTIONS ============
         adminLoginBtn.addEventListener('click', async () => {
             const username = adminUsername.value.trim();
             const password = adminPassword.value;
@@ -1307,49 +1191,31 @@
                 adminStatus.className = 'admin-status active';
                 adminStatus.innerHTML = '👑 Admin Logged In';
                 loadTickets();
-                await checkKeyStatus();
-                await generateWeeklyReport();
             } else adminError.textContent = 'Invalid username or password';
         });
 
         async function deleteTicket(ticketId, ticketSubject) {
-            if (!isAdminLoggedIn) {
-                adminError.textContent = 'Please login as admin first';
-                return false;
-            }
-            
-            const confirmDelete = confirm(`⚠️ WARNING: Are you sure you want to delete ticket "${ticketSubject}"?\n\nThis action cannot be undone. All messages will be permanently deleted.`);
-            
-            if (confirmDelete) {
+            if (!isAdminLoggedIn) return false;
+            if (confirm(`⚠️ Delete ticket "${ticketSubject}"? This cannot be undone.`)) {
                 try {
                     const messagesRef = ref(db, `support-messages/${ticketId}`);
                     const messagesSnapshot = await get(messagesRef);
-                    
                     if (messagesSnapshot.exists()) {
-                        const messages = messagesSnapshot.val();
-                        for (const messageId in messages) {
+                        for (const messageId in messagesSnapshot.val()) {
                             await remove(ref(db, `support-messages/${ticketId}/${messageId}`));
                         }
                     }
-                    
                     await remove(ref(db, `support-tickets/${ticketId}`));
-                    
                     loadTickets();
-                    
                     if (selectedTicketId === ticketId) {
                         chatWithUser.style.display = 'none';
                         selectedTicketId = null;
                         if (messagesListener) messagesListener();
                     }
-                    
-                    addAdminAlert(`✅ Ticket "${ticketSubject}" was deleted by admin`, 'success');
-                    alert(`✅ Ticket "${ticketSubject}" has been permanently deleted.`);
+                    alert(`✅ Ticket deleted.`);
                     return true;
-                    
                 } catch (error) {
-                    console.error("Delete error:", error);
-                    addAdminAlert(`❌ Failed to delete ticket: ${error.message}`, 'error');
-                    alert("❌ Error deleting ticket. Please try again.");
+                    alert("❌ Error deleting ticket.");
                     return false;
                 }
             }
@@ -1360,9 +1226,9 @@
             const ticketsRef = ref(db, 'support-tickets');
             get(ticketsRef).then((snapshot) => {
                 const tickets = [];
-                snapshot.forEach((childSnapshot) => {
-                    const ticket = childSnapshot.val();
-                    if (ticket.status === 'open') tickets.push({ id: childSnapshot.key, ...ticket });
+                snapshot.forEach((child) => {
+                    const ticket = child.val();
+                    if (ticket.status === 'open') tickets.push({ id: child.key, ...ticket });
                 });
                 updateTicketsList(tickets);
                 document.getElementById('openTickets').textContent = tickets.length;
@@ -1385,15 +1251,12 @@
             document.querySelectorAll('.delete-ticket-btn-item').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const ticketId = btn.dataset.ticketId;
-                    const ticketSubject = btn.dataset.ticketSubject;
-                    deleteTicket(ticketId, ticketSubject);
+                    deleteTicket(btn.dataset.ticketId, btn.dataset.ticketSubject);
                 });
             });
             
             document.querySelectorAll('.ticket-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('delete-ticket-btn-item')) return;
+                item.addEventListener('click', () => {
                     const ticketId = item.dataset.ticketId;
                     const ticket = tickets.find(t => t.id === ticketId);
                     if (ticket) openChatWithUser(ticketId, ticket.userName);
@@ -1436,7 +1299,6 @@
             });
             await update(ref(db, `support-tickets/${selectedTicketId}`), { lastActivity: serverTimestamp() });
             adminReplyInput.value = '';
-            addAdminAlert(`✅ Replied to ticket #${selectedTicketId.substring(0, 8)}`, 'success');
         });
 
         closeChatBtn.addEventListener('click', () => {
@@ -1454,7 +1316,6 @@
 
         adminReplyInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendReplyBtn.click(); });
 
-        // Google Auth
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 loginOverlay.style.display = 'none';
@@ -1464,10 +1325,7 @@
                 loadPremiumSession();
                 await initializeKeys();
                 setInterval(() => loadTickets(), 5000);
-                
-                // Check for referral after login
                 await checkPendingReferral(user);
-                
             } else {
                 loginOverlay.style.display = 'flex';
                 dashboardContent.style.display = 'none';
@@ -1504,7 +1362,6 @@
             }
         }
 
-        // Simulate real-time updates
         setInterval(() => {
             const activeChats = document.getElementById('activeChats');
             if (activeChats && dashboardContent.style.display === 'block') {
@@ -1518,20 +1375,6 @@
                 totalUsers.textContent = (current + Math.floor(Math.random() * 10)).toLocaleString();
             }
         }, 15000);
-
-        // Weekly report every 7 days
-        setInterval(() => {
-            if (isAdminLoggedIn) {
-                generateWeeklyReport();
-            }
-        }, 604800000);
-
-        // Check key status every hour
-        setInterval(() => {
-            if (isAdminLoggedIn) {
-                checkKeyStatus();
-            }
-        }, 3600000);
 
         function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     </script>
