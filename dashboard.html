@@ -191,7 +191,7 @@
             cursor: pointer;
         }
 
-        /* Admin Login Box Only - No Premium */
+        /* Admin Login Box Only */
         .admin-login-section {
             background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,136,0,0.05));
             border-radius: 20px;
@@ -573,7 +573,7 @@
 
             <div id="adminAlertsContainer" style="margin-bottom: 1rem;"></div>
 
-            <!-- ADMIN LOGIN BOX ONLY - NO PREMIUM -->
+            <!-- ADMIN LOGIN BOX ONLY -->
             <div class="admin-login-section" id="adminSection">
                 <div class="admin-header">
                     <div>
@@ -724,7 +724,7 @@
         const adminAlertsContainer = document.getElementById('adminAlertsContainer');
         const adminKeysRemaining = document.getElementById('adminKeysRemaining');
 
-        // ============ ALL 100 LICENSE KEYS (VISIBLE IN HTML) ============
+        // ============ ALL 100 LICENSE KEYS ============
         const LICENSE_KEYS = [
             "sOq7W-Qiaf-H9Nuc-Hbcd6-0fbctd-savers-prrx", "HIWR5-MGmZ-fHHE1-Bn0UL-4GNSF7-savers-prrx",
             "N5KZF-zvEq-8Nxbn-Vrl2D-vWBCwx-savers-prrx", "mmzRH-rgMc-ghsSJ-FsZHi-xKUD4x-savers-prrx",
@@ -814,7 +814,7 @@
             });
         }
 
-        // ============ INITIALIZE KEYS (Adds all 100 keys to Firebase if empty) ============
+        // ============ INITIALIZE KEYS ============
         async function initializeKeys() {
             const keysRef = ref(db, 'license_keys/available');
             const snapshot = await get(keysRef);
@@ -869,6 +869,144 @@
             
             const available = await getAvailableKeyCount();
             addAdminAlert(`📊 WEEKLY REPORT: ${keysGiven} keys given | ${resolvedTickets} tickets resolved | ${available} keys remaining`, 'info');
+        }
+
+        // ============ GIVE KEY TO USER ============
+        async function giveKeyToUser(userId, userName, reason) {
+            const keysRef = ref(db, 'license_keys/available');
+            const snapshot = await get(keysRef);
+            if (!snapshot.exists()) return null;
+            
+            let firstKey = null;
+            let firstKeyId = null;
+            snapshot.forEach((child) => {
+                if (!firstKey) {
+                    firstKey = child.val();
+                    firstKeyId = child.key;
+                }
+            });
+            
+            if (firstKey && firstKeyId) {
+                await remove(ref(db, `license_keys/available/${firstKeyId}`));
+                await set(ref(db, `license_keys/used/${firstKeyId}`), {
+                    key: firstKey.key, given_to: userId, given_to_name: userName, reason: reason,
+                    given_at: new Date().toISOString(), duration: '1 week', type: 'PRRX HEX INTERNAL PREMIUM'
+                });
+                const userKeyRef = ref(db, `users/${userId}/earned_keys/${firstKeyId}`);
+                await set(userKeyRef, {
+                    key: firstKey.key, status: 'active', earned_at: new Date().toISOString(),
+                    reason: reason, duration: '1 week', type: 'PRRX HEX INTERNAL PREMIUM'
+                });
+                addAdminAlert(`✅ Key given to ${userName} (${reason})`, 'success');
+                return firstKey.key;
+            }
+            return null;
+        }
+
+        // ============ CHECK PENDING REFERRAL (CRITICAL) ============
+        async function checkPendingReferral(user) {
+            const pendingReferral = localStorage.getItem('pending_referral');
+            
+            if (!pendingReferral) {
+                console.log('No pending referral - Direct signup. No key given.');
+                return false;
+            }
+            
+            console.log('✅ Referral user detected! Pending referral:', pendingReferral);
+            
+            const alreadyClaimed = localStorage.getItem(`referral_claimed_${user.uid}`);
+            if (alreadyClaimed) {
+                console.log('User already claimed referral before');
+                localStorage.removeItem('pending_referral');
+                return false;
+            }
+            
+            // Find who owns this referral code
+            const referralCodesRef = ref(db, 'referral_codes');
+            const snapshot = await get(referralCodesRef);
+            let referrerId = null;
+            let referrerName = null;
+            
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    const codeData = child.val();
+                    if (codeData.code === pendingReferral) {
+                        referrerId = child.key;
+                        referrerName = codeData.user_name || 'User';
+                    }
+                });
+            }
+            
+            if (!referrerId) {
+                console.log('Invalid referral code');
+                localStorage.removeItem('pending_referral');
+                return false;
+            }
+            
+            if (referrerId === user.uid) {
+                console.log('Cannot refer yourself');
+                localStorage.removeItem('pending_referral');
+                return false;
+            }
+            
+            // Check if this referral already used
+            const referralRecordRef = ref(db, `referrals/used/${pendingReferral}_${user.uid}`);
+            const recordSnap = await get(referralRecordRef);
+            if (recordSnap.exists()) {
+                console.log('Referral already used');
+                localStorage.removeItem('pending_referral');
+                return false;
+            }
+            
+            // Check available keys
+            const keysRef = ref(db, 'license_keys/available');
+            const keysSnapshot = await get(keysRef);
+            let availableKeys = 0;
+            if (keysSnapshot.exists()) {
+                keysSnapshot.forEach(() => availableKeys++);
+            }
+            
+            console.log('Available keys:', availableKeys);
+            
+            if (availableKeys < 2) {
+                addAdminAlert('❌ Referral failed: Not enough keys available!', 'error');
+                alert('⚠️ Sorry! No keys available right now. Please try again later.');
+                localStorage.removeItem('pending_referral');
+                return false;
+            }
+            
+            // Give 1 key to the new user (referred friend)
+            const userKey = await giveKeyToUser(user.uid, user.displayName || user.email, 'referral_welcome');
+            
+            // Give 1 key to the referrer (the friend who shared the link)
+            const referrerKey = await giveKeyToUser(referrerId, referrerName, 'referral_reward');
+            
+            if (userKey && referrerKey) {
+                await set(referralRecordRef, {
+                    referrer_id: referrerId, referred_id: user.uid,
+                    referred_name: user.displayName || user.email, date: new Date().toISOString(), status: 'completed'
+                });
+                
+                const historyRef = ref(db, `referrals/history/${pendingReferral}`);
+                await push(historyRef, {
+                    referred_id: user.uid, referred_name: user.displayName || user.email,
+                    date: new Date().toISOString(), key_given: userKey
+                });
+                
+                localStorage.setItem(`referral_claimed_${user.uid}`, 'true');
+                localStorage.removeItem('pending_referral');
+                
+                // Show popup with auto-copy
+                const copyPopup = confirm(`🎉 CONGRATULATIONS! 🎉\n\nYou received a FREE 1-Week PRRX INTERNAL PREMIUM Key because you signed up using a referral link!\n\nKey: ${userKey}\n\nClick OK to copy the key to clipboard!`);
+                if (copyPopup) {
+                    navigator.clipboard.writeText(userKey);
+                    alert('✅ Key copied to clipboard!');
+                }
+                return true;
+            }
+            
+            localStorage.removeItem('pending_referral');
+            return false;
         }
 
         // ============ ADMIN TICKET FUNCTIONS ============
@@ -1024,7 +1162,7 @@
             }
         });
 
-        // Google Auth
+        // Google Auth - WITH REFERRAL CHECK
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 loginOverlay.style.display = 'none';
@@ -1032,6 +1170,10 @@
                 loadUserData(user);
                 updateNavbarAuth(user);
                 setInterval(() => loadTickets(), 5000);
+                
+                // ✅ THIS IS THE IMPORTANT LINE - CHECK FOR REFERRAL AFTER LOGIN
+                await checkPendingReferral(user);
+                
             } else {
                 loginOverlay.style.display = 'flex';
                 dashboardContent.style.display = 'none';
