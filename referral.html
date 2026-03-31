@@ -189,7 +189,7 @@
             border-color: #00ff88;
         }
 
-        /* Only 2 stats cards - Keys Remaining REMOVED */
+        /* ONLY 2 STATS CARDS - KEYS REMAINING REMOVED */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -504,6 +504,7 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
         import { getDatabase, ref, get, set, push } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
             authDomain: "prrx-chat.firebaseapp.com",
@@ -511,7 +512,8 @@
             projectId: "prrx-chat",
             storageBucket: "prrx-chat.firebasestorage.app",
             messagingSenderId: "763130047676",
-            appId: "1:763130047676:web:e6566f250e81b9c6b574b9"
+            appId: "1:763130047676:web:e6566f250e81b9c6b574b9",
+            measurementId: "G-SQ0GGFJ704"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -521,6 +523,7 @@
         let currentUser = null;
         let referralCode = null;
 
+        // All 100 License Keys (PRRX HEX INTERNAL PREMIUM - 1 Week)
         const LICENSE_KEYS = [
             "sOq7W-Qiaf-H9Nuc-Hbcd6-0fbctd-savers-prrx", "HIWR5-MGmZ-fHHE1-Bn0UL-4GNSF7-savers-prrx",
             "N5KZF-zvEq-8Nxbn-Vrl2D-vWBCwx-savers-prrx", "mmzRH-rgMc-ghsSJ-FsZHi-xKUD4x-savers-prrx",
