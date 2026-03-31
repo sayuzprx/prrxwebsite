@@ -474,7 +474,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-label">Keys Remaining</div>
-                <div class="stat-value" id="keysRemaining">100</div>
+                <div class="stat-value" id="keysRemaining">--</div>
             </div>
         </div>
 
@@ -659,6 +659,27 @@
             return count;
         }
 
+        // REAL-TIME KEY COUNTER - FIXED
+        function startRealTimeKeyCounter() {
+            const keysRef = ref(db, 'license_keys/available');
+            if (availableKeysListener) availableKeysListener();
+            
+            availableKeysListener = onValue(keysRef, (snapshot) => {
+                let count = 0;
+                if (snapshot.exists()) {
+                    snapshot.forEach(() => count++);
+                }
+                const keysRemainingElement = document.getElementById('keysRemaining');
+                if (keysRemainingElement) {
+                    keysRemainingElement.textContent = count;
+                }
+                
+                if (count === 0) {
+                    showSoldOutPopup();
+                }
+            });
+        }
+
         async function getUserKeys(userId) {
             const userKeysRef = ref(db, `users/${userId}/earned_keys`);
             const snapshot = await get(userKeysRef);
@@ -687,22 +708,6 @@
                 });
             }
             return referrals;
-        }
-
-        function startKeyCountListener() {
-            const keysRef = ref(db, 'license_keys/available');
-            if (availableKeysListener) availableKeysListener();
-            availableKeysListener = onValue(keysRef, async (snapshot) => {
-                let count = 0;
-                if (snapshot.exists()) {
-                    snapshot.forEach(() => count++);
-                }
-                document.getElementById('keysRemaining').textContent = count;
-                
-                if (count === 0) {
-                    showSoldOutPopup();
-                }
-            });
         }
 
         async function updateUI() {
@@ -760,10 +765,6 @@
                     </div>
                 `).join('');
             }
-            
-            const remaining = await getAvailableKeyCount();
-            document.getElementById('keysRemaining').textContent = remaining;
-            if (remaining === 0) showSoldOutPopup();
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -782,7 +783,7 @@
                 
                 await initializeKeys();
                 await updateUI();
-                startKeyCountListener();
+                startRealTimeKeyCounter();
                 
             } else {
                 document.getElementById('referralContainer').style.display = 'none';
