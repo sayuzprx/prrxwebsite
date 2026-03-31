@@ -19,6 +19,7 @@
             overflow-x: hidden;
         }
 
+        /* Loading Screen */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -88,6 +89,7 @@
             letter-spacing: 1px;
         }
 
+        /* Particle Canvas */
         #particleCanvas {
             position: fixed;
             top: 0;
@@ -103,6 +105,7 @@
             z-index: 2;
         }
 
+        /* Glow Effect */
         .glow-effect {
             position: fixed;
             width: 300px;
@@ -114,6 +117,7 @@
             will-change: transform;
         }
 
+        /* Navbar */
         .navbar {
             position: fixed;
             top: 0;
@@ -190,6 +194,7 @@
             object-fit: cover;
         }
 
+        /* Hero Section */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -250,6 +255,7 @@
             color: #00ff88;
         }
 
+        /* Download Button */
         .download-btn {
             background: linear-gradient(135deg, #00ff88, #00cc66);
             border: none;
@@ -272,6 +278,7 @@
             box-shadow: 0 0 30px rgba(0,255,136,0.5);
         }
 
+        /* Download Modal */
         .download-modal {
             position: fixed;
             top: 0;
@@ -394,6 +401,7 @@
             50% { transform: scale(1.1); }
         }
 
+        /* News Section */
         .news-section {
             padding: 5rem 2rem;
             background: linear-gradient(135deg, #0f0f0f 0%, #0a0a0a 100%);
@@ -558,6 +566,7 @@
             color: #666;
         }
 
+        /* Announcement Ticker */
         .announcement-ticker {
             background: rgba(0,0,0,0.5);
             border-top: 1px solid rgba(0,255,136,0.2);
@@ -601,6 +610,7 @@
             animation-play-state: paused;
         }
 
+        /* Entries Section */
         .entries-section {
             padding: 5rem 2rem;
             max-width: 1200px;
@@ -660,6 +670,7 @@
             font-weight: 600;
         }
 
+        /* CTA Section */
         .cta-section {
             background: linear-gradient(135deg, #00ff88, #00cc66);
             padding: 5rem 2rem;
@@ -737,6 +748,7 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loader-container">
             <div class="loader-logo">PRRX</div>
@@ -748,6 +760,7 @@
         </div>
     </div>
 
+    <!-- Download Modal -->
     <div class="download-modal" id="downloadModal">
         <div class="modal-content">
             <div class="modal-icon">📦</div>
@@ -771,9 +784,13 @@
         </div>
     </div>
 
+    <!-- Glow Effect -->
     <div class="glow-effect" id="glowEffect"></div>
+    
+    <!-- Particle Canvas -->
     <canvas id="particleCanvas"></canvas>
-
+    
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
@@ -788,8 +805,8 @@
                 <a href="index.html" class="nav-link active">HOME</a>
                 <a href="features.html" class="nav-link">FEATURES</a>
                 <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
-                <a href="referral.html" class="nav-link">REFER & EARN</a>
                 <a href="dashboard.html" class="nav-link">DASHBOARD</a>
+                <a href="referral.html" class="nav-link">REFER & EARN</a>
             </div>
             <div class="nav-auth" id="navAuth">
                 <button class="login-nav-btn" onclick="window.location.href='dashboard.html'">Login</button>
@@ -813,6 +830,7 @@
             </button>
         </section>
 
+        <!-- Announcement Ticker -->
         <div class="announcement-ticker">
             <div class="ticker-content">
                 <div class="ticker-item">🔥 New Update v0.72 Released! Enhanced Aimbot & ESP Features</div>
@@ -826,6 +844,7 @@
             </div>
         </div>
 
+        <!-- News & Updates Section -->
         <section class="news-section">
             <div class="section-header">
                 <h2>📰 News & Updates</h2>
@@ -834,6 +853,7 @@
             <div class="news-container" id="newsContainer"></div>
         </section>
 
+        <!-- Entries Section -->
         <section class="entries-section">
             <h2>Entries</h2>
             <p class="section-desc">Manage access, stay active, and control everything from one place.</p>
@@ -872,262 +892,8 @@
     </footer>
 
     <script>
-        // Wait for page to load
+        // ============ REFERRAL CODE SAVING (CRITICAL) ============
         (function() {
-            // ============ DOWNLOAD FUNCTIONALITY ============
-            const DOWNLOAD_URLS = {
-                external: 'https://github.com/sayuzprx/prrxwebsite/raw/refs/heads/main/PRRX%20HEX.rar',
-                internal: 'https://www.mediafire.com/file/h0goqmlh4dlvzbh/PRRX_HEX_PREMIUM.rar/file'
-            };
-            
-            function openDownloadModal() {
-                const modal = document.getElementById('downloadModal');
-                if (modal) modal.classList.add('active');
-            }
-            
-            function closeDownloadModal() {
-                const modal = document.getElementById('downloadModal');
-                if (modal) modal.classList.remove('active');
-            }
-            
-            function startDownload(version) {
-                const url = DOWNLOAD_URLS[version];
-                if (!url) {
-                    alert('Download URL not found for this version');
-                    return;
-                }
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `PRRX_HEX_${version.toUpperCase()}.rar`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                setTimeout(() => {
-                    alert(`✅ Download started for PRRX ${version.toUpperCase()}!\n\nIf it doesn't start automatically, please check your download folder.`);
-                }, 100);
-                closeDownloadModal();
-            }
-            
-            document.querySelectorAll('.download-option').forEach(option => {
-                option.addEventListener('click', () => {
-                    const version = option.dataset.version;
-                    startDownload(version);
-                });
-            });
-            
-            document.getElementById('mainDownloadBtn')?.addEventListener('click', openDownloadModal);
-            document.getElementById('ctaDownloadBtn')?.addEventListener('click', openDownloadModal);
-            document.getElementById('cancelDownload')?.addEventListener('click', closeDownloadModal);
-            document.getElementById('downloadModal')?.addEventListener('click', (e) => {
-                if (e.target === document.getElementById('downloadModal')) closeDownloadModal();
-            });
-            window.openDownloadModal = openDownloadModal;
-            
-            // ============ LOADING SCREEN ============
-            let progress = 0;
-            const loadingScreen = document.getElementById('loadingScreen');
-            const progressFill = document.getElementById('progressFill');
-            const loadingPercent = document.getElementById('loadingPercent');
-            const loadingStatus = document.getElementById('loadingStatus');
-            
-            const statusMessages = [
-                'Initializing System...',
-                'Loading Modules...',
-                'Connecting to Server...',
-                'Verifying Access...',
-                'Loading Interface...',
-                'Optimizing Performance...',
-                'Almost Ready...',
-                'Welcome to PRRX!'
-            ];
-            
-            function updateLoading() {
-                if (progress < 100) {
-                    progress += Math.floor(Math.random() * 8) + 2;
-                    if (progress > 100) progress = 100;
-                    progressFill.style.width = progress + '%';
-                    loadingPercent.textContent = Math.floor(progress) + '%';
-                    const statusIndex = Math.floor((progress / 100) * statusMessages.length);
-                    loadingStatus.textContent = statusMessages[Math.min(statusIndex, statusMessages.length - 1)];
-                    const delay = progress >= 90 ? 30 : 60;
-                    setTimeout(updateLoading, delay);
-                } else {
-                    setTimeout(() => {
-                        loadingScreen.classList.add('fade-out');
-                        setTimeout(() => {
-                            loadingScreen.style.display = 'none';
-                            initParticles();
-                        }, 800);
-                    }, 200);
-                }
-            }
-            updateLoading();
-            
-            // ============ NEWS DATA ============
-            const newsData = [
-                { type: 'coming-soon', icon: '✨', date: 'Coming Soon', title: 'PRRX v4.0 - The Next Generation', description: 'A revolutionary update is on the horizon! New UI, Enhanced Features, Better Performance, and much more. Stay tuned for the biggest update yet!', stats: { views: '124', likes: '10' }, comingSoon: true },
-                { type: 'update', icon: '🚀', date: 'March 25, 2026', title: 'PRRX v0.72 Major Update Released!', description: 'Introducing enhanced Aimbot system with 95% accuracy, new ESP features, and improved security protocols.', stats: { views: '2.5k', likes: '342' } },
-                { type: 'patch', icon: '🔒', date: 'March 25, 2026', title: 'Sniper Switch Patched!', description: 'Dont use sniper switch untill we tell you to use!.', stats: { views: '1.8k', likes: '256' } },
-                { type: 'event', icon: '🎮', date: 'March 20, 2026', title: 'Weekend Tournament - Win PRRX Premium!', description: 'Join our exclusive tournament this weekend. Top 10 players win 6 months of PRRX Premium access.', stats: { views: '3.2k', likes: '567' } },
-                { type: 'update', icon: '⚡', date: 'March 18, 2026', title: 'New Aimbot Features Added', description: 'Added Headshot Priority mode, Dynamic Sensitivity adjustment, and Smart Target Selection.', stats: { views: '1.9k', likes: '298' } },
-                { type: 'event', icon: '🎉', date: 'March 15, 2026', title: '5,000+ Users Milestone Reached!', description: 'Thank you to our amazing community! We\'ve reached 5,000+ elite players.', stats: { views: '4.1k', likes: '892' } },
-                { type: 'patch', icon: '🔒', date: 'March 12, 2026', title: 'Performance Optimization Update', description: 'Reduced memory usage by 30%, improved frame rates, and optimized rendering.', stats: { views: '1.5k', likes: '234' } }
-            ];
-            
-            function renderNews() {
-                const newsContainer = document.getElementById('newsContainer');
-                if (!newsContainer) return;
-                newsContainer.innerHTML = newsData.map(news => `
-                    <div class="news-card">
-                        <div class="news-badge ${news.type === 'coming-soon' ? 'coming-soon' : news.type}">
-                            ${news.type === 'update' ? '🚀 UPDATE' : news.type === 'patch' ? '🔒 PATCH' : news.type === 'event' ? '🎉 EVENT' : '✨ COMING SOON'}
-                        </div>
-                        <div class="news-image">${news.icon}</div>
-                        <div class="news-content">
-                            <div class="news-date"><span>📅</span> ${news.date}</div>
-                            <h3 class="news-title">${news.title}</h3>
-                            <p class="news-description">${news.description}</p>
-                            <div class="news-footer">
-                                <a href="#" class="read-more">${news.comingSoon ? 'Notify Me →' : 'Read More →'}</a>
-                                <div class="news-stats"><span>👁️ ${news.stats.views}</span><span>❤️ ${news.stats.likes}</span></div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            renderNews();
-            
-            // ============ PARTICLE SYSTEM ============
-            function initParticles() {
-                const canvas = document.getElementById('particleCanvas');
-                if (!canvas) return;
-                let ctx = canvas.getContext('2d');
-                let particles = [];
-                let mouseX = window.innerWidth / 2;
-                let mouseY = window.innerHeight / 2;
-                let animationId = null;
-                let frameCount = 0;
-                
-                function resize() {
-                    canvas.width = window.innerWidth;
-                    canvas.height = window.innerHeight;
-                    initParticlesArray();
-                }
-                
-                function initParticlesArray() {
-                    const particleCount = Math.min(80, Math.floor(window.innerWidth * window.innerHeight / 20000));
-                    particles = [];
-                    for (let i = 0; i < particleCount; i++) {
-                        particles.push({
-                            x: Math.random() * canvas.width,
-                            y: Math.random() * canvas.height,
-                            vx: (Math.random() - 0.5) * 0.3,
-                            vy: (Math.random() - 0.5) * 0.3,
-                            size: Math.random() * 2 + 1,
-                            color: `hsl(${120 + Math.random() * 40}, 80%, 60%)`
-                        });
-                    }
-                }
-                
-                let lastMouseMove = 0;
-                document.addEventListener('mousemove', (e) => {
-                    const now = Date.now();
-                    if (now - lastMouseMove > 16) {
-                        mouseX = e.clientX;
-                        mouseY = e.clientY;
-                        lastMouseMove = now;
-                        const glow = document.getElementById('glowEffect');
-                        if (glow) glow.style.transform = `translate(${mouseX - 150}px, ${mouseY - 150}px)`;
-                    }
-                });
-                
-                document.querySelectorAll('.feature-card, .news-card').forEach(card => {
-                    card.addEventListener('mousemove', (e) => {
-                        const rect = card.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
-                        card.style.setProperty('--mouse-x', `${x}px`);
-                        card.style.setProperty('--mouse-y', `${y}px`);
-                    });
-                });
-                
-                function updateParticles() {
-                    for (let i = 0; i < particles.length; i++) {
-                        const p = particles[i];
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        if (p.x < -50) p.x = canvas.width + 50;
-                        if (p.x > canvas.width + 50) p.x = -50;
-                        if (p.y < -50) p.y = canvas.height + 50;
-                        if (p.y > canvas.height + 50) p.y = -50;
-                        frameCount++;
-                        if (frameCount % 2 === 0) {
-                            const dx = p.x - mouseX;
-                            const dy = p.y - mouseY;
-                            const distance = Math.sqrt(dx * dx + dy * dy);
-                            const radius = 120;
-                            if (distance < radius) {
-                                const angle = Math.atan2(dy, dx);
-                                const force = (radius - distance) / radius;
-                                p.vx += Math.cos(angle) * force * 0.5;
-                                p.vy += Math.sin(angle) * force * 0.5;
-                                const intensity = 1 - (distance / radius);
-                                p.color = `hsl(${120 + intensity * 40}, 80%, ${60 + intensity * 20}%)`;
-                                p.size = 2 + intensity * 2;
-                            } else {
-                                if (p.size > 1.5) p.size -= 0.05;
-                                p.color = `hsl(${120 + (p.x / canvas.width) * 40}, 80%, 60%)`;
-                            }
-                        }
-                        p.vx *= 0.99;
-                        p.vy *= 0.99;
-                        const maxSpeed = 1.5;
-                        if (Math.abs(p.vx) > maxSpeed) p.vx = p.vx > 0 ? maxSpeed : -maxSpeed;
-                        if (Math.abs(p.vy) > maxSpeed) p.vy = p.vy > 0 ? maxSpeed : -maxSpeed;
-                    }
-                }
-                
-                function drawParticles() {
-                    if (!ctx) return;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    for (const p of particles) {
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                        ctx.fillStyle = p.color;
-                        ctx.shadowBlur = 4;
-                        ctx.shadowColor = p.color;
-                        ctx.fill();
-                    }
-                    ctx.shadowBlur = 0;
-                }
-                
-                function animate() {
-                    updateParticles();
-                    drawParticles();
-                    animationId = requestAnimationFrame(animate);
-                }
-                
-                window.addEventListener('resize', () => resize());
-                resize();
-                animate();
-                window.addEventListener('beforeunload', () => { if (animationId) cancelAnimationFrame(animationId); });
-            }
-            
-            // ============ PARALLAX SCROLL ============
-            let ticking = false;
-            window.addEventListener('scroll', () => {
-                if (!ticking) {
-                    requestAnimationFrame(() => {
-                        const scrolled = window.pageYOffset;
-                        const heroTitle = document.querySelector('.hero-title');
-                        if (heroTitle) heroTitle.style.transform = `translateY(${scrolled * 0.3}px)`;
-                        ticking = false;
-                    });
-                    ticking = true;
-                }
-            });
-            
-            // ============ REFERRAL CODE SAVING ============
             const urlParams = new URLSearchParams(window.location.search);
             const referralCode = urlParams.get('ref');
             
@@ -1137,8 +903,8 @@
                 
                 const notification = document.createElement('div');
                 notification.innerHTML = `
-                    <div style="position: fixed; bottom: 20px; right: 20px; background: #00ff88; color: #000; padding: 12px 20px; border-radius: 8px; z-index: 9999; font-size: 14px; animation: fadeOut 5s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-                        🎁 You were referred! <strong>Login to claim your FREE 1-Week Premium Key!</strong>
+                    <div style="position: fixed; bottom: 20px; right: 20px; background: #00ff88; color: #000; padding: 12px 20px; border-radius: 8px; z-index: 9999; font-size: 14px; animation: fadeOut 5s ease;">
+                        🎁 You were referred! Login to claim your FREE 1-Week Premium Key!
                     </div>
                     <style>
                         @keyframes fadeOut {
@@ -1151,24 +917,277 @@
                 document.body.appendChild(notification);
                 setTimeout(() => notification.remove(), 5000);
             }
-            
-            // ============ FIREBASE AUTH ============
-            setTimeout(() => {
-                import('./firebase-config.js').then(({ auth, onAuthStateChanged }) => {
-                    onAuthStateChanged(auth, (user) => {
-                        const navAuth = document.getElementById('navAuth');
-                        if (user && navAuth) {
-                            navAuth.innerHTML = `
-                                <div class="user-menu">
-                                    <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" class="user-avatar-small">
-                                    <span>${user.displayName || user.email.split('@')[0]}</span>
-                                </div>
-                            `;
-                        }
-                    });
-                }).catch(() => {});
-            }, 1000);
         })();
+
+        // ============ DOWNLOAD FUNCTIONALITY ============
+        const DOWNLOAD_URLS = {
+            external: 'https://github.com/sayuzprx/prrxwebsite/raw/refs/heads/main/PRRX%20HEX.rar',
+            internal: ''
+        };
+        
+        function openDownloadModal() {
+            const modal = document.getElementById('downloadModal');
+            if (modal) modal.classList.add('active');
+        }
+        
+        function closeDownloadModal() {
+            const modal = document.getElementById('downloadModal');
+            if (modal) modal.classList.remove('active');
+        }
+        
+        function startDownload(version) {
+            const url = DOWNLOAD_URLS[version];
+            if (!url) {
+                alert('Download URL not found for this version');
+                return;
+            }
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `PRRX_HEX_${version.toUpperCase()}.rar`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => {
+                alert(`✅ Download started for PRRX ${version.toUpperCase()}!\n\nIf it doesn't start automatically, please check your download folder.`);
+            }, 100);
+            closeDownloadModal();
+        }
+        
+        document.querySelectorAll('.download-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const version = option.dataset.version;
+                startDownload(version);
+            });
+        });
+        
+        document.getElementById('mainDownloadBtn')?.addEventListener('click', openDownloadModal);
+        document.getElementById('ctaDownloadBtn')?.addEventListener('click', openDownloadModal);
+        document.getElementById('cancelDownload')?.addEventListener('click', closeDownloadModal);
+        document.getElementById('downloadModal')?.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('downloadModal')) closeDownloadModal();
+        });
+        window.openDownloadModal = openDownloadModal;
+        
+        // ============ LOADING SCREEN ============
+        let progress = 0;
+        const loadingScreen = document.getElementById('loadingScreen');
+        const progressFill = document.getElementById('progressFill');
+        const loadingPercent = document.getElementById('loadingPercent');
+        const loadingStatus = document.getElementById('loadingStatus');
+        
+        const statusMessages = [
+            'Initializing System...',
+            'Loading Modules...',
+            'Connecting to Server...',
+            'Verifying Access...',
+            'Loading Interface...',
+            'Optimizing Performance...',
+            'Almost Ready...',
+            'Welcome to PRRX!'
+        ];
+        
+        function updateLoading() {
+            if (progress < 100) {
+                progress += Math.floor(Math.random() * 8) + 2;
+                if (progress > 100) progress = 100;
+                progressFill.style.width = progress + '%';
+                loadingPercent.textContent = Math.floor(progress) + '%';
+                const statusIndex = Math.floor((progress / 100) * statusMessages.length);
+                loadingStatus.textContent = statusMessages[Math.min(statusIndex, statusMessages.length - 1)];
+                const delay = progress >= 90 ? 30 : 60;
+                setTimeout(updateLoading, delay);
+            } else {
+                setTimeout(() => {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        initParticles();
+                    }, 800);
+                }, 200);
+            }
+        }
+        updateLoading();
+        
+        // ============ NEWS DATA ============
+        const newsData = [
+            { type: 'coming-soon', icon: '✨', date: 'Coming Soon', title: 'PRRX v4.0 - The Next Generation', description: 'A revolutionary update is on the horizon! New UI, Enhanced Features, Better Performance, and much more. Stay tuned for the biggest update yet!', stats: { views: '124', likes: '10' }, comingSoon: true },
+            { type: 'update', icon: '🚀', date: 'March 25, 2026', title: 'PRRX v0.72 Major Update Released!', description: 'Introducing enhanced Aimbot system with 95% accuracy, new ESP features, and improved security protocols.', stats: { views: '2.5k', likes: '342' } },
+            { type: 'patch', icon: '🔒', date: 'March 25, 2026', title: 'Sniper Switch Patched!', description: 'Dont use sniper switch untill we tell you to use!.', stats: { views: '1.8k', likes: '256' } },
+            { type: 'event', icon: '🎮', date: 'March 20, 2026', title: 'Weekend Tournament - Win PRRX Premium!', description: 'Join our exclusive tournament this weekend. Top 10 players win 6 months of PRRX Premium access.', stats: { views: '3.2k', likes: '567' } },
+            { type: 'update', icon: '⚡', date: 'March 18, 2026', title: 'New Aimbot Features Added', description: 'Added Headshot Priority mode, Dynamic Sensitivity adjustment, and Smart Target Selection.', stats: { views: '1.9k', likes: '298' } },
+            { type: 'event', icon: '🎉', date: 'March 15, 2026', title: '5,000+ Users Milestone Reached!', description: 'Thank you to our amazing community! We\'ve reached 5,000+ elite players.', stats: { views: '4.1k', likes: '892' } },
+            { type: 'patch', icon: '🔒', date: 'March 12, 2026', title: 'Performance Optimization Update', description: 'Reduced memory usage by 30%, improved frame rates, and optimized rendering.', stats: { views: '1.5k', likes: '234' } }
+        ];
+        
+        function renderNews() {
+            const newsContainer = document.getElementById('newsContainer');
+            if (!newsContainer) return;
+            newsContainer.innerHTML = newsData.map(news => `
+                <div class="news-card">
+                    <div class="news-badge ${news.type === 'coming-soon' ? 'coming-soon' : news.type}">
+                        ${news.type === 'update' ? '🚀 UPDATE' : news.type === 'patch' ? '🔒 PATCH' : news.type === 'event' ? '🎉 EVENT' : '✨ COMING SOON'}
+                    </div>
+                    <div class="news-image">${news.icon}</div>
+                    <div class="news-content">
+                        <div class="news-date"><span>📅</span> ${news.date}</div>
+                        <h3 class="news-title">${news.title}</h3>
+                        <p class="news-description">${news.description}</p>
+                        <div class="news-footer">
+                            <a href="#" class="read-more">${news.comingSoon ? 'Notify Me →' : 'Read More →'}</a>
+                            <div class="news-stats"><span>👁️ ${news.stats.views}</span><span>❤️ ${news.stats.likes}</span></div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        renderNews();
+        
+        // ============ PARTICLE SYSTEM ============
+        function initParticles() {
+            const canvas = document.getElementById('particleCanvas');
+            if (!canvas) return;
+            let ctx = canvas.getContext('2d');
+            let particles = [];
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+            let animationId = null;
+            let frameCount = 0;
+            
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                initParticlesArray();
+            }
+            
+            function initParticlesArray() {
+                const particleCount = Math.min(80, Math.floor(window.innerWidth * window.innerHeight / 20000));
+                particles = [];
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() - 0.5) * 0.3,
+                        vy: (Math.random() - 0.5) * 0.3,
+                        size: Math.random() * 2 + 1,
+                        color: `hsl(${120 + Math.random() * 40}, 80%, 60%)`
+                    });
+                }
+            }
+            
+            let lastMouseMove = 0;
+            document.addEventListener('mousemove', (e) => {
+                const now = Date.now();
+                if (now - lastMouseMove > 16) {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    lastMouseMove = now;
+                    const glow = document.getElementById('glowEffect');
+                    if (glow) glow.style.transform = `translate(${mouseX - 150}px, ${mouseY - 150}px)`;
+                }
+            });
+            
+            document.querySelectorAll('.feature-card, .news-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+            
+            function updateParticles() {
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < -50) p.x = canvas.width + 50;
+                    if (p.x > canvas.width + 50) p.x = -50;
+                    if (p.y < -50) p.y = canvas.height + 50;
+                    if (p.y > canvas.height + 50) p.y = -50;
+                    frameCount++;
+                    if (frameCount % 2 === 0) {
+                        const dx = p.x - mouseX;
+                        const dy = p.y - mouseY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        const radius = 120;
+                        if (distance < radius) {
+                            const angle = Math.atan2(dy, dx);
+                            const force = (radius - distance) / radius;
+                            p.vx += Math.cos(angle) * force * 0.5;
+                            p.vy += Math.sin(angle) * force * 0.5;
+                            const intensity = 1 - (distance / radius);
+                            p.color = `hsl(${120 + intensity * 40}, 80%, ${60 + intensity * 20}%)`;
+                            p.size = 2 + intensity * 2;
+                        } else {
+                            if (p.size > 1.5) p.size -= 0.05;
+                            p.color = `hsl(${120 + (p.x / canvas.width) * 40}, 80%, 60%)`;
+                        }
+                    }
+                    p.vx *= 0.99;
+                    p.vy *= 0.99;
+                    const maxSpeed = 1.5;
+                    if (Math.abs(p.vx) > maxSpeed) p.vx = p.vx > 0 ? maxSpeed : -maxSpeed;
+                    if (Math.abs(p.vy) > maxSpeed) p.vy = p.vy > 0 ? maxSpeed : -maxSpeed;
+                }
+            }
+            
+            function drawParticles() {
+                if (!ctx) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (const p of particles) {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.shadowBlur = 4;
+                    ctx.shadowColor = p.color;
+                    ctx.fill();
+                }
+                ctx.shadowBlur = 0;
+            }
+            
+            function animate() {
+                updateParticles();
+                drawParticles();
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            window.addEventListener('resize', () => resize());
+            resize();
+            animate();
+            window.addEventListener('beforeunload', () => { if (animationId) cancelAnimationFrame(animationId); });
+        }
+        
+        // ============ PARALLAX SCROLL ============
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrolled = window.pageYOffset;
+                    const heroTitle = document.querySelector('.hero-title');
+                    if (heroTitle) heroTitle.style.transform = `translateY(${scrolled * 0.3}px)`;
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+        
+        // ============ FIREBASE AUTH ============
+        setTimeout(() => {
+            import('./firebase-config.js').then(({ auth, onAuthStateChanged }) => {
+                onAuthStateChanged(auth, (user) => {
+                    const navAuth = document.getElementById('navAuth');
+                    if (user && navAuth) {
+                        navAuth.innerHTML = `
+                            <div class="user-menu">
+                                <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" class="user-avatar-small">
+                                <span>${user.displayName || user.email.split('@')[0]}</span>
+                            </div>
+                        `;
+                    }
+                });
+            }).catch(() => {});
+        }, 1000);
     </script>
 </body>
 </html>
