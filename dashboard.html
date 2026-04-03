@@ -3,8 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRRX | Admin Dashboard</title>
+    <title>PRRX | Premium Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Anti-Debugging & Protection -->
+    <script>
+        (function() {
+            // ============ F12 AND KEYBOARD PROTECTION ============
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || e.keyCode === 123) {
+                    e.preventDefault();
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.keyCode === 73)) {
+                    e.preventDefault();
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && (e.key === 'J' || e.keyCode === 74)) {
+                    e.preventDefault();
+                    return false;
+                }
+                if (e.ctrlKey && (e.key === 'u' || e.keyCode === 85)) {
+                    e.preventDefault();
+                    return false;
+                }
+                if (e.ctrlKey && (e.key === 's' || e.keyCode === 83)) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            
+            // ============ RIGHT-CLICK DISABLE ============
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            
+            // ============ CONSOLE PROTECTION ============
+            const originalConsoleLog = console.log;
+            console.log = function() {
+                const args = Array.from(arguments);
+                if (args.some(arg => typeof arg === 'string' && 
+                    (arg.includes('password') || arg.includes('token') || arg.includes('key')))) {
+                    return;
+                }
+                originalConsoleLog.apply(console, args);
+            };
+            
+            console.log('🔒 Security Active | PRRX Dashboard');
+        })();
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -81,6 +130,7 @@
             object-fit: cover;
         }
 
+        /* Login Overlay */
         .login-overlay {
             position: fixed;
             top: 0;
@@ -143,6 +193,7 @@
             padding-top: 100px;
         }
 
+        /* Dashboard Header */
         .dashboard-header {
             display: flex;
             justify-content: space-between;
@@ -191,6 +242,162 @@
             cursor: pointer;
         }
 
+        /* Premium Login Box */
+        .premium-login-section {
+            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,204,102,0.05));
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,255,136,0.3);
+        }
+
+        .premium-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .premium-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            color: #000;
+            font-weight: 700;
+        }
+
+        .premium-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .premium-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.875rem;
+        }
+
+        .premium-status.active {
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+        }
+
+        .premium-status.inactive {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+        }
+
+        .premium-login-form {
+            background: rgba(0,0,0,0.5);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #888;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            color: #fff;
+        }
+
+        .premium-login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            border: none;
+            padding: 0.75rem;
+            border-radius: 12px;
+            color: #000;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .premium-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .premium-feature-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            opacity: 0.5;
+            filter: blur(2px);
+            transition: all 0.3s;
+        }
+
+        .premium-feature-card.active {
+            opacity: 1;
+            filter: blur(0);
+            border: 1px solid rgba(255,215,0,0.3);
+            background: rgba(255,215,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-desc {
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        .logout-premium {
+            background: rgba(255,68,68,0.2);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .user-display {
+            background: rgba(0,0,0,0.5);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .premium-user {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        /* Admin Login Box */
         .admin-login-section {
             background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,136,0,0.05));
             border-radius: 20px;
@@ -243,25 +450,6 @@
             padding: 1.5rem;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #888;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 12px;
-            color: #fff;
-        }
-
         .admin-login-btn {
             width: 100%;
             background: linear-gradient(135deg, #ffd700, #ffaa00);
@@ -277,30 +465,6 @@
             background: rgba(0,0,0,0.5);
             border-radius: 16px;
             padding: 1.5rem;
-        }
-
-        .admin-keys-card {
-            background: rgba(255,215,0,0.15);
-            border-radius: 16px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(255,215,0,0.4);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .admin-keys-label {
-            font-size: 0.9rem;
-            color: #ffd700;
-        }
-
-        .admin-keys-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #ffd700;
         }
 
         .tickets-list {
@@ -334,6 +498,7 @@
             color: #888;
         }
 
+        /* Delete button inside ticket item */
         .delete-ticket-btn-item {
             position: absolute;
             right: 10px;
@@ -354,6 +519,7 @@
             color: #fff;
         }
 
+        /* Admin Chat Delete Button */
         .delete-chat-ticket-btn {
             background: rgba(255,68,68,0.2);
             color: #ff4444;
@@ -370,46 +536,7 @@
             color: #fff;
         }
 
-        .admin-alert {
-            background: rgba(0,0,0,0.8);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid;
-            animation: slideIn 0.3s ease;
-        }
-
-        .admin-alert.success {
-            border-left-color: #00ff88;
-            background: rgba(0,255,136,0.1);
-        }
-
-        .admin-alert.warning {
-            border-left-color: #ffaa00;
-            background: rgba(255,170,0,0.1);
-        }
-
-        .admin-alert.error {
-            border-left-color: #ff4444;
-            background: rgba(255,68,68,0.1);
-        }
-
-        .admin-alert.info {
-            border-left-color: #00aaff;
-            background: rgba(0,170,255,0.1);
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
+        /* Stats Cards - Simple */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -447,6 +574,7 @@
             color: #888;
         }
 
+        /* Recent Activity */
         .recent-activity {
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -483,27 +611,11 @@
             font-size: 0.7rem;
         }
 
-        .copy-notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #00ff88;
-            color: #000;
-            padding: 12px 20px;
-            border-radius: 8px;
-            z-index: 10000;
-            animation: fadeOut 3s ease;
-            font-weight: 600;
-        }
-
-        @keyframes fadeOut {
-            0% { opacity: 1; transform: translateY(0); }
-            70% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-20px); visibility: hidden; }
-        }
-
         @media (max-width: 768px) {
             .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .premium-features-grid {
                 grid-template-columns: 1fr;
             }
             .nav-links {
@@ -528,7 +640,6 @@
                 <a href="features.html" class="nav-link">FEATURES</a>
                 <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
                 <a href="dashboard.html" class="nav-link active">DASHBOARD</a>
-                <a href="referral.html" class="nav-link">REFER & EARN</a>
             </div>
             <div class="nav-auth" id="navAuth">
                 <div class="user-menu" id="userMenu" style="display: none;">
@@ -559,6 +670,7 @@
         </div>
 
         <div id="dashboardContent" class="dashboard-content" style="display: none;">
+            <!-- Dashboard Header -->
             <div class="dashboard-header">
                 <div class="user-welcome">
                     <img id="userAvatar" class="user-avatar-large" alt="User Avatar">
@@ -570,8 +682,62 @@
                 <button id="logoutBtn" class="logout-btn-dashboard">Logout</button>
             </div>
 
-            <div id="adminAlertsContainer" style="margin-bottom: 1rem;"></div>
+            <!-- PREMIUM LOGIN BOX -->
+            <div class="premium-login-section" id="premiumSection">
+                <div class="premium-header">
+                    <div>
+                        <div class="premium-badge">👑 PREMIUM ACCESS</div>
+                        <div class="premium-title">Unlock Premium Features</div>
+                    </div>
+                    <div id="premiumStatus" class="premium-status inactive">🔒 Not Activated</div>
+                </div>
 
+                <div id="premiumLoginForm" class="premium-login-form">
+                    <div class="form-group">
+                        <label>👤 Username</label>
+                        <input type="text" id="premiumUser" class="form-input" placeholder="Enter your premium username">
+                    </div>
+                    <div class="form-group">
+                        <label>🔑 Password</label>
+                        <input type="password" id="premiumPass" class="form-input" placeholder="Enter your password">
+                    </div>
+                    <button id="premiumLoginBtn" class="premium-login-btn">Activate Premium →</button>
+                    <div id="premiumError" style="color: #ff4444; font-size: 0.75rem; margin-top: 0.5rem;"></div>
+                </div>
+
+                <div id="premiumActiveDisplay" style="display: none;">
+                    <div class="user-display">
+                        <span>🎖️ Premium Activated</span><br>
+                        <span class="premium-user" id="activeUsername"></span>
+                        <div style="font-size: 0.75rem; color: #888; margin-top: 0.5rem;">✨ All premium features unlocked</div>
+                    </div>
+                    <div class="premium-features-grid">
+                        <div class="premium-feature-card" data-feature="aimbot">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-name">Advanced Aimbot</div>
+                            <div class="feature-desc">100% Accuracy Mode</div>
+                        </div>
+                        <div class="premium-feature-card" data-feature="esp">
+                            <div class="feature-icon">👁️</div>
+                            <div class="feature-name">Pro ESP</div>
+                            <div class="feature-desc">Wallhack + Radar</div>
+                        </div>
+                        <div class="premium-feature-card" data-feature="chams">
+                            <div class="feature-icon">🎨</div>
+                            <div class="feature-name">Custom Chams</div>
+                            <div class="feature-desc">16 Color Options</div>
+                        </div>
+                        <div class="premium-feature-card" data-feature="security">
+                            <div class="feature-icon">🛡️</div>
+                            <div class="feature-name">Premium Security</div>
+                            <div class="feature-desc">Anti-Ban Protection</div>
+                        </div>
+                    </div>
+                    <button id="logoutPremiumBtn" class="logout-premium">Deactivate Premium</button>
+                </div>
+            </div>
+
+            <!-- ADMIN LOGIN BOX -->
             <div class="admin-login-section" id="adminSection">
                 <div class="admin-header">
                     <div>
@@ -595,11 +761,6 @@
                 </div>
 
                 <div id="adminPanel" style="display: none;">
-                    <div class="admin-keys-card" id="adminKeysCard">
-                        <div class="admin-keys-label">🔑 License Keys Remaining in Pool</div>
-                        <div class="admin-keys-value" id="adminKeysRemaining">--</div>
-                    </div>
-
                     <div class="admin-panel">
                         <h3 style="margin-bottom: 1rem;">🎧 Support Tickets</h3>
                         <div id="ticketsList" class="tickets-list">
@@ -625,6 +786,7 @@
                 </div>
             </div>
 
+            <!-- Simple Stats Cards (No Charts) -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-icon">📊</div>
@@ -648,6 +810,7 @@
                 </div>
             </div>
 
+            <!-- Recent Activity -->
             <div class="recent-activity">
                 <h3>📋 Recent Activity</h3>
                 <div class="activity-list" id="activityList">
@@ -669,10 +832,7 @@
     </main>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { getDatabase, ref, push, serverTimestamp, get, update, remove, set, onValue, query, limitToFirst } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
             authDomain: "prrx-chat.firebaseapp.com",
@@ -680,21 +840,35 @@
             projectId: "prrx-chat",
             storageBucket: "prrx-chat.firebasestorage.app",
             messagingSenderId: "763130047676",
-            appId: "1:763130047676:web:e6566f250e81b9c6b574b9",
-            measurementId: "G-SQ0GGFJ704"
+            appId: "1:763130047676:web:e6566f250e81b9c6b574b9"
         };
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { getDatabase, ref, onChildAdded, push, serverTimestamp, get, update, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
         const db = getDatabase(app);
 
+        // Premium Accounts
+        const PREMIUM_ACCOUNTS = {
+            'admin': { password: 'admin123', tier: 'admin', expires: '2025-12-31' },
+            'premium_user': { password: 'premium123', tier: 'gold', expires: '2025-06-30' },
+            'vip_member': { password: 'vip2024', tier: 'vip', expires: '2024-12-31' },
+            'test_user': { password: 'test123', tier: 'test', expires: '2025-03-31' },
+            'prrx_elite': { password: 'elite2024', tier: 'elite', expires: '2025-12-31' }
+        };
+
+        // Admin Credentials
         const ADMIN_CREDENTIALS = { username: "prrx_admin", password: "admin123" };
 
+        let isPremiumActive = false;
+        let currentPremiumUser = '';
         let isAdminLoggedIn = false;
         let selectedTicketId = null;
         let messagesListener = null;
-        let availableKeysListener = null;
 
         // DOM Elements
         const loginOverlay = document.getElementById('loginOverlay');
@@ -702,6 +876,17 @@
         const googleLoginBtn = document.getElementById('googleLoginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
 
+        // Premium Elements
+        const premiumLoginForm = document.getElementById('premiumLoginForm');
+        const premiumActiveDisplay = document.getElementById('premiumActiveDisplay');
+        const premiumStatus = document.getElementById('premiumStatus');
+        const premiumLoginBtn = document.getElementById('premiumLoginBtn');
+        const premiumUser = document.getElementById('premiumUser');
+        const premiumPass = document.getElementById('premiumPass');
+        const premiumError = document.getElementById('premiumError');
+        const logoutPremiumBtn = document.getElementById('logoutPremiumBtn');
+
+        // Admin Elements
         const adminLoginForm = document.getElementById('adminLoginForm');
         const adminPanel = document.getElementById('adminPanel');
         const adminStatus = document.getElementById('adminStatus');
@@ -717,229 +902,154 @@
         const closeChatBtn = document.getElementById('closeChatBtn');
         const deleteChatTicketBtn = document.getElementById('deleteChatTicketBtn');
         const chatWithUserName = document.getElementById('chatWithUserName');
-        const adminAlertsContainer = document.getElementById('adminAlertsContainer');
-        const adminKeysRemaining = document.getElementById('adminKeysRemaining');
 
-        // ============ LICENSE KEYS (First 10 shown for brevity - add all 100) ============
-        const LICENSE_KEYS = [
-            "sOq7W-Qiaf-H9Nuc-Hbcd6-0fbctd-savers-prrx", "HIWR5-MGmZ-fHHE1-Bn0UL-4GNSF7-savers-prrx",
-            "N5KZF-zvEq-8Nxbn-Vrl2D-vWBCwx-savers-prrx", "mmzRH-rgMc-ghsSJ-FsZHi-xKUD4x-savers-prrx",
-            "YD7Tw-t8w7-3DKfg-NlplN-4fmzgC-savers-prrx", "iUpwF-3q3O-5ZagO-OoKKA-FvpzNR-savers-prrx",
-            "ZPiGh-y1vr-PBJki-9YXvz-7dXeuB-savers-prrx", "DsTWU-Pcxd-7GXwY-7THDF-HQAnZc-savers-prrx",
-            "wn7dk-HkHt-61TeZ-m14gg-VNkxZ6-savers-prrx", "19hzG-vg3Q-iEa6N-Aeea6-9W2vMw-savers-prrx"
-        ];
-
-        function addAdminAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `admin-alert ${type}`;
-            alertDiv.innerHTML = `<div style="display: flex; justify-content: space-between; align-items: center;"><span>${message}</span><button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: #888; cursor: pointer;">✕</button></div>`;
-            adminAlertsContainer.insertBefore(alertDiv, adminAlertsContainer.firstChild);
-            setTimeout(() => { if (alertDiv && alertDiv.remove) alertDiv.remove(); }, 10000);
-        }
-
-        function startAdminKeyCounter() {
-            const keysRef = ref(db, 'license_keys/available');
-            if (availableKeysListener) availableKeysListener();
-            availableKeysListener = onValue(keysRef, (snapshot) => {
-                let count = 0;
-                if (snapshot.exists()) snapshot.forEach(() => count++);
-                if (adminKeysRemaining) adminKeysRemaining.textContent = count;
-                if (count === 0) addAdminAlert('❌ CRITICAL: No license keys available!', 'error');
-                else if (count < 10) addAdminAlert(`⚠️ WARNING: Only ${count} license keys remaining!`, 'warning');
-            });
-        }
-
-        async function initializeKeys() {
-            const keysRef = ref(db, 'license_keys/available');
-            const snapshot = await get(keysRef);
-            if (!snapshot.exists()) {
-                const updates = [];
-                for (const key of LICENSE_KEYS) {
-                    const newKeyRef = push(keysRef);
-                    updates.push(set(newKeyRef, { key: key, status: 'available', duration: '1 week', type: 'PRRX HEX INTERNAL PREMIUM', added_at: new Date().toISOString() }));
-                }
-                await Promise.all(updates);
-                console.log(`✅ ${LICENSE_KEYS.length} license keys initialized`);
-            }
-        }
-
-        async function getAvailableKeyCount() {
-            const keysRef = ref(db, 'license_keys/available');
-            const snapshot = await get(keysRef);
-            let count = 0;
-            if (snapshot.exists()) snapshot.forEach(() => count++);
-            return count;
-        }
-
-        async function generateWeeklyReport() {
-            const usedKeysRef = ref(db, 'license_keys/used');
-            const usedSnapshot = await get(usedKeysRef);
-            let keysGiven = 0;
-            if (usedSnapshot.exists()) usedSnapshot.forEach(() => keysGiven++);
-            const available = await getAvailableKeyCount();
-            addAdminAlert(`📊 WEEKLY REPORT: ${keysGiven} keys given | ${available} keys remaining`, 'info');
-        }
-
-        // ============ OPTIMIZED GIVE KEY FUNCTION (FASTER) ============
-        async function giveKeyToUserOptimized(userId, userName, reason) {
-            const keysRef = ref(db, 'license_keys/available');
-            const snapshot = await get(keysRef);
-            if (!snapshot.exists()) return null;
-            
-            let firstKey = null;
-            let firstKeyId = null;
-            snapshot.forEach((child) => {
-                if (!firstKey) {
-                    firstKey = child.val();
-                    firstKeyId = child.key;
-                }
-            });
-            
-            if (firstKey && firstKeyId) {
-                // Run parallel operations for speed
-                await Promise.all([
-                    remove(ref(db, `license_keys/available/${firstKeyId}`)),
-                    set(ref(db, `license_keys/used/${firstKeyId}`), {
-                        key: firstKey.key, given_to: userId, given_to_name: userName, reason: reason,
-                        given_at: new Date().toISOString(), duration: '1 week', type: 'PRRX HEX INTERNAL PREMIUM'
-                    }),
-                    set(ref(db, `users/${userId}/earned_keys/${firstKeyId}`), {
-                        key: firstKey.key, status: 'active', earned_at: new Date().toISOString(),
-                        reason: reason, duration: '1 week', type: 'PRRX HEX INTERNAL PREMIUM'
-                    })
-                ]);
-                addAdminAlert(`✅ Key given to ${userName} (${reason})`, 'success');
-                return firstKey.key;
-            }
-            return null;
-        }
-
-        // ============ OPTIMIZED CHECK PENDING REFERRAL (FASTER) ============
-        async function checkPendingReferral(user) {
-            const pendingReferral = localStorage.getItem('pending_referral');
-            if (!pendingReferral) {
-                console.log('No pending referral - Direct signup. No key given.');
-                return false;
-            }
-            
-            console.log('✅ Referral user detected!', pendingReferral);
-            
-            const alreadyClaimed = localStorage.getItem(`referral_claimed_${user.uid}`);
-            if (alreadyClaimed) {
-                localStorage.removeItem('pending_referral');
-                return false;
-            }
-            
-            // Find referrer
-            const referralCodesRef = ref(db, 'referral_codes');
-            const snapshot = await get(referralCodesRef);
-            let referrerId = null, referrerName = null;
-            if (snapshot.exists()) {
-                snapshot.forEach((child) => {
-                    const codeData = child.val();
-                    if (codeData.code === pendingReferral) {
-                        referrerId = child.key;
-                        referrerName = codeData.user_name || 'User';
-                    }
-                });
-            }
-            
-            if (!referrerId || referrerId === user.uid) {
-                localStorage.removeItem('pending_referral');
-                return false;
-            }
-            
-            const referralRecordRef = ref(db, `referrals/used/${pendingReferral}_${user.uid}`);
-            const recordSnap = await get(referralRecordRef);
-            if (recordSnap.exists()) {
-                localStorage.removeItem('pending_referral');
-                return false;
-            }
-            
-            // Check available keys
-            const keysRef = ref(db, 'license_keys/available');
-            const keysSnapshot = await get(keysRef);
-            let availableKeys = 0;
-            if (keysSnapshot.exists()) keysSnapshot.forEach(() => availableKeys++);
-            
-            if (availableKeys < 2) {
-                addAdminAlert('❌ Referral failed: Not enough keys available!', 'error');
-                alert('⚠️ Sorry! No keys available right now. Please try again later.');
-                localStorage.removeItem('pending_referral');
-                return false;
-            }
-            
-            // Give keys in parallel for speed
-            const [userKey, referrerKey] = await Promise.all([
-                giveKeyToUserOptimized(user.uid, user.displayName || user.email, 'referral_welcome'),
-                giveKeyToUserOptimized(referrerId, referrerName, 'referral_reward')
-            ]);
-            
-            if (userKey && referrerKey) {
-                await Promise.all([
-                    set(referralRecordRef, {
-                        referrer_id: referrerId, referred_id: user.uid,
-                        referred_name: user.displayName || user.email, date: new Date().toISOString(), status: 'completed'
-                    }),
-                    push(ref(db, `referrals/history/${pendingReferral}`), {
-                        referred_id: user.uid, referred_name: user.displayName || user.email,
-                        date: new Date().toISOString(), key_given: userKey
-                    })
-                ]);
-                
-                localStorage.setItem(`referral_claimed_${user.uid}`, 'true');
-                localStorage.removeItem('pending_referral');
-                
-                const copyPopup = confirm(`🎉 CONGRATULATIONS! 🎉\n\nYou received a FREE 1-Week PRRX INTERNAL PREMIUM Key!\n\nKey: ${userKey}\n\nClick OK to copy the key to clipboard!`);
-                if (copyPopup) {
-                    await navigator.clipboard.writeText(userKey);
-                    alert('✅ Key copied to clipboard!');
-                }
-                return true;
-            }
-            
-            localStorage.removeItem('pending_referral');
-            return false;
-        }
-
-        // ============ ADMIN TICKET FUNCTIONS ============
+        // ============ DELETE TICKET FUNCTION ============
         async function deleteTicket(ticketId, ticketSubject) {
-            if (!isAdminLoggedIn) return false;
-            if (confirm(`⚠️ Delete ticket "${ticketSubject}"? This cannot be undone.`)) {
+            if (!isAdminLoggedIn) {
+                adminError.textContent = 'Please login as admin first';
+                return false;
+            }
+            
+            const confirmDelete = confirm(`⚠️ WARNING: Are you sure you want to delete ticket "${ticketSubject}"?\n\nThis action cannot be undone. All messages will be permanently deleted.`);
+            
+            if (confirmDelete) {
                 try {
+                    // Delete all messages in the ticket
                     const messagesRef = ref(db, `support-messages/${ticketId}`);
                     const messagesSnapshot = await get(messagesRef);
+                    
                     if (messagesSnapshot.exists()) {
-                        const deletes = [];
-                        for (const messageId in messagesSnapshot.val()) {
-                            deletes.push(remove(ref(db, `support-messages/${ticketId}/${messageId}`)));
+                        const messages = messagesSnapshot.val();
+                        for (const messageId in messages) {
+                            await remove(ref(db, `support-messages/${ticketId}/${messageId}`));
                         }
-                        await Promise.all(deletes);
                     }
+                    
+                    // Delete the ticket itself
                     await remove(ref(db, `support-tickets/${ticketId}`));
+                    
+                    // Refresh tickets list
                     loadTickets();
+                    
+                    // Close chat if this ticket was open
                     if (selectedTicketId === ticketId) {
                         chatWithUser.style.display = 'none';
                         selectedTicketId = null;
                         if (messagesListener) messagesListener();
                     }
-                    alert(`✅ Ticket deleted.`);
+                    
+                    alert(`✅ Ticket "${ticketSubject}" has been permanently deleted.`);
                     return true;
+                    
                 } catch (error) {
-                    alert("❌ Error deleting ticket.");
+                    console.error("Delete error:", error);
+                    alert("❌ Error deleting ticket. Please try again.");
                     return false;
                 }
             }
             return false;
         }
 
+        // Premium Functions
+        function validatePremiumLogin(username, password) {
+            const account = PREMIUM_ACCOUNTS[username];
+            if (account && account.password === password) {
+                const today = new Date();
+                const expiryDate = new Date(account.expires);
+                if (expiryDate > today) return { valid: true, data: account, username: username };
+                return { valid: false, error: 'Your premium subscription has expired' };
+            }
+            return { valid: false, error: 'Invalid username or password' };
+        }
+
+        function savePremiumSession(username, userData) {
+            localStorage.setItem('premium_username', username);
+            isPremiumActive = true;
+            currentPremiumUser = username;
+            updatePremiumUI(true, username, userData);
+        }
+
+        function loadPremiumSession() {
+            const savedUsername = localStorage.getItem('premium_username');
+            if (savedUsername && PREMIUM_ACCOUNTS[savedUsername]) {
+                const account = PREMIUM_ACCOUNTS[savedUsername];
+                const validation = validatePremiumLogin(savedUsername, account.password);
+                if (validation.valid) {
+                    isPremiumActive = true;
+                    currentPremiumUser = savedUsername;
+                    updatePremiumUI(true, savedUsername, validation.data);
+                    return true;
+                } else clearPremiumSession();
+            }
+            return false;
+        }
+
+        function clearPremiumSession() {
+            localStorage.removeItem('premium_username');
+            isPremiumActive = false;
+            currentPremiumUser = '';
+            updatePremiumUI(false);
+        }
+
+        function updatePremiumUI(active, username = '', data = null) {
+            if (active) {
+                premiumLoginForm.style.display = 'none';
+                premiumActiveDisplay.style.display = 'block';
+                premiumStatus.className = 'premium-status active';
+                premiumStatus.innerHTML = '👑 Premium Active';
+                document.getElementById('activeUsername').textContent = `@${username} (${data?.tier || 'Premium'} Tier)`;
+                document.querySelectorAll('.premium-feature-card').forEach(card => card.classList.add('active'));
+                document.getElementById('accuracy').textContent = '98.7%';
+            } else {
+                premiumLoginForm.style.display = 'block';
+                premiumActiveDisplay.style.display = 'none';
+                premiumStatus.className = 'premium-status inactive';
+                premiumStatus.innerHTML = '🔒 Not Activated';
+                document.querySelectorAll('.premium-feature-card').forEach(card => card.classList.remove('active'));
+                document.getElementById('accuracy').textContent = '94.2%';
+            }
+        }
+
+        premiumLoginBtn.addEventListener('click', () => {
+            const username = premiumUser.value.trim();
+            const password = premiumPass.value;
+            if (!username || !password) {
+                premiumError.textContent = 'Please enter both username and password';
+                return;
+            }
+            const validation = validatePremiumLogin(username, password);
+            if (validation.valid) {
+                savePremiumSession(username, validation.data);
+                premiumError.textContent = '';
+                premiumError.style.color = '#00ff88';
+                premiumError.textContent = '✓ Premium activated successfully!';
+                setTimeout(() => { premiumError.textContent = ''; }, 3000);
+            } else premiumError.textContent = validation.error;
+        });
+
+        logoutPremiumBtn.addEventListener('click', () => clearPremiumSession());
+
+        // Admin Functions
+        adminLoginBtn.addEventListener('click', () => {
+            const username = adminUsername.value.trim();
+            const password = adminPassword.value;
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                isAdminLoggedIn = true;
+                adminLoginForm.style.display = 'none';
+                adminPanel.style.display = 'block';
+                adminStatus.className = 'admin-status active';
+                adminStatus.innerHTML = '👑 Admin Logged In';
+                loadTickets();
+            } else adminError.textContent = 'Invalid username or password';
+        });
+
         function loadTickets() {
             const ticketsRef = ref(db, 'support-tickets');
             get(ticketsRef).then((snapshot) => {
                 const tickets = [];
-                snapshot.forEach((child) => {
-                    const ticket = child.val();
-                    if (ticket.status === 'open') tickets.push({ id: child.key, ...ticket });
+                snapshot.forEach((childSnapshot) => {
+                    const ticket = childSnapshot.val();
+                    if (ticket.status === 'open') tickets.push({ id: childSnapshot.key, ...ticket });
                 });
                 updateTicketsList(tickets);
                 document.getElementById('openTickets').textContent = tickets.length;
@@ -959,15 +1069,19 @@
                 </div>
             `).join('');
             
+            // Add delete button event listeners
             document.querySelectorAll('.delete-ticket-btn-item').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    deleteTicket(btn.dataset.ticketId, btn.dataset.ticketSubject);
+                    const ticketId = btn.dataset.ticketId;
+                    const ticketSubject = btn.dataset.ticketSubject;
+                    deleteTicket(ticketId, ticketSubject);
                 });
             });
             
             document.querySelectorAll('.ticket-item').forEach(item => {
-                item.addEventListener('click', () => {
+                item.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-ticket-btn-item')) return;
                     const ticketId = item.dataset.ticketId;
                     const ticket = tickets.find(t => t.id === ticketId);
                     if (ticket) openChatWithUser(ticketId, ticket.userName);
@@ -1018,6 +1132,7 @@
             if (messagesListener) messagesListener();
         });
 
+        // Delete ticket from chat view
         deleteChatTicketBtn.addEventListener('click', async () => {
             if (selectedTicketId) {
                 const subject = chatWithUserName.textContent.replace('Chat with ', '');
@@ -1027,34 +1142,15 @@
 
         adminReplyInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendReplyBtn.click(); });
 
-        adminLoginBtn.addEventListener('click', async () => {
-            const username = adminUsername.value.trim();
-            const password = adminPassword.value;
-            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-                isAdminLoggedIn = true;
-                adminLoginForm.style.display = 'none';
-                adminPanel.style.display = 'block';
-                adminStatus.className = 'admin-status active';
-                adminStatus.innerHTML = '👑 Admin Logged In';
-                await initializeKeys();
-                loadTickets();
-                startAdminKeyCounter();
-                await generateWeeklyReport();
-                addAdminAlert('✅ Admin logged in successfully.', 'success');
-            } else {
-                adminError.textContent = 'Invalid username or password';
-            }
-        });
-
-        // ============ GOOGLE AUTH WITH OPTIMIZED REFERRAL CHECK ============
-        onAuthStateChanged(auth, async (user) => {
+        // Google Auth
+        onAuthStateChanged(auth, (user) => {
             if (user) {
                 loginOverlay.style.display = 'none';
                 dashboardContent.style.display = 'block';
                 loadUserData(user);
                 updateNavbarAuth(user);
+                loadPremiumSession();
                 setInterval(() => loadTickets(), 5000);
-                await checkPendingReferral(user);
             } else {
                 loginOverlay.style.display = 'flex';
                 dashboardContent.style.display = 'none';
@@ -1067,7 +1163,7 @@
         });
 
         logoutBtn.addEventListener('click', async () => {
-            try { await signOut(auth); } catch (error) { console.error('Logout error:', error); }
+            try { await signOut(auth); clearPremiumSession(); } catch (error) { console.error('Logout error:', error); }
         });
 
         function loadUserData(user) {
@@ -1091,6 +1187,7 @@
             }
         }
 
+        // Simulate real-time updates
         setInterval(() => {
             const activeChats = document.getElementById('activeChats');
             if (activeChats && dashboardContent.style.display === 'block') {
@@ -1098,11 +1195,12 @@
                 const change = Math.floor(Math.random() * 50) - 20;
                 activeChats.textContent = Math.max(0, current + change).toLocaleString();
             }
+            const totalUsers = document.getElementById('totalUsers');
+            if (totalUsers) {
+                const current = parseInt(totalUsers.textContent.replace(',', ''));
+                totalUsers.textContent = (current + Math.floor(Math.random() * 10)).toLocaleString();
+            }
         }, 15000);
-
-        setInterval(() => {
-            if (isAdminLoggedIn) generateWeeklyReport();
-        }, 604800000);
 
         function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     </script>
