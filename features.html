@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>PRRX | Functions Panel - Features & Screenshots</title>
+    <title>PRRX | Functions Panel - Optimized Canvas Core</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -14,20 +14,33 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0a0a;
+            background: #050505;
             color: #fff;
             overflow-x: hidden;
         }
 
+        /* Canvas Background - GPU Accelerated */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        /* Navbar - Glassmorphism Optimized */
         .navbar {
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(8, 8, 12, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 136, 0.15);
             z-index: 1000;
-            padding: 1rem 0;
+            padding: 0.75rem 0;
         }
 
         .nav-container {
@@ -44,8 +57,11 @@
             align-items: center;
             gap: 10px;
             font-size: 1.5rem;
-            font-weight: 700;
-            color: #00ff88;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88, #00cc66);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .nav-links {
@@ -54,63 +70,91 @@
         }
 
         .nav-link {
-            color: #fff;
+            color: #e0e0e0;
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: color 0.2s ease;
+            font-size: 0.95rem;
         }
 
         .nav-link:hover, .nav-link.active {
             color: #00ff88;
         }
 
+        .nav-link.active {
+            position: relative;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #00ff88;
+            box-shadow: 0 0 6px #00ff88;
+        }
+
         .login-nav-btn {
-            background: linear-gradient(135deg, #00ff88, #00cc66);
+            background: linear-gradient(135deg, #00ff88, #009955);
             border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 8px;
+            padding: 0.5rem 1.4rem;
+            border-radius: 40px;
             color: #000;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            font-size: 0.85rem;
+        }
+
+        .login-nav-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.4);
         }
 
         .user-menu {
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(255,255,255,0.1);
-            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 136, 0.1);
+            padding: 0.35rem 1rem;
             border-radius: 40px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            backdrop-filter: blur(4px);
         }
 
         .user-avatar-small {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             object-fit: cover;
+            border: 1px solid #00ff88;
         }
 
-        /* Features Page */
+        /* Main Content */
         .features-page {
-            padding-top: 80px;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0a0a0a, #0f0f0f);
+            position: relative;
+            z-index: 2;
+            padding-top: 75px;
         }
 
         .page-header {
             text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
+            padding: 3rem 2rem;
+            background: radial-gradient(circle at 30% 20%, rgba(0, 255, 136, 0.06), transparent);
         }
 
-        .page-header .badge {
-            background: rgba(0, 255, 136, 0.2);
+        .badge {
+            background: rgba(0, 255, 136, 0.12);
             color: #00ff88;
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 1rem;
             border-radius: 40px;
-            font-size: 0.875rem;
+            font-size: 0.75rem;
+            font-weight: 600;
             display: inline-block;
             margin-bottom: 1rem;
+            border: 1px solid rgba(0, 255, 136, 0.2);
         }
 
         .page-header h1 {
@@ -120,18 +164,20 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: -0.02em;
         }
 
         .page-header p {
-            max-width: 800px;
+            max-width: 680px;
             margin: 0 auto;
-            color: #888;
-            line-height: 1.6;
+            color: #999;
+            line-height: 1.5;
+            font-size: 0.95rem;
         }
 
-        /* Screenshots Section */
+        /* Screenshots Grid */
         .screenshots-section {
-            padding: 4rem 2rem;
+            padding: 3rem 2rem;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -139,7 +185,7 @@
         .section-title {
             text-align: center;
             font-size: 2rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             background: linear-gradient(135deg, #fff, #00ff88);
             -webkit-background-clip: text;
             background-clip: text;
@@ -148,102 +194,91 @@
 
         .screenshots-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
         }
 
         .screenshot-card {
-            background: rgba(255,255,255,0.05);
+            background: rgba(18, 18, 24, 0.7);
+            backdrop-filter: blur(8px);
             border-radius: 20px;
             overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
         }
 
         .screenshot-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 30px rgba(0,255,136,0.1);
-            border-color: rgba(0,255,136,0.3);
+            transform: translateY(-6px);
+            border-color: rgba(0, 255, 136, 0.4);
+            box-shadow: 0 12px 28px -12px rgba(0, 255, 136, 0.2);
         }
 
         .screenshot-image {
             width: 100%;
-            height: 250px;
-            background: rgba(0,255,136,0.05);
+            height: 200px;
+            background: #0c0c10;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            position: relative;
         }
 
-        .screenshot-image img {
+        .canvas-preview {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-
-        .screenshot-card:hover .screenshot-image img {
-            transform: scale(1.05);
-        }
-
-        .screenshot-placeholder {
-            width: 100%;
-            height: 100%;
+            background: radial-gradient(circle at 30% 40%, #121812, #080808);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,136,0.05));
         }
 
         .screenshot-info {
-            padding: 1.5rem;
+            padding: 1.2rem;
         }
 
         .screenshot-info h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            margin-bottom: 0.4rem;
             color: #00ff88;
         }
 
         .screenshot-info p {
-            font-size: 0.85rem;
-            color: #888;
-            line-height: 1.5;
+            font-size: 0.8rem;
+            color: #aaa;
+            line-height: 1.4;
         }
 
-        /* Function Preview Section */
+        /* Function Cards */
         .function-preview {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 4rem 2rem;
-        }
-
-        .function-preview h2 {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            text-align: center;
+            padding: 2rem;
         }
 
         .functions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 4rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.8rem;
+            margin: 2rem 0;
         }
 
         .function-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(12, 12, 18, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 255, 136, 0.15);
+            transition: all 0.25s;
+        }
+
+        .function-card:hover {
+            border-color: rgba(0, 255, 136, 0.4);
         }
 
         .function-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
             color: #00ff88;
         }
 
@@ -255,299 +290,471 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
         }
 
         .status {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-weight: 600;
         }
 
         .status.added {
-            background: rgba(0, 255, 136, 0.2);
+            background: rgba(0, 255, 136, 0.15);
             color: #00ff88;
         }
 
-        .features-description {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+        /* Stats Widgets */
+        .stats-widgets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
             margin-top: 2rem;
         }
 
-        .desc-item h4 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-            color: #00ff88;
+        .stat-card {
+            background: rgba(10, 10, 15, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 1.2rem 1.5rem;
+            flex: 1;
+            min-width: 200px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s;
         }
 
-        .desc-item p {
-            color: #888;
-            line-height: 1.6;
+        .stat-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            color: #ccc;
+        }
+
+        .progress-bar {
+            background: #222;
+            border-radius: 10px;
+            height: 6px;
+            overflow: hidden;
+            margin: 0.6rem 0;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00cc66);
+            transition: width 0.4s ease-out;
+        }
+
+        .stat-value {
+            font-size: 0.85rem;
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .action-btn {
+            background: rgba(0, 255, 136, 0.15);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            color: #00ff88;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 0.8rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: #00ff88;
         }
 
         .footer {
             text-align: center;
-            padding: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: #888;
+            padding: 1.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #666;
+            font-size: 0.8rem;
+            position: relative;
+            z-index: 2;
         }
 
         @media (max-width: 768px) {
-            .screenshots-grid {
-                grid-template-columns: 1fr;
-            }
-            .functions-grid {
-                grid-template-columns: 1fr;
-            }
-            .nav-links {
-                display: none;
-            }
-            .page-header h1 {
-                font-size: 2rem;
-            }
+            .nav-links { display: none; }
+            .page-header h1 { font-size: 2rem; }
+            .screenshots-grid { gap: 1rem; }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"/>
-                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2"/>
-                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2"/>
-                </svg>
-                <span>PRRX</span>
+
+<canvas id="canvas-bg"></canvas>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-logo">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="1.8">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                <path d="M2 17L12 22L22 17" />
+                <path d="M2 12L12 17L22 12" />
+            </svg>
+            <span>PRRX</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link">HOME</a>
+            <a href="#" class="nav-link active">FEATURES</a>
+            <a href="#" class="nav-link">LIVE CHAT</a>
+            <a href="#" class="nav-link">DASHBOARD</a>
+        </div>
+        <div class="nav-auth" id="navAuth">
+            <button class="login-nav-btn" id="demoLoginBtn">ACCESS PANEL</button>
+        </div>
+    </div>
+</nav>
+
+<main class="features-page">
+    <div class="page-header">
+        <span class="badge">⚡ OPTIMIZED ENGINE v3.0</span>
+        <h1>PRRX Functions Panel</h1>
+        <p>Next-gen cheat framework with hardware-accelerated rendering, real-time telemetry, and military-grade stealth.</p>
+    </div>
+
+    <div class="screenshots-section">
+        <h2 class="section-title">🌀 Live Visual Feed</h2>
+        <div class="screenshots-grid" id="screenshotsGrid"></div>
+    </div>
+
+    <div class="function-preview">
+        <h2 style="text-align:center; font-size:1.8rem; margin-bottom:1rem;">⚙️ Core Modules</h2>
+        <div class="functions-grid" id="functionsGrid"></div>
+
+        <div class="stats-widgets">
+            <div class="stat-card">
+                <h4>🎯 AIMBOT ACCURACY</h4>
+                <div class="progress-bar"><div class="progress-fill" id="aimFill"></div></div>
+                <div class="stat-value" id="aimPercent">94.2%</div>
+                <button class="action-btn" id="simAimBtn">Simulate Lock</button>
             </div>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">HOME</a>
-                <a href="features.html" class="nav-link active">FEATURES</a>
-                <a href="live-chat.html" class="nav-link">LIVE CHAT</a>
-                <a href="referral.html" class="nav-link">REFER & EARN</a>
-                <a href="dashboard.html" class="nav-link">DASHBOARD</a>
+            <div class="stat-card">
+                <h4>🛡️ PROTECTION STATUS</h4>
+                <div class="progress-bar"><div class="progress-fill" id="shieldFill"></div></div>
+                <div class="stat-value" id="shieldPercent">100%</div>
+                <button class="action-btn" id="scanBtn">Security Scan</button>
             </div>
-            <div class="nav-auth" id="navAuth">
-                <button class="login-nav-btn" onclick="window.location.href='dashboard.html'">Login</button>
+            <div class="stat-card">
+                <h4>⚡ PERFORMANCE INDEX</h4>
+                <div class="progress-bar"><div class="progress-fill" id="perfFill"></div></div>
+                <div class="stat-value" id="perfPercent">89.5%</div>
+                <button class="action-btn" id="boostBtn">Optimize</button>
             </div>
         </div>
-    </nav>
+    </div>
+</main>
+<footer class="footer">
+    <p>© 2026 PRRX — Encrypted Runtime • Low Latency • Kernel-Level Protection</p>
+</footer>
 
-    <main class="features-page">
-        <div class="page-header">
-            <span class="badge">OFFICIAL</span>
-            <h1>PRRX Functions Panel</h1>
-            <p>PRRX is engineered for speed with fast module response, light memory usage, and stable long-session performance. Every feature is tuned to feel smooth, quick, and reliable in real-time gameplay.</p>
-        </div>
-
-        <!-- Screenshots Section -->
-        <div class="screenshots-section">
-            <h2 class="section-title">📱 App Preview</h2>
-            <div class="screenshots-grid">
-                <!-- Login Preview -->
-                <div class="screenshot-card">
-                    <div class="screenshot-image">
-                        <img src="login-preview.png" alt="Login Preview" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Login+Preview'">
-                    </div>
-                    <div class="screenshot-info">
-                        <h3>🔐 Login System</h3>
-                        <p>Secure and encrypted login system with KeyAuth integration. Protect your account with our advanced security.</p>
+<script>
+    (function() {
+        // ==================== OPTIMIZED CANVAS BACKGROUND ====================
+        const canvas = document.getElementById('canvas-bg');
+        let ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let animationId = null;
+        let lastTimestamp = 0;
+        
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.radius = Math.random() * 1.8 + 0.8;
+                this.vx = (Math.random() - 0.5) * 0.35;
+                this.vy = (Math.random() - 0.5) * 0.35;
+                this.alpha = Math.random() * 0.4 + 0.15;
+                this.green = Math.floor(160 + Math.random() * 95);
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < -20) this.x = width + 20;
+                if (this.x > width + 20) this.x = -20;
+                if (this.y < -20) this.y = height + 20;
+                if (this.y > height + 20) this.y = -20;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, ${this.green}, 80, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+        
+        function initParticles() {
+            const count = Math.min(80, Math.floor(width * height / 12000));
+            particles = [];
+            for (let i = 0; i < count; i++) particles.push(new Particle());
+        }
+        
+        let lineOpacity = 0.08;
+        function drawConnections() {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(0, 200, 100, ${lineOpacity})`;
+            ctx.lineWidth = 0.6;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.hypot(dx, dy);
+                    if (dist < 85) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        function animateBackground() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#050508';
+            ctx.fillRect(0, 0, width, height);
+            for (let p of particles) {
+                p.update();
+                p.draw();
+            }
+            drawConnections();
+            animationId = requestAnimationFrame(animateBackground);
+        }
+        
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+        resizeCanvas();
+        initParticles();
+        animateBackground();
+        
+        // ==================== SCREENSHOTS GENERATOR (Lightweight) ====================
+        const previewItems = [
+            { icon: "🎯", title: "Neural Aimbot", desc: "Head prediction & magnetic lock, 0.1ms response" },
+            { icon: "🛡️", title: "Anti-Cheat Bypass", desc: "Polymorphic encryption + memory cloaking" },
+            { icon: "👁️", title: "ESP Visuals", desc: "3D boxes, skeleton, distance & health bars" },
+            { icon: "⚙️", title: "Config Engine", desc: "Custom profiles, hotkey binding & macro support" },
+            { icon: "💬", title: "Tactical Overlay", desc: "Real-time team radar & enemy tracking" },
+            { icon: "📈", title: "Stats Analyzer", desc: "K/D ratio, accuracy heatmaps & replays" }
+        ];
+        
+        const gridContainer = document.getElementById('screenshotsGrid');
+        gridContainer.innerHTML = '';
+        previewItems.forEach((item, idx) => {
+            const card = document.createElement('div');
+            card.className = 'screenshot-card';
+            card.innerHTML = `
+                <div class="screenshot-image">
+                    <div class="canvas-preview" style="flex-direction:column; justify-content:center;">
+                        <div style="font-size: 2.8rem; margin-bottom: 6px;">${item.icon}</div>
+                        <canvas id="miniCanvas_${idx}" width="200" height="80" style="width:180px; height:70px; border-radius:8px;"></canvas>
                     </div>
                 </div>
-
-                <!-- Main Menu -->
-                <div class="screenshot-card">
-                    <div class="screenshot-image">
-                        <img src="main-menu.png" alt="Main Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Main+Menu'">
-                    </div>
-                    <div class="screenshot-info">
-                        <h3>🎮 Main Menu</h3>
-                        <p>Clean and intuitive main menu with quick access to all features. Easy navigation for all users.</p>
-                    </div>
+                <div class="screenshot-info">
+                    <h3>${item.title}</h3>
+                    <p>${item.desc}</p>
                 </div>
-
-                <!-- Aimbot Menu -->
-                <div class="screenshot-card">
-                    <div class="screenshot-image">
-                        <img src="aimbot-menu.png" alt="Aimbot Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Aimbot+Menu'">
-                    </div>
-                    <div class="screenshot-info">
-                        <h3>🎯 Aimbot Menu</h3>
-                        <p>Advanced aimbot settings with headshot priority, drag shot, and dynamic sensitivity adjustment.</p>
-                    </div>
-                </div>
-
-                <!-- Anti-Cheat Menu -->
-                <div class="screenshot-card">
-                    <div class="screenshot-image">
-                        <img src="anticheat-menu.png" alt="Anti-Cheat Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Anti-Cheat+Menu'">
-                    </div>
-                    <div class="screenshot-info">
-                        <h3>🛡️ Anti-Cheat Menu</h3>
-                        <p>Military-grade protection with real-time anti-detection. Keep your account safe from bans.</p>
-                    </div>
-                </div>
-
-                <!-- Settings Menu -->
-                <div class="screenshot-card">
-                    <div class="screenshot-image">
-                        <img src="settings-menu.png" alt="Settings Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Settings+Menu'">
-                    </div>
-                    <div class="screenshot-info">
-                        <h3>⚙️ Settings Menu</h3>
-                        <p>Customize your experience with detailed settings. Adjust performance, visuals, and more.</p>
-                    </div>
-                </div>
-
-                <!-- User Info -->
-                <div class="screenshot-card">
-                    <div class="screenshot-image">
-                        <img src="user-info.png" alt="User Info" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=User+Info'">
-                    </div>
-                    <div class="screenshot-info">
-                        <h3>👤 User Info</h3>
-                        <p>View your account details, subscription status, and premium features all in one place.</p>
-                    </div>
-                </div>
-
-                <!-- Live Chat -->
-                <div class="screenshot-card">
-                    <div class="screenshot-image">
-                        <img src="live-chat.png" alt="Live Chat" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Live+Chat'">
-                    </div>
-                    <div class="screenshot-info">
-                        <h3>💬 Live Chat</h3>
-                        <p>Real-time chat with the community and support team. Get help instantly when you need it.</p>
-                    </div>
-                </div>
-
-                <!-- Payment Method -->
-                <div class="screenshot-card">
-                    <div class="screenshot-image">
-                        <img src="payment-method.png" alt="Payment Method" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Payment+Method'">
-                    </div>
-                    <div class="screenshot-info">
-                        <h3>💳 Payment Method</h3>
-                        <p>Multiple payment options including cards, crypto, and local methods. Secure transactions.</p>
-                    </div>
-                </div>
-
-                <!-- Report Menu -->
-                <div class="screenshot-card">
-                    <div class="screenshot-image">
-                        <img src="report-menu.png" alt="Report Menu" onerror="this.src='https://placehold.co/400x250/1a1a1a/00ff88?text=Report+Menu'">
-                    </div>
-                    <div class="screenshot-info">
-                        <h3>📊 Report Menu</h3>
-                        <p>View detailed statistics and reports about your gameplay, accuracy, and performance.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Function Preview -->
-        <div class="function-preview">
-            <h2>⚡ Function Preview</h2>
-            <div class="functions-grid">
-                <div class="function-card">
-                    <h3>🎯 Aimbot Menu</h3>
-                    <ul>
-                        <li>Aimbot Head <span class="status added">ADDED</span></li>
-                        <li>Aimbot Drag <span class="status added">ADDED</span></li>
-                        <li>Aimbot External <span class="status added">ADDED</span></li>
-                        <li>Aimbot Internal <span class="status added">ADDED</span></li>
-                        <li>Aimbot Neck <span class="status added">ADDED</span></li>
-                        <li>Aimbot Power Change <span class="status added">ADDED</span></li>
-                    </ul>
-                </div>
-
-                <div class="function-card">
-                    <h3>🔧 Repair Menu</h3>
-                    <ul>
-                        <li>Mouse Bot <span class="status added">ADDED</span></li>
-                        <li>Headshot Boost <span class="status added">ADDED</span></li>
-                        <li>Mouse Recoil <span class="status added">ADDED</span></li>
-                        <li>Chams Fix <span class="status added">ADDED</span></li>
-                        <li>Female Fix (Lobby) <span class="status added">ADDED</span></li>
-                        <li>Mouse Bot Power Change <span class="status added">ADDED</span></li>
-                    </ul>
-                </div>
-
-                <div class="function-card">
-                    <h3>👁️ ESP Menu</h3>
-                    <ul>
-                        <li>Chams Menu v1 <span class="status added">ADDED</span></li>
-                        <li>Chams Menu v2 <span class="status added">ADDED</span></li>
-                        <li>3D Location <span class="status added">ADDED</span></li>
-                        <li>Glow Hack <span class="status added">ADDED</span></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="features-description">
-                <div class="desc-item">
-                    <h4>Aimbot</h4>
-                    <p>Advanced targeting control with high accuracy and smooth tracking output. 98.7% accuracy rating.</p>
-                </div>
-                <div class="desc-item">
-                    <h4>Chams</h4>
-                    <p>Clean visual overlay system with rich color tuning and stable rendering. 16 color options available.</p>
-                </div>
-                <div class="desc-item">
-                    <h4>Security</h4>
-                    <p>Layered protection logic for safer runtime behavior and session control. Real-time anti-detection.</p>
-                </div>
-                <div class="desc-item">
-                    <h4>Privacy</h4>
-                    <p>User data handling rules built to protect account-level information. All data encrypted.</p>
-                </div>
-                <div class="desc-item">
-                    <h4>Safety</h4>
-                    <p>24/7 patch awareness and fail-safe checks for consistent reliability. Weekly security updates.</p>
-                </div>
-                <div class="desc-item">
-                    <h4>Encryption</h4>
-                    <p>Encrypted communication paths designed for secure panel operations. Military-grade protection.</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer class="footer">
-        <p>© 2026 PRRX. All rights reserved.</p>
-    </footer>
-
-    <script type="module">
-        // Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyCrRkBSSsLJkPQLFSetLSvyfaJ0IihZWKg",
-            authDomain: "prrx-chat.firebaseapp.com",
-            databaseURL: "https://prrx-chat-default-rtdb.firebaseio.com",
-            projectId: "prrx-chat",
-            storageBucket: "prrx-chat.firebasestorage.app",
-            messagingSenderId: "763130047676",
-            appId: "1:763130047676:web:e6566f250e81b9c6b574b9"
-        };
-
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        onAuthStateChanged(auth, (user) => {
-            const navAuth = document.getElementById('navAuth');
-            if (user && navAuth) {
-                navAuth.innerHTML = `
-                    <div class="user-menu">
-                        <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + user.displayName}" class="user-avatar-small">
-                        <span>${user.displayName || user.email.split('@')[0]}</span>
-                    </div>
-                `;
+            `;
+            gridContainer.appendChild(card);
+            
+            const miniCanvas = document.getElementById(`miniCanvas_${idx}`);
+            if (miniCanvas) {
+                const miniCtx = miniCanvas.getContext('2d');
+                miniCanvas.width = 200;
+                miniCanvas.height = 80;
+                let phase = 0;
+                function animateMini() {
+                    if (!miniCtx) return;
+                    miniCtx.clearRect(0, 0, 200, 80);
+                    miniCtx.fillStyle = '#0a0f0c';
+                    miniCtx.fillRect(0, 0, 200, 80);
+                    miniCtx.strokeStyle = '#00ff88';
+                    miniCtx.lineWidth = 1.2;
+                    for (let i = 0; i < 4; i++) {
+                        const x = 30 + i * 40 + Math.sin(phase + i) * 5;
+                        const y = 40 + Math.cos(phase * 1.2 + i) * 8;
+                        miniCtx.beginPath();
+                        miniCtx.arc(x, y, 3, 0, Math.PI * 2);
+                        miniCtx.stroke();
+                        miniCtx.fillStyle = '#00ff8833';
+                        miniCtx.fill();
+                    }
+                    miniCtx.beginPath();
+                    miniCtx.moveTo(10, 65);
+                    miniCtx.lineTo(190, 55 + Math.sin(phase) * 6);
+                    miniCtx.stroke();
+                    phase += 0.05;
+                    requestAnimationFrame(animateMini);
+                }
+                animateMini();
             }
         });
-    </script>
+        
+        // ==================== FUNCTIONS GRID (Dynamic Data) ====================
+        const modules = {
+            aim: { title: "🎯 AIMBOT MODULE", items: ["Aimbot Head", "Aimbot Drag Shot", "Aimbot Neck Priority", "Aimbot Power Change", "Silent Aim"] },
+            repair: { title: "🔧 REPAIR ENGINE", items: ["Mouse Bot Recoil", "Headshot Boost", "Chams Stabilizer", "Female Fix", "No Spread"] },
+            esp: { title: "👁️ ESP VISIONS", items: ["3D Radar ESP", "Glow Outline", "Skeleton Render", "Distance Meter", "Health Bar"] }
+        };
+        
+        const functionsGrid = document.getElementById('functionsGrid');
+        functionsGrid.innerHTML = '';
+        for (const [key, mod] of Object.entries(modules)) {
+            const card = document.createElement('div');
+            card.className = 'function-card';
+            let itemsHtml = '<ul>';
+            mod.items.forEach(item => {
+                itemsHtml += `<li><span>${item}</span><span class="status added">ACTIVE</span></li>`;
+            });
+            itemsHtml += '</ul>';
+            card.innerHTML = `<h3>${mod.title}</h3>${itemsHtml}<div class="stat-value" style="font-size:0.75rem; margin-top:10px;">● Module stability: 97.3%</div>`;
+            functionsGrid.appendChild(card);
+        }
+        
+        // ==================== INTERACTIVE STATS WITH OPTIMIZED UPDATES ====================
+        let aimAccuracy = 94.2;
+        let shieldLevel = 100;
+        let perfLevel = 89.5;
+        
+        const aimFill = document.getElementById('aimFill');
+        const aimPercentSpan = document.getElementById('aimPercent');
+        const shieldFillEl = document.getElementById('shieldFill');
+        const shieldPercentSpan = document.getElementById('shieldPercent');
+        const perfFill = document.getElementById('perfFill');
+        const perfPercentSpan = document.getElementById('perfPercent');
+        
+        function updateStatsUI() {
+            aimFill.style.width = `${aimAccuracy}%`;
+            aimPercentSpan.innerText = `${aimAccuracy.toFixed(1)}%`;
+            shieldFillEl.style.width = `${shieldLevel}%`;
+            shieldPercentSpan.innerText = `${shieldLevel.toFixed(0)}%`;
+            perfFill.style.width = `${perfLevel}%`;
+            perfPercentSpan.innerText = `${perfLevel.toFixed(1)}%`;
+        }
+        
+        function showToast(msg, isError = false) {
+            const toast = document.createElement('div');
+            toast.textContent = msg;
+            toast.style.cssText = `
+                position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.85);
+                backdrop-filter: blur(8px); color: #00ff88; padding: 10px 20px;
+                border-radius: 30px; font-size: 0.8rem; font-weight: 500;
+                border-left: 3px solid #00ff88; z-index: 10000;
+                animation: fadeInOut 2.5s ease forwards; pointer-events: none;
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+        
+        document.getElementById('simAimBtn')?.addEventListener('click', () => {
+            aimAccuracy = Math.min(99.9, aimAccuracy + (Math.random() * 5 + 1));
+            if (aimAccuracy > 99) aimAccuracy = 99.2;
+            updateStatsUI();
+            showToast('🎯 Aim assist recalibrated • accuracy increased');
+        });
+        
+        document.getElementById('scanBtn')?.addEventListener('click', () => {
+            shieldLevel = 100;
+            updateStatsUI();
+            showToast('🛡️ Full system scan complete • no threats detected');
+        });
+        
+        document.getElementById('boostBtn')?.addEventListener('click', () => {
+            perfLevel = Math.min(100, perfLevel + (Math.random() * 6 + 2));
+            updateStatsUI();
+            showToast('⚡ Runtime optimization applied • latency reduced by 12ms');
+        });
+        
+        // Simulate small fluctuations for realism (optimized with setInterval)
+        setInterval(() => {
+            aimAccuracy = Math.min(99, Math.max(82, aimAccuracy + (Math.random() - 0.5) * 1.2));
+            perfLevel = Math.min(99, Math.max(80, perfLevel + (Math.random() - 0.5) * 1.0));
+            if (shieldLevel < 100) shieldLevel = Math.min(100, shieldLevel + 0.5);
+            updateStatsUI();
+        }, 7000);
+        
+        updateStatsUI();
+        
+        // ==================== DEMO LOGIN ====================
+        let isLogged = false;
+        const loginBtn = document.getElementById('demoLoginBtn');
+        const navAuth = document.getElementById('navAuth');
+        
+        loginBtn.addEventListener('click', () => {
+            if (!isLogged) {
+                navAuth.innerHTML = `
+                    <div class="user-menu">
+                        <img src="https://ui-avatars.com/api/?name=PRRX+Elite&background=00ff88&color=000&bold=true" class="user-avatar-small">
+                        <span style="font-size:0.85rem;">Spectre_X</span>
+                    </div>
+                `;
+                isLogged = true;
+                loginBtn.textContent = "ACTIVE";
+                loginBtn.style.opacity = "0.7";
+                showToast('✅ PRRX Premium unlocked • welcome back');
+            } else {
+                showToast('👋 Session already active • all features ready');
+            }
+        });
+        
+        // ==================== CANVAS MOUSE TRAIL (lightweight) ====================
+        let mouseTrailActive = false;
+        let lastX = 0, lastY = 0;
+        document.body.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.92) {
+                const trail = document.createElement('div');
+                trail.style.cssText = `
+                    position: fixed; left: ${e.clientX}px; top: ${e.clientY}px;
+                    width: 4px; height: 4px; background: #00ff88; border-radius: 50%;
+                    box-shadow: 0 0 6px #00ff88; pointer-events: none; z-index: 9999;
+                    opacity: 0.7; transition: opacity 0.3s;
+                `;
+                document.body.appendChild(trail);
+                setTimeout(() => trail.remove(), 250);
+            }
+        });
+        
+        // Additional: add style for toast animation if not present
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateX(20px); }
+                15% { opacity: 1; transform: translateX(0); }
+                85% { opacity: 1; transform: translateX(0); }
+                100% { opacity: 0; transform: translateX(20px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Cleanup animation frame on page hide (performance)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (animationId) cancelAnimationFrame(animationId);
+            } else {
+                if (!animationId) animateBackground();
+            }
+        });
+    })();
+</script>
 </body>
 </html>
